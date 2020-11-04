@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1876556927220249651}
   - component: {fileID: 158080396107748195}
   - component: {fileID: 1876556927220249650}
+  - component: {fileID: 5518377812017363756}
   - component: {fileID: 1876556927220249663}
   - component: {fileID: 1876556927220249661}
   - component: {fileID: 1876556927220249648}
@@ -100,6 +101,18 @@ MonoBehaviour:
   movementVector: {x: 0, y: 0}
   rotationVector: {x: 0, y: 0}
   mousePosition: {x: 0, y: 0}
+--- !u!114 &5518377812017363756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876556927220249657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c018aadec422b4469d71e410679e6c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1876556927220249663
 MonoBehaviour:
   m_ObjectHideFlags: 0

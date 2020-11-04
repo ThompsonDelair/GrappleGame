@@ -587,6 +587,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawner (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
+        type: 3}
+      propertyPath: timeBetweenSpawns
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aacaa7ea43b1734e970b940ed60d9cd, type: 3}
 --- !u!1 &171387802 stripped
@@ -602,6 +607,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 158080396107748195, guid: 70ef52e3ae4b8134a9805fd6eb937af1,
+        type: 3}
+      propertyPath: playerInvulnerable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1876556927220249650, guid: 70ef52e3ae4b8134a9805fd6eb937af1,
         type: 3}
       propertyPath: m_Enabled
@@ -1255,6 +1265,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawner (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
+        type: 3}
+      propertyPath: timeBetweenSpawns
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aacaa7ea43b1734e970b940ed60d9cd, type: 3}
 --- !u!1 &775312570 stripped
@@ -1793,14 +1808,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1049600632}
-  m_LocalRotation: {x: 0.6764306, y: -0, z: -0, w: 0.7365064}
+  m_LocalRotation: {x: 0.67559016, y: 0, z: 0, w: 0.7372774}
   m_LocalPosition: {x: -27.71, y: 24.1, z: -2.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 41827196}
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 85.131, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 85, y: 0, z: 0}
 --- !u!1 &1078353425
 GameObject:
   m_ObjectHideFlags: 0
@@ -2035,6 +2050,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawner (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
+        type: 3}
+      propertyPath: timeBetweenSpawns
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aacaa7ea43b1734e970b940ed60d9cd, type: 3}
 --- !u!1 &1103623503 stripped
@@ -2173,6 +2193,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1380495745}
   - component: {fileID: 1380495744}
+  - component: {fileID: 1380495746}
   m_Layer: 0
   m_Name: 03_ObjectiveListener
   m_TagString: Untagged
@@ -2193,6 +2214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectiveActive: 1
+  objectiveId: 0
   currentObjective: 'DIRECTIVE: Destroy(allTargets)'
   victoryMessage: '>: S0L Power Grid Secure'
   targetObjects:
@@ -2216,6 +2238,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1380495746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380495743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84bcaf5056287946b63a323027b7718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectiveId: 0
 --- !u!1 &1455219909
 GameObject:
   m_ObjectHideFlags: 0
@@ -2585,6 +2620,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Spawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
+        type: 3}
+      propertyPath: timeBetweenSpawns
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aacaa7ea43b1734e970b940ed60d9cd, type: 3}

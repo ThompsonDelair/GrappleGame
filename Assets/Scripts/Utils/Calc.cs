@@ -302,6 +302,19 @@ public static class Calc
             theta *= Mathf.Deg2Rad;
         return new Vector2(Mathf.Cos(theta),Mathf.Sin(theta));
     }
+
+    public static Vector3 ClosestToPoint(Transform[] transforms, Vector3 point) {
+        float bestScore = Mathf.Infinity;
+        Vector3 closest = Vector3.positiveInfinity;
+        for(int i = 0; i < transforms.Length; i++) {
+            float score = Vector3.SqrMagnitude(point - transforms[i].position);
+            if(score < bestScore) {
+                bestScore = score;
+                closest = transforms[i].position;
+            }
+        }
+        return closest;
+    }    
 }
 
 public enum ANGLE_TYPE { DEGREES, RADIANS }

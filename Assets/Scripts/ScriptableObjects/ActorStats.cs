@@ -7,4 +7,6 @@ public class ActorStats : ScriptableObject
 {
     public float maxHP;
     public float radius;
+    public float targetLockTime; // Used in lunge
+    public string mainAttack; // Take the string and use to make class later.
 }

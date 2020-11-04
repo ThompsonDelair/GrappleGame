@@ -7,7 +7,7 @@ public class PlayerWeapons : MonoBehaviour
     // Component References
     private FieldOfView fieldOfView;
     private Animator playerAnimator;
-    public GameManager gameManager;
+    [HideInInspector] public GameManager gameManager;
 
     void Start() {
         playerAnimator = this.GetComponent<Animator>();
@@ -19,9 +19,9 @@ public class PlayerWeapons : MonoBehaviour
     }
 
     [Header("Blaster Parameters")]
-    public float fireRate;
     public float chargeTime = 0f;
     [SerializeField] private float chargeTimeThreshold = 1f; // the amount of time you need to hold the charge button before the rail cannon activates
+    [SerializeField] private float chargeRateModifier = 1.2f;
     public bool ChargeThresholdReached { get { return chargeTime >= chargeTimeThreshold; } }
     [SerializeField] private float blasterDamage = 1f;
     [SerializeField] private float attackKnockback = 100f;
@@ -34,6 +34,7 @@ public class PlayerWeapons : MonoBehaviour
 
     [Header("Melee Strike Modifiers")]
     [SerializeField] private float meleeStrikeRange = 6f;
+    [SerializeField] private float meleeStrikeAngle = 360f;
     [SerializeField] private float meleeStrikeDamage = 3f;
     
 
@@ -78,14 +79,14 @@ public class PlayerWeapons : MonoBehaviour
 
                 // Adjust field of view angle based on total charge time.
                 if (fieldOfView.ViewAngle > minRailAngle) {
-                    fieldOfView.ViewAngle = maxRailAngle * ( 1 / chargeTime * 0.6f );
+                    fieldOfView.ViewAngle = maxRailAngle * ( 1 / (chargeTime * chargeRateModifier) * 0.6f );
                 } else {
                     fieldOfView.ViewAngle = minRailAngle;
                 }
 
                 // Adjust field of view range based on total charge time.
                 if (fieldOfView.ViewRadius < maxRailRange) {
-                    fieldOfView.ViewRadius = minRailRange * ( chargeTime * 1.2f );
+                    fieldOfView.ViewRadius = minRailRange * ((chargeTime * chargeRateModifier) * 1.2f );
                 } else {
                     fieldOfView.ViewRadius = maxRailRange;
                 }
@@ -110,20 +111,41 @@ public class PlayerWeapons : MonoBehaviour
 
         // Get list of enemies from game manager, check their position vs. FieldOfView. Deal damage if within cone.
         List<EnemyActor> enemyList = gameManager.EnemyList;
+        List<Actor> objectList = gameManager.ObjectList;
 
         gameManager.player.AddPushForce(Utils.Vector3ToVector2XZ(-FacingDirection), 50f);
 
         int hitEnemies = 0;
+
+        // Iterate through enemy actor list.
         foreach (Actor enemy in enemyList) {
             
-            if (fieldOfView.WithinRadius(enemy.transform.position, fieldOfView.ViewRadius) && fieldOfView.WithinAngle(enemy.transform.position, FacingDirection, fieldOfView.ViewAngle)) {
+            if ((fieldOfView.WithinRadius(enemy.transform.position, fieldOfView.ViewRadius) && fieldOfView.WithinAngle(enemy.transform.position, FacingDirection, fieldOfView.ViewAngle))) {
+                // || (fieldOfView.WithinRadius(enemy.transform.position, fieldOfView.ViewRadius) && fieldOfView.WithinAngle(enemy.transform.position, FacingDirection, fieldOfView.ViewAngle))) {
                 hitEnemies++;
 
                 // The charge will always do at least thrice the damage of the blaster
-                DamageSystem.DealDamage(enemy, blasterDamage * (chargeTime >= 1f ? (chargeTime + 2) : 3f));
+                DamageSystem.DealDamage(enemy, blasterDamage * (3 + chargeTime));
                 enemy.AddPushForce(transform.DirectionToTarget(enemy.transform.position), attackKnockback);
 
             }
+        }
+    
+        // Iterate through destructable object list.
+        foreach (Actor structure in objectList) {
+            
+            if (fieldOfView.WithinRadius(structure.transform.position, fieldOfView.ViewRadius) && fieldOfView.WithinAngle(structure.transform.position, FacingDirection, fieldOfView.ViewAngle)) {
+                hitEnemies++;
+
+                // The charge will always do at least thrice the damage of the blaster
+                DamageSystem.DealDamage(structure, blasterDamage * (3 + chargeTime));
+                // structure.AddPushForce(transform.DirectionToTarget(structure.transform.position), attackKnockback);
+
+            }
+        }
+
+        if (hitEnemies > 0) {
+            
         }
 
         ResetCharge();
@@ -154,18 +176,38 @@ public class PlayerWeapons : MonoBehaviour
         playerAnimator.SetBool("Grappling", false);
         gameManager.Grappler.EndGrapple();
 
+        fieldOfView.ViewAngle = meleeStrikeAngle;
+        fieldOfView.ViewRadius = meleeStrikeRange;
+        // fieldOfView.DrawFieldOfView();
+
         // Get list of enemies from game manager, check their position vs. Melee Raidus. Deal damage if within cone.
         List<EnemyActor> enemyList = gameManager.EnemyList;
+        List<Actor> objectList = gameManager.ObjectList;
 
         gameManager.player.AddPushForce(Utils.Vector3ToVector2XZ(FacingDirection), 50f);
 
         int hitEnemies = 0;
+
+        // Iterate through enemy actor list.
         foreach (Actor enemy in enemyList) {
             
             if (fieldOfView.WithinRadius(enemy.transform.position, meleeStrikeRange)) {
                 hitEnemies++;
                 DamageSystem.DealDamage(enemy, meleeStrikeDamage);
                 enemy.AddPushForce(transform.DirectionToTarget(enemy.transform.position), attackKnockback);
+            }
+        }
+
+        // Iterate through destructable object list.
+        foreach (Actor structure in objectList) {
+            
+            if (fieldOfView.WithinRadius(structure.transform.position, meleeStrikeRange)) {
+                hitEnemies++;
+
+                // The charge will always do at least thrice the damage of the blaster
+                DamageSystem.DealDamage(structure, meleeStrikeDamage);
+                // structure.AddPushForce(transform.DirectionToTarget(structure.transform.position), attackKnockback);
+
             }
         }
     }

@@ -122,7 +122,7 @@ public static class NavUtils
             }
         }
 
-        Debug.LogFormat("Made a mesh with {0} tris ",navTris.Count);
+        //Debug.LogFormat("Made a mesh with {0} tris ",navTris.Count);
 
         //mesh.setin
         //mesh.SetIndices(verts.ToArray(),MeshTopology.Lines,0);

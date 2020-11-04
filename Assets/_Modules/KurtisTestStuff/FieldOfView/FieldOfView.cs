@@ -5,6 +5,8 @@ using UnityEngine;
 public class FieldOfView : MonoBehaviour
 {
     [Header ("View Parameters")]
+    [SerializeField] protected bool viewExpandsClockwise = false;
+    public bool ViewExpandsClockwise { get { return viewExpandsClockwise; } }
     [SerializeField] protected float viewRadius;
     public float ViewRadius { get { return viewRadius; } set { viewRadius = value; } }
 
@@ -44,7 +46,13 @@ public class FieldOfView : MonoBehaviour
         for (int i = 0; i <= stepCount; ++i) {
 
             // Calculate the current angle being cast forward.
-            float curAngle = transform.eulerAngles.y - viewAngle/2 + (stepAngleSize * i);
+            float curAngle;
+            if (!viewExpandsClockwise) {
+                curAngle = transform.eulerAngles.y - viewAngle/2 + (stepAngleSize * i);
+            } else {
+                curAngle = transform.eulerAngles.y + (stepAngleSize * i);
+            }
+            
             // Debug.DrawLine(transform.position, transform.position + DirFromAngle(curAngle, true) * viewRadius, Color.red);
 
             // Construct a new ViewCastInfo to store the data found at the current angle.

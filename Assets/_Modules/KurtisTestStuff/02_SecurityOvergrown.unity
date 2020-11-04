@@ -1189,6 +1189,7 @@ GameObject:
   m_Component:
   - component: {fileID: 998831934}
   - component: {fileID: 998831933}
+  - component: {fileID: 998831935}
   m_Layer: 0
   m_Name: 02_ObjectiveListener
   m_TagString: Untagged
@@ -1209,6 +1210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectiveActive: 1
+  objectiveId: 0
   currentObjective: 'DIRECTIVE: Destroy(allTargets)'
   victoryMessage: '>: S0L Hostiles Eliminated'
   targetObjects:
@@ -1228,6 +1230,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &998831935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998831932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84bcaf5056287946b63a323027b7718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectiveId: 0
 --- !u!1 &1027083883
 GameObject:
   m_ObjectHideFlags: 0
@@ -1322,14 +1337,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1049600632}
-  m_LocalRotation: {x: 0.6764306, y: -0, z: -0, w: 0.7365064}
+  m_LocalRotation: {x: 0.67559016, y: 0, z: 0, w: 0.7372774}
   m_LocalPosition: {x: 0, y: 24.05, z: -15.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 41827196}
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 85.131, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 85, y: 0, z: 0}
 --- !u!1 &1098510535
 GameObject:
   m_ObjectHideFlags: 0
@@ -1517,6 +1532,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Spawner (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
+        type: 3}
+      propertyPath: timeBetweenSpawns
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aacaa7ea43b1734e970b940ed60d9cd, type: 3}
@@ -1723,6 +1743,11 @@ PrefabInstance:
         type: 3}
       propertyPath: totalSpawnedLimit
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
+        type: 3}
+      propertyPath: timeBetweenSpawns
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aacaa7ea43b1734e970b940ed60d9cd, type: 3}
@@ -2605,12 +2630,6 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1238451652}
-    - target: {fileID: 3178843251030035241, guid: 89e6db2b132d7874eb203b39129f592d,
-        type: 3}
-      propertyPath: grapplingState
-      value: 
-      objectReference: {fileID: 11400000, guid: efa75f9ecfbc37b478cbca8865b6abf7,
-        type: 2}
     - target: {fileID: 3178843252045924422, guid: 89e6db2b132d7874eb203b39129f592d,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -47,13 +47,11 @@ public class SentryGun : MonoBehaviour
         Vector2 playerPos2D = GameManager.main.player.position2D;
         Vector2 sentryPos2D = Utils.Vector3ToVector2XZ(transform.position);
         Map map = GameManager.main.map;
-        for(int i = 0; i < map.PChains.Length; i++) {
-            Vector2[] pChain = map.PChains[i];
-            for(int j = 0; j < pChain.Length-1; j++) {
-                if(map.VertTypes[i][j] == Layer.WALLS && Calc.DoLinesIntersect(playerPos2D,sentryPos2D,pChain[j],pChain[j+1])) {
-                    TurnOffLineRenderer();
-                    return false;
-                }
+        for(int i = 0; i < map.terrainEdges.Count; i++) {
+            TerrainEdge e = map.terrainEdges[i];
+            if (CollisionSystem.LayerCheck(e.layer,Layer.WALLS) && Calc.DoLinesIntersect(playerPos2D,sentryPos2D,e.vertA_pos2D,e.vertB_pos2D)) {
+                TurnOffLineRenderer();
+                return false;
             }
         }
         //Debug.DrawLine(GameManager.main.player.position3D,transform.position,Color.red);

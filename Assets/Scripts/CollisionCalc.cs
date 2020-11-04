@@ -23,14 +23,14 @@ public static class CollisionCalc
         return (intersectCount % 2 != 0) ? (byte)1 : (byte)2;
     }
 
-    public static Vector2 ResolveCirclePChainCollision(Vector2 point,float radius,Vector2[] pchain,out CollisionInfo info) {
+    public static Vector2 ResolveCircleEdgesCollision(Vector2 point,float radius,List<TerrainEdge> edges,out CollisionInfo info) {
         info = new CollisionInfo();
         Vector2 newPos = point;
-        for (int i = 0; i < pchain.Length - 1; i++) {
-            Vector2 lineA = pchain[i];
-            Vector2 lineB = pchain[i + 1];
+        for(int i = 0; i < edges.Count; i++) {
+            Vector2 lineA = edges[i].vertA_pos2D;
+            Vector2 lineB = edges[i].vertB_pos2D;
             float dist = Calc.DistancePointToLine(newPos,lineA,lineB);
-            if (dist < radius) {
+            if(dist < radius) {
                 Vector2 closestPoint = Calc.ClosestPointToLine(newPos,lineA,lineB);
                 info.points.Add(closestPoint);
                 float dist2 = Vector2.Distance(newPos,closestPoint);
@@ -42,6 +42,26 @@ public static class CollisionCalc
         }
         return newPos;
     }
+
+    //public static Vector2 ResolveCirclePChainCollision(Vector2 point,float radius,Vector2[] pchain,out CollisionInfo info) {
+    //    info = new CollisionInfo();
+    //    Vector2 newPos = point;
+    //    for (int i = 0; i < pchain.Length - 1; i++) {
+    //        Vector2 lineA = pchain[i];
+    //        Vector2 lineB = pchain[i + 1];
+    //        float dist = Calc.DistancePointToLine(newPos,lineA,lineB);
+    //        if (dist < radius) {
+    //            Vector2 closestPoint = Calc.ClosestPointToLine(newPos,lineA,lineB);
+    //            info.points.Add(closestPoint);
+    //            float dist2 = Vector2.Distance(newPos,closestPoint);
+    //            if (dist2 < radius) {
+    //                Vector2 away = (newPos - closestPoint).normalized * (radius - dist2);
+    //                newPos += away;
+    //            }
+    //        }
+    //    }
+    //    return newPos;
+    //}
 
     public static bool DetectCirclePChainCollision(Vector2 point,float radius,Vector2[] pchain) {
         for (int i = 0; i < pchain.Length - 1; i++) {

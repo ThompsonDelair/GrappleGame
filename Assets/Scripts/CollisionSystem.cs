@@ -71,9 +71,9 @@ public static class CollisionSystem
             Actor a = actors[i];
             if (a.movement == Movement.WALKING) {
                 // player - terrain collision
-                for (int j = 0; j < map.PChains.Length; j++) {
+                for (int j = 0; j < map.terrainEdges.Count; j++) {
                     CollisionInfo info;
-                    Vector2 newPos = CollisionCalc.ResolveCirclePChainCollision(a.position2D,a.collider.Radius,map.PChains[j],out info);
+                    Vector2 newPos = CollisionCalc.ResolveCircleEdgesCollision(a.position2D,a.collider.Radius,map.terrainEdges,out info);
                     a.position2D = newPos;
                     if(info.points.Count > 0) {
                         actors[i].momentumForce = 0;
@@ -119,16 +119,14 @@ public static class CollisionSystem
             //if (destroyedBullet)
             //    continue;
 
-            for(int j = 0; j < map.PChains.Length; j++) {
-                Vector2[] pChain = map.PChains[j];
-                for(int k = 0; k < pChain.Length -1; k++) {
-                    if (LayerCheck((Layer)b.movement,map.VertTypes[j][k]) && CollisionCalc.DetectCircleLineCollision(b.collider,pChain[k],pChain[k+1])) {
-                        AudioSource.PlayClipAtPoint(AudioClips.singleton.bulletImpact, b.position3D, 6f);
-                        GameManager.main.DestroyGameobject(b.transform.gameObject);
-                        bullets.RemoveAt(i);
-                        //Debug.Log("bullet hit wall");
-                        goto end_of_loop;
-                    }
+            for(int j = 0; j < map.terrainEdges.Count; j++) {
+                TerrainEdge e = map.terrainEdges[j];
+                if (LayerCheck((Layer)b.movement,e.layer) && CollisionCalc.DetectCircleLineCollision(b.collider,e.vertA_pos2D,e.vertB_pos2D)) {
+                    AudioSource.PlayClipAtPoint(AudioClips.singleton.bulletImpact,b.position3D,6f);
+                    GameManager.main.DestroyGameobject(b.transform.gameObject);
+                    bullets.RemoveAt(i);
+                    //Debug.Log("bullet hit wall");
+                    goto end_of_loop;
                 }
             }
 
@@ -144,7 +142,7 @@ public static class CollisionSystem
         {
             if (CollisionCalc.CompareRadiusPlayerEnemy(enemies[i]))
             {
-                if (enemies[i].attacking) // So that player doesnt get hurt by walking into non-attacking enemies.
+                if (enemies[i].ability.attacking) // So that player doesnt get hurt by walking into non-attacking enemies.
                 {
                     DamageSystem.DealDamage(GameManager.main.player, 1f);
                 }
@@ -168,13 +166,11 @@ public static class CollisionSystem
 
     static void OutOfBoundsCheck(List<Actor> actors, Map map) {
         for(int i = 0; i < actors.Count; i++) {
-            for(int j = 0; j < map.PChains.Length; j++) {
-                Vector2[] pChain = map.PChains[j];
-                for(int k = 0; k < pChain.Length -1; k++) {
-                    Actor a = actors[i];
-                    if (Calc.DoesLineIntersect(a.position2D,a.posAtFrameStart,pChain[k],pChain[k+1])) {
-                        a.position2D = a.posAtFrameStart;
-                    }
+            for(int j = 0; j < map.terrainEdges.Count; j++) {
+                TerrainEdge e = map.terrainEdges[j];
+                Actor a = actors[i];
+                if (Calc.DoesLineIntersect(a.position2D,a.posAtFrameStart,e.vertA_pos2D,e.vertB_pos2D)) {
+                    a.position2D = a.posAtFrameStart;
                 }
             }
         }

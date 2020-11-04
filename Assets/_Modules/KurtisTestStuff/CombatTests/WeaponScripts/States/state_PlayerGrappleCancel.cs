@@ -10,6 +10,13 @@ public class state_PlayerGrappleCancel : State {
         frame.weapons.CancelGrapple();
     }
 
+    public override void Listen(StateDriver frame) {
+        // The fire button was pressed
+        if (frame.input.ActionTriggered(InputName.Fire)) {
+            frame.StateTransition(frame.weapons.chargingState);
+        }
+    }
+
     public override void OnStateExit(StateDriver frame) {
         
     }

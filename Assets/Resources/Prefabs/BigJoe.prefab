@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: -496512769970447736}
   - component: {fileID: 2067371835699031419}
   - component: {fileID: 2067371835699031418}
-  - component: {fileID: 2067371835699031417}
   m_Layer: 0
   m_Name: BigJoe
   m_TagString: HeavyEnemy
@@ -97,19 +96,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2067371835699031417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2067371835699031399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ee73981005ccf847a9308d09a3b8406, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 1
 --- !u!1001 &5990619214300462330
 PrefabInstance:
   m_ObjectHideFlags: 0

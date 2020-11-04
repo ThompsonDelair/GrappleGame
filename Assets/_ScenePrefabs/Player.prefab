@@ -1205,17 +1205,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  fireRate: 0.3
   chargeTime: 0
   chargeTimeThreshold: 0.2
+  chargeRateModifier: 1.9
   blasterDamage: 1
   attackKnockback: 100
   maxRailAngle: 110
-  minRailAngle: 8
-  maxRailRange: 22
+  minRailAngle: 75
+  maxRailRange: 10
   minRailRange: 5
   meleeStrikeRange: 6
-  meleeStrikeDamage: 3
+  meleeStrikeAngle: 360
+  meleeStrikeDamage: 1
   chargingState: {fileID: 11400000, guid: 5e865ad6ffcdd644cb53f3b6e3c6b0a6, type: 2}
   firingState: {fileID: 11400000, guid: f747b6892596dbe44bed276d36ae0ef8, type: 2}
   blasterRecoveryState: {fileID: 11400000, guid: adef96047adc8f94fa3a3d2172433b1f,

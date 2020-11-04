@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class ObjectiveListener : MonoBehaviour {
-
-    protected SceneControl sceneController;
+public abstract class ObjectiveTracker : MonoBehaviour {
     protected GameManager gameManager;
 
     [Header("Config Fields")]
     public bool objectiveActive = true;
 
+    [SerializeField] protected int objectiveId;
     [SerializeField] protected string currentObjective;
     [SerializeField] protected string victoryMessage;
 
     void Start() {
         gameManager = Object.FindObjectOfType<GameManager>();
-        sceneController = gameManager.GetComponent<SceneControl>();
-
         DisplayCurrentObjective();
     }
 

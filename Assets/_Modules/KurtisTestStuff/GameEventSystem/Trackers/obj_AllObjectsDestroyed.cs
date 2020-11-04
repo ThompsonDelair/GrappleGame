@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class obj_AllObjectsDestroyed : ObjectiveListener {
+public class obj_AllObjectsDestroyed : ObjectiveTracker {
 
     [Header("Target Neutralization Configs")]
     [SerializeField] protected GameObject[] targetObjects;
@@ -24,7 +24,8 @@ public class obj_AllObjectsDestroyed : ObjectiveListener {
 
             // If the number of null objects in the list is equal to it's size, all targets have been eliminated.
             if (numTargetsDestroyed == targetObjects.Length) {
-                sceneController.ShowMessageThenNextLevel(victoryMessage);
+                GameEventDirector.current.ObjectiveCompletion(objectiveId);
+                objectiveActive = false;
             }
         }
         

@@ -53,24 +53,22 @@ public class Grapple
         Map map = GameManager.main.map;
         Vector2 pos2 = dir.normalized * 999 + pos;
         grapCollisionPoints.Clear();
-        for (int i = 0; i < map.PChains.Length; i++) {
-            Vector2[] pChain = map.PChains[i];
-            for (int j = 0; j < pChain.Length - 1; j++) {
-                Vector2 point;
-                if (Calc.LineIntersect(pos,pos2,pChain[j],pChain[j + 1],out point)) {
-                    Layer l = map.VertTypes[i][j];
-                    Color c = Color.magenta;
-                    
-                    if (l == Layer.CLIFFS) {
-                        c = Color.blue;
-                    } else if (l == Layer.WALLS) {
-                        c = Color.white;
-                    } else if (CollisionSystem.LayerCheck(l,Layer.NO_GRAPPLE)) {
-                        c = Color.cyan;
-                    }
-                    Tuple<Vector2,Color> tuple = new Tuple<Vector2,Color>(point,c);
-                    grapCollisionPoints.Add(tuple);
+        for (int i = 0; i < map.terrainEdges.Count; i++) {
+            TerrainEdge e = map.terrainEdges[i];
+            Vector2 point;
+            if (Calc.LineIntersect(pos,pos2,e.vertA_pos2D,e.vertB_pos2D,out point)) {
+                Layer l = e.layer;
+                Color c = Color.magenta;
+
+                if (l == Layer.CLIFFS) {
+                    c = Color.blue;
+                } else if (l == Layer.WALLS) {
+                    c = Color.white;
+                } else if (CollisionSystem.LayerCheck(l,Layer.NO_GRAPPLE)) {
+                    c = Color.cyan;
                 }
+                Tuple<Vector2,Color> tuple = new Tuple<Vector2,Color>(point,c);
+                grapCollisionPoints.Add(tuple);
             }
         }
         if (DebugControl.main.breakOnGrappleUpdate)
@@ -120,34 +118,32 @@ public class Grapple
             //}
 
             // check for collisions with walls
-            for (int i = 0; i < map.PChains.Length; i++) {
+            for (int i = 0; i < map.terrainEdges.Count; i++) {
                 Vector2 intersect;
-                Vector2[] pChain = map.PChains[i];
-                for(int j = 0; j < pChain.Length - 1; j++) {
-                    Layer layer = map.VertTypes[i][j];
+                TerrainEdge e = map.terrainEdges[i];
+                
 
-                    if (layer == Layer.CLIFFS) {
-                        continue;
-                        
-                    }
+                if (e.layer == Layer.CLIFFS) {
+                    continue;
 
-                    if (Calc.LineIntersect(pos,grappleNextPos,pChain[j],pChain[j + 1],out intersect)) {
-
-                        if (CollisionSystem.LayerCheck(layer,Layer.NO_GRAPPLE)) {
-                            EndGrapple();
-                            return;
-                        }
-
-                        grappleLanded = true;
-                        owner.PlayAudioClip(AudioClips.singleton.grapLoop,true);
-                        pos = intersect;
-                        playerPosAtGrapStart = owner.position2D;
-                        retractTime = Vector2.Distance(pos,owner.position2D) / retractSpeedMin;
-                        timestamp = Time.time;
-                    }
                 }
 
-                
+                if (Calc.LineIntersect(pos,grappleNextPos,e.vertA_pos2D,e.vertB_pos2D,out intersect)) {
+
+                    if (CollisionSystem.LayerCheck(e.layer,Layer.NO_GRAPPLE)) {
+                        EndGrapple();
+                        return;
+                    }
+
+                    grappleLanded = true;
+                    owner.PlayAudioClip(AudioClips.singleton.grapLoop,true);
+                    pos = intersect;
+                    playerPosAtGrapStart = owner.position2D;
+                    retractTime = Vector2.Distance(pos,owner.position2D) / retractSpeedMin;
+                    timestamp = Time.time;
+                }
+
+
 
                 //if (CollisionSystem.LinePolygonCollision(pos,grappleNextPos,polygons[i],out intersect)) {
                 //    grappleLanded = true;

@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHP: 1
   radius: 0.4
+  targetLockTime: 0.5
+  mainAttack: Lunge

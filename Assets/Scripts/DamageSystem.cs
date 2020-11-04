@@ -48,6 +48,35 @@ public static class DamageSystem
         }
         
     }
+
+    // Adds amount of damage float to actor's health property
+    // If health is greater than or equal to max, otherwise deduct amt from health
+    public static void RestoreHealth(Actor a, float amt)
+    {
+        ActorStats stats = a.transform.GetComponent<ActorInfo>().stats;
+        if(a.health < stats.maxHP)
+        {
+            if (a.layer == Layer.PLAYER) // PLAYER CASE, DEDUCT BASED ON TIME INTERVALs
+            {
+                // if (DebugControl.main.playerInvulnerable)
+                //     return;
+
+
+                // if (Time.time > timeStamp)
+                // {
+                //     Debug.Log("DAMAGIING");
+                a.health = a.health + amt > stats.maxHP ? stats.maxHP : a.health += amt;
+                //     timeStamp = Time.time + playerDamageCooldown;
+                // }
+
+            }
+            else // ENEMY CASE
+            {
+                a.health = a.health + amt > stats.maxHP ? stats.maxHP : a.health += amt;
+            }
+        }
+        
+    }
     
     // Iterates over all actors in game, kills dead actors (health <= 0)
     // also updates the healthbars to reflect current health of each actor

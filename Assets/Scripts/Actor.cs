@@ -24,6 +24,12 @@ public class Actor
     public Vector2 posAtFrameStart;
     public bool collision;
 
+    // Added for ability system.
+    public bool isCasting;
+
+    public Ability ability;
+
+
     public Vector2 position2D {
         get {
             return new Vector2(transform.position.x,transform.position.z);

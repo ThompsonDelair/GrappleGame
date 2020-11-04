@@ -946,6 +946,7 @@ GameObject:
   m_Component:
   - component: {fileID: 283835284}
   - component: {fileID: 283835285}
+  - component: {fileID: 283835286}
   m_Layer: 0
   m_Name: Objective Listener
   m_TagString: Untagged
@@ -980,10 +981,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectiveActive: 1
+  objectiveId: 0
   currentObjective: Kill all enemies and avoid the burning hazards to proceed!
   victoryMessage: Enemies have been destroyed
   targetObjects:
   - {fileID: 658069608}
+--- !u!114 &283835286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283835283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84bcaf5056287946b63a323027b7718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectiveId: 0
 --- !u!1 &357604559
 GameObject:
   m_ObjectHideFlags: 0
@@ -4636,25 +4651,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawner
       objectReference: {fileID: 0}
+    - target: {fileID: 5559379945527255899, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
         type: 3}
       propertyPath: totalSpawnedLimit
-      value: 8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
         type: 3}
       propertyPath: spawnedPerWave
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
         type: 3}
       propertyPath: timeBetweenSpawns
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5559379945527255901, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
         type: 3}
       propertyPath: waitForFirstSpawn
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5559379945527255902, guid: 9aacaa7ea43b1734e970b940ed60d9cd,
         type: 3}

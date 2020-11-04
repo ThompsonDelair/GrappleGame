@@ -7,7 +7,8 @@ public class state_PlayerCharging : State
 {
 
     [Header("Tunable fields")]
-    private float heavyFiringTime = 1.2f;
+    [SerializeField] private float lightFiringTime = 0.1f;
+    [SerializeField] private float heavyFiringTime = 1.2f;
 
     public override void OnStateEnter(StateDriver frame) {
         frame.weapons.EnterChargeState();
@@ -34,8 +35,10 @@ public class state_PlayerCharging : State
             } else {
                 
                 frame.weapons.FireBlaster();
-                frame.StateTransition(frame.weapons.firingState);
-                
+
+                State lightFiringState = Instantiate(frame.weapons.firingState);
+                lightFiringState.TimeToLive = lightFiringTime;
+                frame.StateTransition(lightFiringState);
             }
 
         // Case that the charge time is about to time-out the state.

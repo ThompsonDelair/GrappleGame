@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class EnemyActor : Actor
 {
-    private bool isAttacking = false; // Read only to other classes
+/*    private bool isAttacking = false; // Read only to other classes
     private bool isLunging = false;
-    public bool attacking { get { return isAttacking;  } }
+    public bool attacking { get { return isAttacking; } }
     public bool lunging { get { return isLunging; } }
 
 
@@ -19,8 +19,9 @@ public class EnemyActor : Actor
     private float lungeSpeed = 40f;
     // Timing and cooldown for attack
     private float coolDown = 1.5f;
-    private float lastAttackStamp;
+    private float lastAttackStamp;*/
 
+    public float targetLockTime;
 
 
     private GameObject player = GameManager.main.player.transform.gameObject;
@@ -34,10 +35,16 @@ public class EnemyActor : Actor
         }
     }
 
-    public EnemyActor(Transform t, float r, Layer l, float hp) : base(t, r, l, hp) { }
+    public EnemyActor(Transform t, float r, Layer l, float hp, float targetLockTime) : base(t, r, l, hp) 
+    {
+        this.targetLockTime = targetLockTime;
+    }
+
+
+    /*-------------------THIS IS THE OLD MELEE CODE, SHOULD BE DONE WITH ABILITY SYS NOW---------------------------------*/
 
     // Checks to see if player is within range, if so, calls meleeAttack
-    public void scanForPlayer()
+/*    public void scanForPlayer()
     {
         meleeAttackUpdate(player.transform);
     }
@@ -72,11 +79,11 @@ public class EnemyActor : Actor
         }
 
 
-        if ((momentumForce < 1f && isAttacking) &&  isLunging) // Attack is coming to end
+        if ((momentumForce < 1f && isAttacking) && isLunging) // Attack is coming to end
         {
             isAttacking = false;
             this.transform.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
             isLunging = false;
         }
-    }
+    }*/
 }

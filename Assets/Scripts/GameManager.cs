@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.CSharp;
+using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,9 @@ public delegate float EaseDelegate(float t);
 [RequireComponent(typeof(DebugControl))]
 public class GameManager : MonoBehaviour
 {
+    private CSharpCodeProvider codeProvider;
+    private CompilerParameters cp;
+
     public bool drawTerrain;
     public bool drawNavMesh;
 
@@ -32,6 +37,7 @@ public class GameManager : MonoBehaviour
     List<EnemyActor> enemies;
 
     public List<EnemyActor> EnemyList { get { return enemies; } }
+    public List<Actor> ObjectList { get { return map.objects; } }
 
     List<Actor> allActors = new List<Actor>();
 
@@ -94,8 +100,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("movement walking is: "+Movement.WALKING);
-        Debug.Log("movement none is: "+Movement.NONE);
+
     }
 
     // Update is called once per frame
@@ -113,9 +118,10 @@ public class GameManager : MonoBehaviour
 
         MovementSystem.MovementUpdate(enemies,allActors,bullets,map);
         CollisionSystem.CollisionUpdate(allActors,enemies,bullets,map);
-
         DamageSystem.HealthUpdate(allActors);
         DamageSystem.HealthUpdate(map.objects);
+        AbilitySystem.AbilityUpdate(enemies, player.position2D);
+
 
         // Update for enemy melee stuff is here for now....
         //enemyScanUpdate();
@@ -155,21 +161,17 @@ public class GameManager : MonoBehaviour
     }
 
     void DrawTerrain() {
-        for(int i = 0; i < map.PChains.Length; i++) {
-            Layer[] types = map.VertTypes[i];
-            Vector2[] pChain = map.PChains[i];
-            for(int j = 0; j < pChain.Length - 1; j++) {
-                Vector3 posA = Utils.Vector2XZToVector3(pChain[j]);
-                Vector3 posB = Utils.Vector2XZToVector3(pChain[j+1]);
-                Color c;
+        for(int i = 0; i < map.terrainEdges.Count; i++) {
+            //Layer[] types = map.VertTypes[i];
+            TerrainEdge e = map.terrainEdges[i];
+            Color c;
 
-                if(types[j] == Layer.CLIFFS) {
-                    c = CustomColors.darkRed;
-                } else {
-                    c = Color.black;
-                }
-                Debug.DrawLine(posA,posB,c);
+            if (e.layer == Layer.CLIFFS) {
+                c = CustomColors.darkRed;
+            } else {
+                c = Color.black;
             }
+            Debug.DrawLine(e.vertA_pos3D,e.vertB_pos3D,c);
         }
     }
 
@@ -210,11 +212,43 @@ public class GameManager : MonoBehaviour
             //}
 
             stats = child.GetComponent<ActorInfo>().stats;
-            EnemyActor a = new EnemyActor(child,stats.radius,Layer.ENEMIES, stats.maxHP);
+
+
+            // PROCESS Ability Strings from here to get ability dictionary for actor.
+            // having trouble converting from string to executable code... see AbilityStringToClass(string)
+
+
+
+            EnemyActor a = new EnemyActor(child,stats.radius,Layer.ENEMIES, stats.maxHP, stats.targetLockTime);
+            AbilityStringToClass(stats.mainAttack, a);
             enemyList.Add(a);
             allActors.Add(a);
+
         }
         enemies = enemyList;
+    }
+
+    // 
+    public Ability AbilityStringToClass(string abilityName, EnemyActor a)
+    {
+        /*Type type = Type.GetType(abilityName);
+        Ability ability = (Ability)Activator.CreateInstance(type); // Setting the ability of actor.*/
+
+        if(abilityName == "Lunge")
+        {
+            Ability ab = new Lunge();
+            a.ability = ab;
+            return ab;
+        }/*else if (abilityName == "Shoot")
+        {
+            Ability ability = new Shoot();
+            a.ability = ability;
+            return ability;
+        }*/
+
+        Ability ability = new Lunge();
+        a.ability = ability;
+        return new Lunge();
     }
 
 
@@ -350,7 +384,7 @@ public class GameManager : MonoBehaviour
         if(groundPlane.Raycast(cameraRay, out rayLength)) {
             worldPos = cameraRay.GetPoint(rayLength);
             return true;
-        }
+        } 
 
         worldPos = Vector3.negativeInfinity;
         return false;
@@ -378,7 +412,9 @@ public class GameManager : MonoBehaviour
         //    Debug.LogError("Could not find enemy type via GameObject tag");
         //}
 
-        EnemyActor a = new EnemyActor(go.transform,stats.radius,Layer.ENEMIES,stats.maxHP);
+        EnemyActor a = new EnemyActor(go.transform,stats.radius,Layer.ENEMIES,stats.maxHP,stats.targetLockTime);
+        Ability ability = AbilityStringToClass(stats.mainAttack, a);
+        a.ability = ability;
         allActors.Add(a);
         enemies.Add(a);
         return a;

@@ -20,7 +20,7 @@ public static class MovementSystem
         RememberStartingPostion(allActors);
         ActorMovementUpdate(allActors);
         BulletMovementUpdate(bullets);
-        EnemyScanForPlayer(enemies);
+        //EnemyScanForPlayer(enemies);
     }
 
     //public static void EnemyFollowPath(List<Actor> actors) {
@@ -114,11 +114,11 @@ public static class MovementSystem
 
     // Calls each enemy actors scan function to see if iin range with player
     // This should go else where after alpha
-    static void EnemyScanForPlayer(List<EnemyActor> enemies){
+/*    static void EnemyScanForPlayer(List<EnemyActor> enemies){
         for(int i = 0; i < enemies.Count; i++)
         {
             enemies[i].scanForPlayer();
         }
-    }
+    }*/
         
 }

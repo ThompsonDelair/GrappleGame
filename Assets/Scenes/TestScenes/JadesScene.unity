@@ -3455,6 +3455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1657764395}
   - component: {fileID: 1657764394}
+  - component: {fileID: 1657764396}
   m_Layer: 0
   m_Name: ObjectiveListener
   m_TagString: Untagged
@@ -3475,6 +3476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectiveActive: 1
+  objectiveId: 0
   currentObjective: 'DIRECTIVE: Destroy(allTargets)'
   victoryMessage: enemies destroyed! next level ...
   targetObjects:
@@ -3498,6 +3500,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1657764396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657764393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84bcaf5056287946b63a323027b7718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectiveId: 0
 --- !u!1001 &1715726349
 PrefabInstance:
   m_ObjectHideFlags: 0

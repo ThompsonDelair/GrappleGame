@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: -2073419017024766895}
   - component: {fileID: 3005360444942448393}
   - component: {fileID: 3005360444942448394}
-  - component: {fileID: 3005360444942448395}
   m_Layer: 0
   m_Name: SmallEnemy
   m_TagString: LightEnemy
@@ -97,19 +96,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3005360444942448395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3005360444942448389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ee73981005ccf847a9308d09a3b8406, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 0.25
 --- !u!1001 &195956604786777663
 PrefabInstance:
   m_ObjectHideFlags: 0
