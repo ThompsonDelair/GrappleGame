@@ -39,12 +39,13 @@ public class Actor
         }
     }
 
-    public Actor(Transform t,float r,Layer l,float hp) {
+    public Actor(Transform t,float r,Layer l,float hp, Ability ab) {
         collider = new NewCircleCollider(r,t);
         transform = t;
         layer = l;
         health = hp;
         maxHealth = hp; // Initial HP is max that player can have.
+        ability = ab;
     }
 
     public void StartNewPush(Vector2 direction,float force) {

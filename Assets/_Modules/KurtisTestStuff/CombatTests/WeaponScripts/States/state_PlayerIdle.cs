@@ -16,5 +16,10 @@ public class state_PlayerIdle : State {
         if (frame.input.ActionTriggered(InputName.Grapple, true) && frame.weapons.gameManager.player.movement == Movement.WALKING) {
             frame.StateTransition(frame.weapons.grapplingState);
         }
+
+        // The dodge button was pressed
+        if (frame.input.ActionTriggered(InputName.Dodge, true)  && frame.weapons.CanDodge && frame.weapons.gameManager.player.movement == Movement.WALKING) {
+            frame.StateTransition(frame.weapons.dodgeState);
+        }
     }
 }

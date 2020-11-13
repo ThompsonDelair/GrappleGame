@@ -36,16 +36,30 @@ public class PlayerWeapons : MonoBehaviour
     [SerializeField] private float meleeStrikeRange = 6f;
     [SerializeField] private float meleeStrikeAngle = 360f;
     [SerializeField] private float meleeStrikeDamage = 3f;
+
+    [Header("Dodge Modifiers")]
+    [SerializeField] private int currentDodgeCounter = 0;
+    [SerializeField] private int maxDodges = 2;
+    public bool CanDodge { get { return currentDodgeCounter < maxDodges; } }
     
+    [Header ("Effect Transforms")]
+    [SerializeField] private Transform firingLocation;
 
     [Header("Blaster States")]
     public State chargingState;
     public State firingState;
     public State blasterRecoveryState;
 
+    [Header("Blaster Effects")]
+    [SerializeField] private GameObject firingEffect;
+
     [Header("Grappler States")]
     public State grapplingState;
     public State grappleCancelState;
+
+    [Header("Dodge States")]
+    public State dodgeState;
+    public State dodgeRecoveryState;
 
     private Vector3 FacingDirection { get { 
             Vector2 dir = Calc.Vector2FromTheta(transform.rotation.eulerAngles.y + 90, ANGLE_TYPE.DEGREES);
@@ -92,7 +106,6 @@ public class PlayerWeapons : MonoBehaviour
                 }
             }
         }
-
     }
 
     // When charge state is released, and charge time is below threshold, Light Blaster is fired.
@@ -101,6 +114,7 @@ public class PlayerWeapons : MonoBehaviour
         playerAnimator.SetTrigger("LightBlaster");
 
         gameManager.ShootBullet( transform.localRotation );
+        ParticleEmitter.current.SpawnParticleEffect(this.transform, firingEffect, firingLocation.position);
         
         ResetCharge();
     }
@@ -210,6 +224,24 @@ public class PlayerWeapons : MonoBehaviour
 
             }
         }
+    }
+
+    // Dodge Functions
+
+    public void Dodge(Vector2 inputDir, float dodgeForce) {
+        Debug.Log("Dodge");
+        playerAnimator.SetTrigger("Dodge");
+
+        // 1. Increment dodge counter
+        currentDodgeCounter++;
+        
+        // 2. Apply force to the player
+        gameManager.player.StartNewPush(inputDir, dodgeForce);
+        // gameManager.player.AddPushForce(inputDir, dodgeForce);
+    }
+
+    public void ResetDodge() {
+        currentDodgeCounter = 0;
     }
 
     private void ResetCharge() {

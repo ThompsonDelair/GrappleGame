@@ -35,7 +35,7 @@ public class EnemyActor : Actor
         }
     }
 
-    public EnemyActor(Transform t, float r, Layer l, float hp, float targetLockTime) : base(t, r, l, hp) 
+    public EnemyActor(Transform t, float r, Layer l, float hp, float targetLockTime, Ability ab) : base(t, r, l, hp, ab) 
     {
         this.targetLockTime = targetLockTime;
     }

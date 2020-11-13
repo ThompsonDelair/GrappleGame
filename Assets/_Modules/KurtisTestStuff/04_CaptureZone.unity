@@ -3119,6 +3119,11 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1238451652}
+    - target: {fileID: 3178843251030035243, guid: 89e6db2b132d7874eb203b39129f592d,
+        type: 3}
+      propertyPath: bufferTime
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 3178843252045924422, guid: 89e6db2b132d7874eb203b39129f592d,
         type: 3}
       propertyPath: m_LocalPosition.x

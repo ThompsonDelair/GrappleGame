@@ -8,6 +8,10 @@ public static class Ease
         return t * t * t;
     }
 
+    public static float OutExpo(float t) {
+        return (t == 1) ? 1 : 1 - Mathf.Pow(2,-10 * t);
+    }
+
     public static float OutCubic(float t) {
         return 1 - Mathf.Pow(1 - t,3);
     }

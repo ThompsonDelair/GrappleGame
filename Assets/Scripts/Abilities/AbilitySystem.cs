@@ -5,23 +5,50 @@ using UnityEngine;
 public static class AbilitySystem
 {
     // For now we pass playerPos under assumption this is enemy specific.
-    public static void AbilityUpdate(List<EnemyActor> allActors, Vector2 playerPos)
+    public static void AbilityUpdate(List<EnemyActor> enemyDudes, Vector2 playerPos, List<EnemyActor> enemyObjects)
     {
-        for(int i=0; i < allActors.Count-1; i++)
+
+        // For enemy actors
+        for(int i=0; i < enemyDudes.Count; i++)
         {
-            if (!allActors[i].isCasting) // If player is not casting
+            if (!enemyDudes[i].isCasting) // If player is not casting
             {
-                if (allActors[i].ability.StartAbilityCheck(playerPos, allActors[i])) // if ability's pre-cast requirements are met
+                if (enemyDudes[i].ability.StartAbilityCheck(playerPos, enemyDudes[i])) // if ability's pre-cast requirements are met
                 {
-                    allActors[i].isCasting = true;
+                    enemyDudes[i].isCasting = true;
                 }
             }
             else // Player is currently casting.
             {
                 // Runs update until RunAbilitUpdate() returns false, then the AbilitySystemUpdate 
                 // will loop to check if ability can start again until another cast starts.
-                allActors[i].isCasting = allActors[i].ability.RunAbilityUpdate(playerPos, allActors[i]);
+                enemyDudes[i].isCasting = enemyDudes[i].ability.RunAbilityUpdate(playerPos, enemyDudes[i]);
             }  
+        }
+
+        // For objects
+        for (int i = 0; i < enemyObjects.Count; i++)
+        {
+            /*Debug.Log("ENTERING LOOP");
+            if(!(enemyObjects[i].health <= 0))
+            {
+                enemyObjects[i].ability.RunAbilityUpdate(playerPos, enemyObjects[i]); // Not utilizing isCasting right now as no need, should be easy to add later if need be
+            }*/
+
+            if (!enemyObjects[i].isCasting) // If player is not casting
+            {
+                if (enemyObjects[i].ability.StartAbilityCheck(playerPos, enemyObjects[i])) // if ability's pre-cast requirements are met
+                {
+                    enemyObjects[i].isCasting = true;
+                }
+            }
+            else // Player is currently casting.
+            {
+                // Runs update until RunAbilitUpdate() returns false, then the AbilitySystemUpdate 
+                // will loop to check if ability can start again until another cast starts.
+                enemyObjects[i].isCasting = enemyObjects[i].ability.RunAbilityUpdate(playerPos, enemyObjects[i]);
+            }
+
         }
     }   
 }

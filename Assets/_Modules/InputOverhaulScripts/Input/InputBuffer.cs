@@ -8,7 +8,7 @@ public static class InputName {
     // Weapon Actions
 	public static string Fire { get { return "Fire"; } }
     public static string Grapple { get { return "Grapple"; } }
-
+    public static string Dodge { get { return "Dodge"; } }
     public static string Quit { get { return "Quit"; } }
 
     //public const string Quit = "Quit";
@@ -22,8 +22,7 @@ public static class InputName {
 // REQUIREMENTS:
 [RequireComponent(typeof(PlayerInput))]
 
-public class InputBuffer : MonoBehaviour
-{
+public class InputBuffer : MonoBehaviour {
     private PlayerInputActions inputActions;
     private PlayerInput inputComponent;
 
@@ -100,6 +99,7 @@ public class InputBuffer : MonoBehaviour
         // Subscribed actions
         inputActions.PlayerControls.Fire.performed += context => BufferInput(context);
         inputActions.PlayerControls.Grapple.performed += context => BufferInput(context);
+        inputActions.PlayerControls.Dodge.performed += context => BufferInput(context);
         inputActions.PlayerControls.Quit.performed += context => BufferInput(context);
 
     }
@@ -138,7 +138,8 @@ public class InputBuffer : MonoBehaviour
     void FixedUpdate() {
         // Check to see if any actions are held this frame
         UpdateHeldAction(InputName.Fire, (inputActions.PlayerControls.Fire.ReadValue<float>() != 0));
-        UpdateHeldAction(InputName.Grapple, (inputActions.PlayerControls.Fire.ReadValue<float>() != 0));
+        UpdateHeldAction(InputName.Grapple, (inputActions.PlayerControls.Grapple.ReadValue<float>() != 0));
+        UpdateHeldAction(InputName.Dodge, (inputActions.PlayerControls.Dodge.ReadValue<float>() != 0));
 
     }
 

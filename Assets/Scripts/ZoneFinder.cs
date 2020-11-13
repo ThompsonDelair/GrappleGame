@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ZoneType { FLOOR, PIT, WALL}
-
-
+public enum ZoneType { FLOOR, PIT, ROOF}
 public class ZoneFinder : MonoBehaviour
 {
     List<NavTri> zoneTris;
@@ -36,7 +34,7 @@ public class ZoneFinder : MonoBehaviour
         Mesh mesh = NavUtils.MeshFromTris(zoneTris,-offSet,Vector2Mode.XZ);
         GetComponent<MeshFilter>().mesh = mesh;
 
-        if (zoneType == ZoneType.WALL) {
+        if (zoneType == ZoneType.ROOF) {
             transform.Translate(Vector3.up * 2);
         } else if (zoneType == ZoneType.PIT) {
             transform.Translate(Vector3.up * -2);

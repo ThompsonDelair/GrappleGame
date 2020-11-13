@@ -51,6 +51,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Dodge"",
+                    ""type"": ""Button"",
+                    ""id"": ""e22e91ca-369a-46b4-80af-6842d0adb23c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""MousePosition"",
                     ""type"": ""PassThrough"",
                     ""id"": ""01371503-9562-4560-9dcd-db3702d8e9e4"",
@@ -208,6 +216,28 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7172ffa6-07b8-4796-a096-24c610739751"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""38e5bee9-fdf5-4b5c-aa9e-69d09c9e1b2f"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -789,6 +819,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_Rotation = m_PlayerControls.FindAction("Rotation", throwIfNotFound: true);
         m_PlayerControls_Fire = m_PlayerControls.FindAction("Fire", throwIfNotFound: true);
         m_PlayerControls_Grapple = m_PlayerControls.FindAction("Grapple", throwIfNotFound: true);
+        m_PlayerControls_Dodge = m_PlayerControls.FindAction("Dodge", throwIfNotFound: true);
         m_PlayerControls_MousePosition = m_PlayerControls.FindAction("MousePosition", throwIfNotFound: true);
         m_PlayerControls_Quit = m_PlayerControls.FindAction("Quit", throwIfNotFound: true);
         // UI
@@ -856,6 +887,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_Rotation;
     private readonly InputAction m_PlayerControls_Fire;
     private readonly InputAction m_PlayerControls_Grapple;
+    private readonly InputAction m_PlayerControls_Dodge;
     private readonly InputAction m_PlayerControls_MousePosition;
     private readonly InputAction m_PlayerControls_Quit;
     public struct PlayerControlsActions
@@ -866,6 +898,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Rotation => m_Wrapper.m_PlayerControls_Rotation;
         public InputAction @Fire => m_Wrapper.m_PlayerControls_Fire;
         public InputAction @Grapple => m_Wrapper.m_PlayerControls_Grapple;
+        public InputAction @Dodge => m_Wrapper.m_PlayerControls_Dodge;
         public InputAction @MousePosition => m_Wrapper.m_PlayerControls_MousePosition;
         public InputAction @Quit => m_Wrapper.m_PlayerControls_Quit;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
@@ -889,6 +922,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Grapple.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnGrapple;
                 @Grapple.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnGrapple;
                 @Grapple.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnGrapple;
+                @Dodge.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDodge;
                 @MousePosition.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMousePosition;
                 @MousePosition.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMousePosition;
                 @MousePosition.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMousePosition;
@@ -911,6 +947,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Grapple.started += instance.OnGrapple;
                 @Grapple.performed += instance.OnGrapple;
                 @Grapple.canceled += instance.OnGrapple;
+                @Dodge.started += instance.OnDodge;
+                @Dodge.performed += instance.OnDodge;
+                @Dodge.canceled += instance.OnDodge;
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
@@ -1077,6 +1116,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnRotation(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnGrapple(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnQuit(InputAction.CallbackContext context);
     }

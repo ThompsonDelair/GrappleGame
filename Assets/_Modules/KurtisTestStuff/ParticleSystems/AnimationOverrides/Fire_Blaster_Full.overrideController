@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Fire_Blaster_Full
+  m_Controller: {fileID: 9100000, guid: a3a727702a58f044b8ec0aaa8c6d2afd, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: -3100369314251171874, guid: 01f5558bcc964c6489de1ab4fb4816cc, type: 3}
+    m_OverrideClip: {fileID: 2658771507585499133, guid: 01f5558bcc964c6489de1ab4fb4816cc, type: 3}

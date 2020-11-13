@@ -16,20 +16,20 @@ public enum Layer {
     ALL_ACTORS = PLAYER | ENEMIES,
     BULLETS = 0b1 << 2,
     HAZARDS = 0b1 << 3,
-    WALLS = 0b1 << 4,
-    CLIFFS = 0b1 << 5,
-    NO_GRAPPLE = 0b1 << 6,
-    NO_GRAPPLE_WALL = WALLS | NO_GRAPPLE,
-    ALL_TERRAIN = WALLS | CLIFFS,
-
+    BLOCK_WALK = 0b1 << 4,
+    BLOCK_FLY = 0b1 << 5
 }
 
 
 public static class CollisionSystem 
 {
 
-    public static bool LayerCheck(Layer a,Layer b) {
-        return (b & a) != 0;
+    public static bool LayerOrCheck(Layer a,Layer b) {
+        return (a & b) != 0;
+    }
+
+    public static bool LayerExact(Layer a, Layer b) {
+        return (a ^ b) == 0;
     }
 
 
@@ -60,11 +60,7 @@ public static class CollisionSystem
             }
         }
     }
-
-
-
-    
-
+         
     static void ActorTerrainCollision(List<Actor> actors,Map map) {
 
         for (int i = 0; i < actors.Count; i++) {
@@ -72,6 +68,12 @@ public static class CollisionSystem
             if (a.movement == Movement.WALKING) {
                 // player - terrain collision
                 for (int j = 0; j < map.terrainEdges.Count; j++) {
+                    TerrainEdge e = map.terrainEdges[i];
+                    if (!LayerOrCheck((Layer)a.movement,e.layer)) {
+                        continue;
+                    }
+
+
                     CollisionInfo info;
                     Vector2 newPos = CollisionCalc.ResolveCircleEdgesCollision(a.position2D,a.collider.Radius,map.terrainEdges,out info);
                     a.position2D = newPos;
@@ -89,7 +91,6 @@ public static class CollisionSystem
         }
     }
 
-
     // checks for collision between enemy actors and bullets in game
     static void CheckBulletCollisions(List<Actor> actors, List<Bullet> bullets, Map map) {
 
@@ -100,13 +101,15 @@ public static class CollisionSystem
                 Actor a = actors[j];
 
                 // If they are overlapping
-                if (LayerCheck(a.layer,b.layer) && a.collider.DetectCircleCollision(b.collider)) {
+                if (LayerOrCheck(a.layer,b.layer) && a.collider.DetectCircleCollision(b.collider)) {
                     AudioSource.PlayClipAtPoint(AudioClips.singleton.bulletImpact, a.position3D,6f);
-
                     //Debug.Log("HIT DETECTED");
 
                     // Need to destroy in a better way so that references are deleted as well.
+                    
                     GameManager.main.DestroyGameobject(b.transform.gameObject);
+                    ParticleEmitter.current.SpawnParticleEffect(GameManager.main.playerBulletHit, b.transform.position);
+
                     bullets.RemoveAt(i);
 
                     // Now instead of destroying actors here we call dealDamage() in DamageSystem instead and all actors health is managed from there.
@@ -121,7 +124,7 @@ public static class CollisionSystem
 
             for(int j = 0; j < map.terrainEdges.Count; j++) {
                 TerrainEdge e = map.terrainEdges[j];
-                if (LayerCheck((Layer)b.movement,e.layer) && CollisionCalc.DetectCircleLineCollision(b.collider,e.vertA_pos2D,e.vertB_pos2D)) {
+                if (LayerOrCheck((Layer)b.movement,e.layer) && CollisionCalc.DetectCircleLineCollision(b.collider,e.vertA_pos2D,e.vertB_pos2D)) {
                     AudioSource.PlayClipAtPoint(AudioClips.singleton.bulletImpact,b.position3D,6f);
                     GameManager.main.DestroyGameobject(b.transform.gameObject);
                     bullets.RemoveAt(i);
@@ -140,9 +143,11 @@ public static class CollisionSystem
     {
         for (int i = 0; i < enemies.Count; i++)
         {
+            //Debug.Log("is attacking?: " + enemies[i].ability.attacking);
             if (CollisionCalc.CompareRadiusPlayerEnemy(enemies[i]))
             {
-                if (enemies[i].ability.attacking) // So that player doesnt get hurt by walking into non-attacking enemies.
+                
+                if (enemies[i].ability.attacking()) // So that player doesnt get hurt by walking into non-attacking enemies.
                 {
                     DamageSystem.DealDamage(GameManager.main.player, 1f);
                 }
@@ -175,5 +180,7 @@ public static class CollisionSystem
             }
         }
     }
+
+
 }
 

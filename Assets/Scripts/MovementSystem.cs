@@ -4,8 +4,8 @@ using UnityEngine;
 
 public enum Movement { 
     NONE, 
-    WALKING = Layer.ALL_TERRAIN, 
-    IGNORE_CLIFFS = Layer.WALLS,
+    WALKING = Layer.BLOCK_WALK, 
+    IGNORE_CLIFFS = Layer.BLOCK_FLY,
     PAUSED
 }
 

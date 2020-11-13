@@ -9,6 +9,12 @@ public class Map
 
     public List<TerrainEdge> terrainEdges;
 
+    List<Door> doors;
+
+    HashSet<NavTri> pitTris;
+    HashSet<NavTri> floorTris;
+    HashSet<NavTri> roofTris;
+
     //public Layer[][] VertTypes { get { return vertTypes; } }
     public KDNode TriKDMap { get { return triKDMap; } }
     public Dictionary<Vector2,HalfEdge> VertEdgeMap { get { return vertEdgeMap; } }
@@ -21,6 +27,9 @@ public class Map
 
     public List<Area> areas = new List<Area>();
     public List<Actor> objects = new List<Actor>();
+
+    // Added for object ability updates, needed enemy actors
+    public List<EnemyActor> enemyObjects = new List<EnemyActor>();
 
     public void InitNavMesh(Transform terrainRoot) {
         HashSet<Vector2> navVerts;
@@ -50,6 +59,7 @@ public class Map
         implicitEdges = new HashSet<EdgePair>();
         navVerts = new HashSet<Vector2>();
         terrainEdges = new List<TerrainEdge>();
+        doors = new List<Door>();
 
         List<EdgeConnection> edgeList = eg.edgeList;
         for(int i = 0; i < edgeList.Count; i++) {
@@ -63,22 +73,31 @@ public class Map
                 continue;
             }
 
+            Vector2 posA = Utils.Vector3ToVector2XZ(vertMap[ec.vertA_ID].position);
+            Vector2 posB = Utils.Vector3ToVector2XZ(vertMap[ec.vertB_ID].position);
+
+
+
             Layer layer = Layer.NONE;
-            if(ec.edgeType == EdgeType.Wall) {
-                layer = Layer.WALLS;
+            if(ec.edgeType == EdgeType.Wall || ec.edgeType == EdgeType.NonGrappleWall || ec.edgeType == EdgeType.DoorClosed) {
+                layer = Layer.BLOCK_WALK | Layer.BLOCK_FLY;
             } else if(ec.edgeType == EdgeType.Cliff) {
-                layer = Layer.CLIFFS;
-            } else if(ec.edgeType == EdgeType.NonGrappleWall) {
-                layer = Layer.NO_GRAPPLE_WALL;
+                layer = Layer.BLOCK_WALK;
+            } else if(ec.edgeType == EdgeType.DoorOpen){
+                layer = Layer.NONE;
             } else {
                 Debug.LogError("no proper edge type for edge?");
             }
 
-            Vector2 posA = Utils.Vector3ToVector2XZ(vertMap[ec.vertA_ID].position);
-            Vector2 posB = Utils.Vector3ToVector2XZ(vertMap[ec.vertB_ID].position);
-
             TerrainEdge edge = new TerrainEdge(posA,posB,layer);
             terrainEdges.Add(edge);
+
+            if(ec.edgeType == EdgeType.DoorOpen || ec.edgeType == EdgeType.DoorClosed) {
+                Door d = new Door();
+                d.terrainEdge = edge;
+            }
+
+
 
             // add as implicit edge
             EdgePair implicitEdge = new EdgePair(posA,posB);
@@ -157,11 +176,12 @@ public class Map
 
     Layer LayerFromVertType(VertType v) {
         if (v == VertType.WALL)
-            return Layer.WALLS;
+            return Layer.BLOCK_WALK | Layer.BLOCK_FLY;
         if (v == VertType.CLIFF)
-            return Layer.CLIFFS;
+            return Layer.BLOCK_WALK;
         if (v == VertType.WALL_NO_GRAPPLE)
-            return Layer.NO_GRAPPLE_WALL;
+            return Layer.BLOCK_WALK | Layer.BLOCK_FLY;
+        ;
         return Layer.NONE;
     }
 
@@ -180,13 +200,97 @@ public class Map
         for (int i = 0; i < children.Length; i++) {
             //ActorNameComponent name = children[i].GetComponent<ActorNameComponent>();
             ActorStats stats = children[i].GetComponent<ActorInfo>().stats;
-            Actor a = new Actor(children[i],stats.radius,Layer.ENEMIES,stats.maxHP);
-            objects.Add(a);
+
+            if(stats.mainAttack == "TargetedShot") // Hacky way to segregate other objects from enemy sentry for now
+            {
+                EnemyActor enemyActor = new EnemyActor(children[i], stats.radius, Layer.ENEMIES, stats.maxHP, 0f , GameManager.main.AbilityStringToClass(stats.mainAttack));
+                Debug.Log("THIS GUY: " + i + enemyActor.transform.gameObject.name);
+                enemyObjects.Add(enemyActor);
+                objects.Add(enemyActor);
+            }
+            else
+            {
+                Actor a = new Actor(children[i], stats.radius, Layer.ENEMIES, stats.maxHP, GameManager.main.AbilityStringToClass(stats.mainAttack));
+                objects.Add(a);
+            }
+            
         }
+    }
+
+    public void FindZones() {
+
+        pitTris = new HashSet<NavTri>();
+        floorTris = new HashSet<NavTri>();
+        roofTris = new HashSet<NavTri>();
+
+        HashSet<NavTri> takenTris = new HashSet<NavTri>();
+
+        Transform[] zoners = Utils.GetChildren(GameObject.Find("Zoners").transform);
+        for(int i = 0; i < zoners.Length; i++) {
+            ZoneFinder z = zoners[i].GetComponent<ZoneFinder>();
+            if(z == null) {
+                continue;
+            }
+
+            Vector2 startPoint = Utils.Vector3ToVector2XZ(z.transform.position);
+            NavTri startTri = NavCalc.TriFromPoint(startPoint,TriKDMap,vertEdgeMap);
+            List<NavTri> tris = NavUtils.FindConnectedTris(startTri);
+
+            HashSet<NavTri> triSet = new HashSet<NavTri>(tris);
+
+            if (takenTris.Overlaps(triSet)) {
+                Debug.LogError("two zones are overlapping?");
+            }
+            triSet.UnionWith(triSet);
+
+            if(z.zoneType == ZoneType.FLOOR) {
+                floorTris.UnionWith(tris);
+            } else if(z.zoneType == ZoneType.PIT) {
+                pitTris.UnionWith(tris);
+            } else if(z.zoneType == ZoneType.ROOF) {
+                roofTris.UnionWith(tris);
+            }
+        }
+    }
+
+    public void FindDoorHalfEdges() {
+        for(int i = 0; i < doors.Count; i++) {
+            Door d = doors[i];
+            HalfEdge h = vertEdgeMap[d.terrainEdge.vertA_pos2D];
+            bool foundH2 = false;
+            foreach(HalfEdge h2 in MapProcessing.edgesAroundVert(h)) {
+                if(h2.start == d.terrainEdge.vertB_pos2D) {
+                    // this is the halfedge
+                    d.halfEdge = h2;
+                    break;
+                }
+            }
+            if (!foundH2) {
+                Debug.LogError("couldn't find H2 for door?");
+            }
+        }
+    }
+
+    //public bool IsPointInPit(Vector2 v) {
+    //    foreach(NavTri t in pitTris) {
+    //        if (NavCalc.PointInOrOnTri(v,t)) {
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
+
+    public bool IsPointWalkable(Vector2 v) {
+        foreach (NavTri t in floorTris) {
+            if (NavCalc.PointInOrOnTri(v,t)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
-public struct TerrainEdge
+public class TerrainEdge
 {
     Vector2 vertA_pos;
     Vector2 vertB_pos;

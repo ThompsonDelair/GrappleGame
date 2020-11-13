@@ -209,6 +209,36 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &3149496351626624763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5404184136350999869}
+  m_Layer: 0
+  m_Name: util_GunPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5404184136350999869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3149496351626624763}
+  m_LocalRotation: {x: -0.47598442, y: 0.5049591, z: 0.5209817, w: 0.49702436}
+  m_LocalPosition: {x: 0.00006, y: 0.00324, z: -0.00004}
+  m_LocalScale: {x: 0.009999998, y: 0.01, z: 0.0100000035}
+  m_Children: []
+  m_Father: {fileID: 3178843251626791533}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3178843250153446457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,12 +1247,19 @@ MonoBehaviour:
   meleeStrikeRange: 6
   meleeStrikeAngle: 360
   meleeStrikeDamage: 1
+  currentDodgeCounter: 0
+  maxDodges: 2
+  firingLocation: {fileID: 5404184136350999869}
   chargingState: {fileID: 11400000, guid: 5e865ad6ffcdd644cb53f3b6e3c6b0a6, type: 2}
   firingState: {fileID: 11400000, guid: f747b6892596dbe44bed276d36ae0ef8, type: 2}
   blasterRecoveryState: {fileID: 11400000, guid: adef96047adc8f94fa3a3d2172433b1f,
     type: 2}
+  firingEffect: {fileID: 1391969009755379683, guid: 363257f570efe7344b2a96b0efc88d20,
+    type: 3}
   grapplingState: {fileID: 11400000, guid: efa75f9ecfbc37b478cbca8865b6abf7, type: 2}
   grappleCancelState: {fileID: 11400000, guid: 7e9f03267e470ae489e652371270f481, type: 2}
+  dodgeState: {fileID: 11400000, guid: cc4f13889d69b854aaa34bd47bbcf876, type: 2}
+  dodgeRecoveryState: {fileID: 11400000, guid: 7764dd712a99c7946adcd1fc96e5a2df, type: 2}
 --- !u!114 &3178843251030035238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1235,6 +1272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd746bbc64193184799a9cb3f1494ad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewExpandsClockwise: 0
   viewRadius: 22
   viewAngle: 110
   targetMask:
@@ -1892,6 +1930,7 @@ Transform:
   m_Children:
   - {fileID: 3178843251851698706}
   - {fileID: 3178843250516660971}
+  - {fileID: 5404184136350999869}
   m_Father: {fileID: 3178843251311131563}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

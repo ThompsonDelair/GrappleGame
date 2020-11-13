@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // For now abilities is only for EnemyActors, we may look into doing player actions with ability system as well after.
-public abstract class Ability : MonoBehaviour
+public abstract class Ability
 {
-    public EnemyActor actor;
-    public bool attacking;
+    public abstract bool attacking();
 
     public Ability(){}
 

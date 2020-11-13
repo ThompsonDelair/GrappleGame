@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1876556927220249651}
   - component: {fileID: 158080396107748195}
   - component: {fileID: 1876556927220249650}
+  - component: {fileID: 5441458160241909622}
   - component: {fileID: 5518377812017363756}
   - component: {fileID: 1876556927220249663}
   - component: {fileID: 1876556927220249661}
@@ -101,6 +102,18 @@ MonoBehaviour:
   movementVector: {x: 0, y: 0}
   rotationVector: {x: 0, y: 0}
   mousePosition: {x: 0, y: 0}
+--- !u!114 &5441458160241909622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876556927220249657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01664777a3f4b1f44a376f8a09cdb3a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5518377812017363756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,6 +146,8 @@ MonoBehaviour:
   playerAnimator: {fileID: 0}
   playerRadius: 0.5
   playerBulletDamage: 1
+  playerBulletHit: {fileID: 312754889654253545, guid: c761e92e06efb964db60d55a62233c0d,
+    type: 3}
   areas: []
   smallEnemy: {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24,
     type: 3}

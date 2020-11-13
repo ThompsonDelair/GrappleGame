@@ -4,6 +4,7 @@ using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
     List<Actor> allActors = new List<Actor>();
 
     public List<Bullet> bullets = new List<Bullet>();
+    public GameObject playerBulletHit;
 
     
 
@@ -120,7 +122,7 @@ public class GameManager : MonoBehaviour
         CollisionSystem.CollisionUpdate(allActors,enemies,bullets,map);
         DamageSystem.HealthUpdate(allActors);
         DamageSystem.HealthUpdate(map.objects);
-        AbilitySystem.AbilityUpdate(enemies, player.position2D);
+        AbilitySystem.AbilityUpdate(enemies, player.position2D, map.enemyObjects);
 
 
         // Update for enemy melee stuff is here for now....
@@ -129,15 +131,17 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate() {
         if (player.movement == Movement.IGNORE_CLIFFS) {
-            grapple.GrappleUpdate(enemies,map);
+            grapple.GrappleUpdate(map);
         }
     }
 
     void Init() {
-        FindActors();
+        FindActors();        
         map.InitNavMesh(GameObject.Find("MapRoot").transform);
         map.FindAreas(GameObject.Find("Areas").transform);
         map.FindObjects(GameObject.Find("Objects").transform);
+        map.FindZones();
+        map.FindDoorHalfEdges();
     }
 
     void HazardCheck() {
@@ -166,7 +170,7 @@ public class GameManager : MonoBehaviour
             TerrainEdge e = map.terrainEdges[i];
             Color c;
 
-            if (e.layer == Layer.CLIFFS) {
+            if (e.layer == Layer.BLOCK_FLY) {
                 c = CustomColors.darkRed;
             } else {
                 c = Color.black;
@@ -181,7 +185,7 @@ public class GameManager : MonoBehaviour
 
         Transform p = dudes.Find("Player");
         ActorStats stats = p.GetComponent<ActorInfo>().stats;
-        player = new Actor(p,stats.radius,Layer.PLAYER, stats.maxHP);
+        player = new Actor(p,stats.radius,Layer.PLAYER, stats.maxHP, null);
         grapple.owner = player;
         allActors.Add(player);
         if(player == null) {
@@ -189,66 +193,38 @@ public class GameManager : MonoBehaviour
         }        
 
         List<EnemyActor> enemyList = new List<EnemyActor>();
+        
+        int count = 0;
+
         foreach (Transform child in dudes.Find("Enemies")) {
-            //float health = 0f;
-
-            // Setting health is dependant on the enemy type, which is distinguished via GameObject tag
-            // Temp health selection
-            //if (child.tag == "HeavyEnemy")
-            //{
-            //    health = heavyEnemyHealth;
-            //}
-            //else if (child.tag == "BasicEnemy")
-            //{
-            //    health = basicEnemyHealth;
-            //}
-            //else if (child.tag == "LightEnemy")
-            //{
-            //    health = lightEnemyHealth;
-            //} 
-            //else if (health == 0)
-            //{
-            //    Debug.LogError("Could not find enemy type via GameObject tag");
-            //}
-
             stats = child.GetComponent<ActorInfo>().stats;
-
-
-            // PROCESS Ability Strings from here to get ability dictionary for actor.
-            // having trouble converting from string to executable code... see AbilityStringToClass(string)
-
-
-
-            EnemyActor a = new EnemyActor(child,stats.radius,Layer.ENEMIES, stats.maxHP, stats.targetLockTime);
-            AbilityStringToClass(stats.mainAttack, a);
+            // Ability class is created based on string stored in stats.mainAttack
+            Ability ab = AbilityStringToClass(stats.mainAttack);
+            EnemyActor a = new EnemyActor(child,stats.radius,Layer.ENEMIES, stats.maxHP, stats.targetLockTime, ab);
             enemyList.Add(a);
             allActors.Add(a);
-
+            count++;
         }
         enemies = enemyList;
     }
 
     // 
-    public Ability AbilityStringToClass(string abilityName, EnemyActor a)
+    public Ability AbilityStringToClass(string abilityName)
     {
-        /*Type type = Type.GetType(abilityName);
-        Ability ability = (Ability)Activator.CreateInstance(type); // Setting the ability of actor.*/
-
+        Debug.Log("BUILDING " + abilityName + " ABILITY CLASS FOR ");
         if(abilityName == "Lunge")
         {
-            Ability ab = new Lunge();
-            a.ability = ab;
-            return ab;
-        }/*else if (abilityName == "Shoot")
-        {
-            Ability ability = new Shoot();
-            a.ability = ability;
+            Ability ability = new Lunge();
             return ability;
-        }*/
+        }
+        else if (abilityName == "TargetedShot")
+        {
+            
+            Ability ability = new TargetedShot();
+            return ability;
+        }
 
-        Ability ability = new Lunge();
-        a.ability = ability;
-        return new Lunge();
+        return null;
     }
 
 
@@ -368,7 +344,7 @@ public class GameManager : MonoBehaviour
 
     public void ShootGrapple(Vector2 dir) {
         playerAnimator.SetBool("Running", false);
-        grapple.StartGrapple(dir);
+        grapple.StartGrapple(dir,map);
     }
 
     public bool RaycastWorldMousePos(out Vector3 worldPos) {
@@ -412,9 +388,7 @@ public class GameManager : MonoBehaviour
         //    Debug.LogError("Could not find enemy type via GameObject tag");
         //}
 
-        EnemyActor a = new EnemyActor(go.transform,stats.radius,Layer.ENEMIES,stats.maxHP,stats.targetLockTime);
-        Ability ability = AbilityStringToClass(stats.mainAttack, a);
-        a.ability = ability;
+        EnemyActor a = new EnemyActor(go.transform,stats.radius,Layer.ENEMIES,stats.maxHP,stats.targetLockTime, AbilityStringToClass(stats.mainAttack));
         allActors.Add(a);
         enemies.Add(a);
         return a;
@@ -449,6 +423,11 @@ public class GameManager : MonoBehaviour
 
     public void DestroyGameobject(GameObject go) {
         Destroy(go);
+    }
+
+    public GameObject GetNewSentryBullet()
+    {
+        return (GameObject)Instantiate(Resources.Load("Prefabs/EvilBullet"));
     }
 
     //public void BulletMovementUpdate(List<Bullet> bullets) {

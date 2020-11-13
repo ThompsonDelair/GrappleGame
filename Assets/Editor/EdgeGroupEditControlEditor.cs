@@ -119,12 +119,12 @@ public class EdgeGroupEditControlEditor : Editor
             float buttonSize = size * 0.2f;
 
             Handles.color = Color.red;
-            if (Handles.Button(pos + Vector3.left * distSize,Quaternion.identity,buttonSize,buttonSize,Handles.SphereHandleCap)) {
+            if (Handles.Button(pos + Vector3.left * distSize * 1.3f,Quaternion.identity,buttonSize,buttonSize,Handles.SphereHandleCap)) {
                 eg.RemoveConnectionsWithVertID(ev.ID);
                 DestroyImmediate(ev.gameObject);
             }
             Handles.color = CustomColors.niceBlue;
-            if (Handles.Button(pos + Vector3.right * distSize,Quaternion.identity,buttonSize,buttonSize,Handles.SphereHandleCap)) {
+            if (Handles.Button(pos + Vector3.right * distSize * 1.3f,Quaternion.identity,buttonSize,buttonSize,Handles.SphereHandleCap)) {
                 startingVertID = ev.ID;
                 startingVertPos = ev.transform.position;
                 addEdgeMode = true;
@@ -206,10 +206,8 @@ public class EdgeGroupEditControlEditor : Editor
                         vertB_ID = newVert.ID;
                         newVert.transform.position = endPoint;
                     }
-
                     eg.AddConnection(vertA_ID,vertB_ID);
                 }
-
             }
         } else {
             Debug.LogError("no mouse collision?");
@@ -322,8 +320,6 @@ public class EdgeGroupEditControlEditor : Editor
                 newTargetPosition.y = 0;
                 curr.position = newTargetPosition;
             }
-
-
         }
     }
 }

@@ -229,4 +229,36 @@ public static class CollisionCalc
     //    }
     //    return best;
     //}
+
+    public static List<CollisionPoint> CollisionPointsOnLine(Vector2 lineOrigin, Vector2 lineEnd, List<TerrainEdge> edges) {
+        List<CollisionPoint> points = new List<CollisionPoint>();
+        for(int i = 0; i < edges.Count; i++) {
+            TerrainEdge e = edges[i];
+            Vector2 intersect;
+            //if (!CollisionSystem.LayerExact(e.layer,filter)) {
+            //    continue;
+            //}
+
+            if (Calc.LineIntersect(lineOrigin,lineEnd,e.vertA_pos2D,e.vertB_pos2D,out intersect)) {
+                points.Add(new CollisionPoint(intersect,e.layer,Vector2.Distance(lineOrigin,intersect)));
+            }            
+        }
+        return points;
+    }
+
+    public static void SortPointListByDist(List<CollisionPoint> list) {
+
+    }
 }
+
+public struct CollisionPoint {
+    public Vector2 pos;
+    public Layer layer;
+    public float dist;
+    public CollisionPoint(Vector2 p, Layer l, float d) {
+        pos = p;
+        layer = l;
+        dist = d;
+    }
+}
+

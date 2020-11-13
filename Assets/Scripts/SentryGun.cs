@@ -49,7 +49,7 @@ public class SentryGun : MonoBehaviour
         Map map = GameManager.main.map;
         for(int i = 0; i < map.terrainEdges.Count; i++) {
             TerrainEdge e = map.terrainEdges[i];
-            if (CollisionSystem.LayerCheck(e.layer,Layer.WALLS) && Calc.DoLinesIntersect(playerPos2D,sentryPos2D,e.vertA_pos2D,e.vertB_pos2D)) {
+            if (CollisionSystem.LayerOrCheck(e.layer,Layer.BLOCK_WALK) && Calc.DoLinesIntersect(playerPos2D,sentryPos2D,e.vertA_pos2D,e.vertB_pos2D)) {
                 TurnOffLineRenderer();
                 return false;
             }

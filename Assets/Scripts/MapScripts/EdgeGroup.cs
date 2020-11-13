@@ -229,13 +229,7 @@ public class EdgeGroup : MonoBehaviour
             int a = FindIDInArray(e.vertA_ID,children);
             int b = FindIDInArray(e.vertB_ID,children);
             if (a != -1 && b != -1) {
-                if(e.edgeType == EdgeType.Wall && Gizmos.color != Color.black) {
-                    Gizmos.color = Color.black;
-                } else if (e.edgeType == EdgeType.Cliff && Gizmos.color != CustomColors.darkRed) {
-                    Gizmos.color = CustomColors.darkRed;
-                } else if (e.edgeType == EdgeType.NonGrappleWall && Gizmos.color != Color.red) {
-                    Gizmos.color = Color.red;
-                }
+                Gizmos.color = ColorFromType(e.edgeType);
 
                 //Gizmos.color = Color.black;
                 Gizmos.DrawLine(children[a].position,children[b].position);
@@ -264,6 +258,10 @@ public class EdgeGroup : MonoBehaviour
             return CustomColors.darkRed;
         } else if(type == EdgeType.NonGrappleWall) {
             return Color.red;
+        } else if(type == EdgeType.DoorClosed) {
+            return Color.cyan;
+        } else if(type == EdgeType.DoorOpen) {
+            return Color.blue;
         }
 
         return Color.white;
@@ -295,4 +293,4 @@ public struct EdgeConnection
 
 }
 
-public enum EdgeType { Wall, Cliff, NonGrappleWall }
+public enum EdgeType { Wall, Cliff, NonGrappleWall, DoorClosed, DoorOpen }

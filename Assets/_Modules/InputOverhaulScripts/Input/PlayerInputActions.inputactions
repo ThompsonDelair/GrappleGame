@@ -38,6 +38,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Dodge",
+                    "type": "Button",
+                    "id": "e22e91ca-369a-46b4-80af-6842d0adb23c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "MousePosition",
                     "type": "PassThrough",
                     "id": "01371503-9562-4560-9dcd-db3702d8e9e4",
@@ -195,6 +203,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Quit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7172ffa6-07b8-4796-a096-24c610739751",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Dodge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "38e5bee9-fdf5-4b5c-aa9e-69d09c9e1b2f",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Dodge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
