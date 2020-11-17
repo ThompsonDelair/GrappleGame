@@ -8,13 +8,13 @@ public class EdgeGroupEditControlEditor : Editor
 {
     bool addEdgeMode;
 
-    bool edgeMode;
+    //bool edgeMode;
 
     int startingVertID;
     Vector3 startingVertPos;
-    Vector3 currDragPos;
+    //Vector3 currDragPos;
 
-
+    
 
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
@@ -48,15 +48,16 @@ public class EdgeGroupEditControlEditor : Editor
         EdgeGroupEditControls ec = (EdgeGroupEditControls)target;
         EdgeGroup eg = ec.GetComponent<EdgeGroup>();
         Transform[] children = Utils.GetChildren(eg.transform);
+        Dictionary<int,Transform> vertMap = eg.GetVertMap();
 
         if(ec.editMode == EdgeGroupEditControls.EditType.AddRemove) {
             if (addEdgeMode) {
                 AddEdgeModeUpdate(eg,children);
             } else {
-                AddRemoveUpdate(eg,children);
+                AddRemoveUpdate(eg,children,vertMap);
             }
         } else if(ec.editMode == EdgeGroupEditControls.EditType.ChangeEdgeType) {
-            ChangeEdgeTypeUpdate(ec,eg,children);
+            ChangeEdgeTypeUpdate(ec,eg,vertMap);
         } else if(ec.editMode == EdgeGroupEditControls.EditType.MoveVert) {
             MoveVertModeUpdate(ec,eg,children);
         }
@@ -100,8 +101,7 @@ public class EdgeGroupEditControlEditor : Editor
 
     }
 
-    void AddRemoveUpdate(EdgeGroup eg,Transform[] children) {
-        Dictionary<int,Transform> vertDict = new Dictionary<int,Transform>();
+    void AddRemoveUpdate(EdgeGroup eg,Transform[] children,Dictionary<int,Transform> vertDict) {
 
         // draw vertex handles
         for (int i = children.Length - 1; i >= 0; i--) {
@@ -109,8 +109,6 @@ public class EdgeGroupEditControlEditor : Editor
             EdgeVertex ev;
             if ((ev = children[i].GetComponent<EdgeVertex>()) == null)
                 continue;
-
-            vertDict.Add(ev.ID,ev.transform);
 
             Vector3 pos = ev.transform.position;
             float size = HandleUtility.GetHandleSize(pos);
@@ -130,7 +128,7 @@ public class EdgeGroupEditControlEditor : Editor
                 addEdgeMode = true;
             }
 
-            Handles.Label(pos + Vector3.up * size * 0.3f,ev.ID.ToString());
+            //Handles.Label(pos + Vector3.up * size * 0.3f,ev.ID.ToString());
         }
 
 
@@ -214,16 +212,15 @@ public class EdgeGroupEditControlEditor : Editor
         }
     }
 
-    void ChangeEdgeTypeUpdate(EdgeGroupEditControls ec,EdgeGroup eg,Transform[] children) {
-        Dictionary<int,Transform> vertDict = new Dictionary<int,Transform>();
+    void ChangeEdgeTypeUpdate(EdgeGroupEditControls ec,EdgeGroup eg,Dictionary<int,Transform> vertDict) {
 
-        for(int i = 0; i < children.Length; i++) {
-            EdgeVertex ev;
-            if ((ev = children[i].GetComponent<EdgeVertex>()) == null)
-                continue;
+        //for(int i = 0; i < children.Length; i++) {
+        //    EdgeVertex ev;
+        //    if ((ev = children[i].GetComponent<EdgeVertex>()) == null)
+        //        continue;
 
-            vertDict.Add(ev.ID,ev.transform);
-        }
+        //    vertDict.Add(ev.ID,ev.transform);
+        //}
 
         List<EdgeConnection> edgeList = eg.edgeList;
         for (int i = 0; i < edgeList.Count; i++) {
@@ -322,4 +319,10 @@ public class EdgeGroupEditControlEditor : Editor
             }
         }
     }
+
+    void DrawDoorIDs() {
+
+    }
+
+    
 }

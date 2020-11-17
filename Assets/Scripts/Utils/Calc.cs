@@ -303,6 +303,7 @@ public static class Calc
         return new Vector2(Mathf.Cos(theta),Mathf.Sin(theta));
     }
 
+
     public static Vector3 ClosestToPoint(Transform[] transforms, Vector3 point) {
         float bestScore = Mathf.Infinity;
         Vector3 closest = Vector3.positiveInfinity;
@@ -314,7 +315,7 @@ public static class Calc
             }
         }
         return closest;
-    }    
+    } 
 }
 
 public enum ANGLE_TYPE { DEGREES, RADIANS }

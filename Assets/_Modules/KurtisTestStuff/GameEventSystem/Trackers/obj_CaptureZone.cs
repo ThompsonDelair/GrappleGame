@@ -24,7 +24,7 @@ public class obj_CaptureZone : ObjectiveTracker
         fov.DrawFieldOfView();
 
         if (currentTime >= captureTime) {
-            GameEventDirector.current.ObjectiveCompletion(objectiveId);
+            GameEventDirector.current.ObjectiveCompletion(objectiveIdList);
             objectiveActive = false;
         }
     }

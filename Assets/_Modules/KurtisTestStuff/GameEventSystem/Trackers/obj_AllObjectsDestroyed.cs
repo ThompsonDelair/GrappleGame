@@ -12,7 +12,7 @@ public class obj_AllObjectsDestroyed : ObjectiveTracker {
         Debug.Log("The objective is to destroy all objects in the game list.");
 
         // Check enemy count. If 0, check target objects.
-        if (gameManager.EnemyList.Count <= 0) {
+        if (GameManager.main.EnemyList.Count <= 0) {
             int numTargetsDestroyed = 0;
 
             // If a GameObject in the list is null , it means it is Destroyed
@@ -24,7 +24,7 @@ public class obj_AllObjectsDestroyed : ObjectiveTracker {
 
             // If the number of null objects in the list is equal to it's size, all targets have been eliminated.
             if (numTargetsDestroyed == targetObjects.Length) {
-                GameEventDirector.current.ObjectiveCompletion(objectiveId);
+                GameEventDirector.current.ObjectiveCompletion(objectiveIdList);
                 objectiveActive = false;
             }
         }

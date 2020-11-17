@@ -17,7 +17,8 @@ public enum Layer {
     BULLETS = 0b1 << 2,
     HAZARDS = 0b1 << 3,
     BLOCK_WALK = 0b1 << 4,
-    BLOCK_FLY = 0b1 << 5
+    BLOCK_FLY = 0b1 << 5,
+    BLOCK_ALL = BLOCK_WALK | BLOCK_FLY
 }
 
 
@@ -65,27 +66,60 @@ public static class CollisionSystem
 
         for (int i = 0; i < actors.Count; i++) {
             Actor a = actors[i];
+            bool momentumChange = false;
             if (a.movement == Movement.WALKING) {
                 // player - terrain collision
+                Vector2 newPos = a.position2D;
+                CollisionInfo info = new CollisionInfo();
+                a.aabb.UpdateActorPos(a);
+
                 for (int j = 0; j < map.terrainEdges.Count; j++) {
-                    TerrainEdge e = map.terrainEdges[i];
+                    TerrainEdge e = map.terrainEdges[j];
                     if (!LayerOrCheck((Layer)a.movement,e.layer)) {
                         continue;
+                    }                                                        
+                    
+                    if (a.aabb.OverlapCheck(e.aabb)) {
+                        Vector2 closestPoint = Calc.ClosestPointToLine(newPos,e.vertA_pos2D,e.vertB_pos2D);
+
+                        float dist2 = Vector2.Distance(newPos,closestPoint);
+                        if (dist2 < a.collider.Radius) {
+
+
+                            //a.aabb.DrawBox(Color.blue);
+                            //e.aabb.DrawBox(CustomColors.darkRed);
+
+                            info.points.Add(closestPoint);
+                            Vector2 away = (newPos - closestPoint).normalized * (a.collider.Radius - dist2);
+                            newPos += away;
+
+                            //if (!momentumChange) {
+                            //    int c = Calc.ClockWiseCheck(closestPoint,a.position2D,a.position2D + a.momentumDir);
+
+                            //    if (c > 0) {
+
+                            //    } else if (c < 0) {
+
+                            //    } else {
+
+                            //    }
+                            //    a.momentumForce /= 2;
+                            //}
+                        }
                     }
 
 
-                    CollisionInfo info;
-                    Vector2 newPos = CollisionCalc.ResolveCircleEdgesCollision(a.position2D,a.collider.Radius,map.terrainEdges,out info);
-                    a.position2D = newPos;
-                    if(info.points.Count > 0) {
-                        actors[i].momentumForce = 0;
-                    }
-                    for (int k = 0; k < info.points.Count; k++) {
-                        Debug.DrawLine(a.position3D,new Vector3(info.points[k].x,0,info.points[k].y));
-                    }
                     //if (newPos != Vector2.zero) {
                     //    a.position2D = newPos;
                     //}
+                }
+
+                a.position2D = newPos;
+                //if (info.points.Count > 0) {
+                //    actors[i].momentumForce = 0;
+                //}
+                for (int k = 0; k < info.points.Count; k++) {
+                    Debug.DrawLine(a.position3D,new Vector3(info.points[k].x,0,info.points[k].y));
                 }
             }
         }
@@ -174,6 +208,10 @@ public static class CollisionSystem
             for(int j = 0; j < map.terrainEdges.Count; j++) {
                 TerrainEdge e = map.terrainEdges[j];
                 Actor a = actors[i];
+                if (!CollisionSystem.LayerOrCheck((Layer)a.movement,e.layer)) {
+                    continue;
+                }
+
                 if (Calc.DoesLineIntersect(a.position2D,a.posAtFrameStart,e.vertA_pos2D,e.vertB_pos2D)) {
                     a.position2D = a.posAtFrameStart;
                 }

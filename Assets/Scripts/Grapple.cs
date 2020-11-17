@@ -10,6 +10,7 @@ public class Grapple
     const float rewindSpeed = 38f;
     const float grappleRange = 20f;
     const float minGrappleDist = 1.25f;
+    const float failedGrapModifier = 1.5f;
 
     public Actor owner;
     EaseDelegate shoot = Ease.OutCubic;
@@ -21,6 +22,7 @@ public class Grapple
 
     public bool GrappleLanded { get { return grappleLanded; } } // This is a useful thing to have readable (but not editable) by outside components. - Kurt
     bool grappleLanded = false;
+    bool grapFailed = false;
 
     Vector2 grapplePos;
     Vector2 playerPosAtGrapStart;
@@ -39,13 +41,14 @@ public class Grapple
             owner.movement = Movement.IGNORE_CLIFFS;
             playerPosAtGrapStart = owner.position2D;
             grapplePos = owner.position2D;
-            
+            grapFailed = false;
             grappleLanded = false;
             owner.PlayAudioClip(AudioClips.singleton.grapShoot);
             timestamp = Time.time;
             GameManager.main.lineRenderer.positionCount = 2;
         } else {
             owner.PlayAudioClip(AudioClips.singleton.grapEnd);
+            grapFailed = true;
         }
 
 
@@ -76,7 +79,7 @@ public class Grapple
             points.Sort(delegate (CollisionPoint a,CollisionPoint b) {
                 return a.dist.CompareTo(b.dist);
             });
-            Vector2 backPoint = - dir.normalized * 0.1f;
+            Vector2 backPoint = dir.normalized * -owner.collider.Radius;
             
             int i = 0;
             //grappleEndPoint = closest;
@@ -94,14 +97,16 @@ public class Grapple
             }
 
             if (!hitWall && map.IsPointWalkable(end + backPoint)) {
-                grappleEndPoint = end;
+                grappleEndPoint = end + backPoint;
+                Debug.Log("end point is walkable");
             } else {
                 if (i >= points.Count)
                     i = points.Count - 1;
                 for (; i >= 0; i--) {
                     CollisionPoint c = points[i];
-                    if (map.IsPointWalkable(c.pos + backPoint)) {
-                        grappleEndPoint = c.pos;
+                    Vector2 point = c.pos + backPoint;
+                    if (map.IsPointWalkable(point)) {
+                        grappleEndPoint = point;
                         break;
                     }
                 }
@@ -168,9 +173,13 @@ public class Grapple
         if (grappleLanded) {
 
             float t = (Time.time - timestamp) / retractTime;
-            owner.position2D = (grappleEndPointWithOffset - playerPosAtGrapStart) * retract(t) + playerPosAtGrapStart;
 
-            if(t > 1) {
+
+            if (!grapFailed) {
+                owner.position2D = (grappleEndPointWithOffset - playerPosAtGrapStart) * retract(t) + playerPosAtGrapStart;
+            }
+
+            if (t > 1) {
                 EndGrapple();
             }
 

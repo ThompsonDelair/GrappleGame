@@ -16,8 +16,8 @@ public delegate float EaseDelegate(float t);
 [RequireComponent(typeof(DebugControl))]
 public class GameManager : MonoBehaviour
 {
-    private CSharpCodeProvider codeProvider;
-    private CompilerParameters cp;
+    //private CSharpCodeProvider codeProvider;
+    //private CompilerParameters cp;
 
     public bool drawTerrain;
     public bool drawNavMesh;
@@ -127,6 +127,15 @@ public class GameManager : MonoBehaviour
 
         // Update for enemy melee stuff is here for now....
         //enemyScanUpdate();
+        if (Input.GetKeyDown(KeyCode.E)) {
+            map.OpenDoor(1);
+        }
+        if (Input.GetKeyDown(KeyCode.R)) {
+            map.CloseDoor(1);
+        }
+        if (Input.GetKeyDown(KeyCode.T)) {
+            map.ToggleDoor(1);
+        }
     }
 
     private void FixedUpdate() {
@@ -141,7 +150,7 @@ public class GameManager : MonoBehaviour
         map.FindAreas(GameObject.Find("Areas").transform);
         map.FindObjects(GameObject.Find("Objects").transform);
         map.FindZones();
-        map.FindDoorHalfEdges();
+        map.SetDoorHalfEdges();
     }
 
     void HazardCheck() {
@@ -367,6 +376,32 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public GameObject SpawnActorAsObject(GameObject go, Vector2 pos2D) {
+
+        if(go.GetComponent<ActorInfo>() == null) {
+            Debug.LogError("this object doesn't have an actor component");
+            return null;
+        }
+
+        GameObject g = GameObject.Instantiate(go);
+        ActorStats s = g.GetComponent<ActorInfo>().stats;
+
+        if (s.mainAttack == "TargetedShot") // Hacky way to segregate other objects from enemy sentry for now
+{
+            EnemyActor enemyActor = new EnemyActor(g.transform,s.radius,Layer.ENEMIES,s.maxHP,0f,GameManager.main.AbilityStringToClass(s.mainAttack));
+            //Debug.Log("THIS GUY: " + i + enemyActor.transform.gameObject.name);
+            map.enemyObjects.Add(enemyActor);
+            map.objects.Add(enemyActor);
+            enemyActor.position2D = pos2D;
+        } else {
+            Actor a = new Actor(g.transform,s.radius,Layer.ENEMIES,s.maxHP,GameManager.main.AbilityStringToClass(s.mainAttack));
+            map.objects.Add(a);
+            a.position2D = pos2D;
+        }
+
+        return go;
+    }
+
     public Actor SpawnEnemy(Vector2 pos) {
         int rand = UnityEngine.Random.Range(0,12);
         GameObject prefab = (rand == 0) ? bigJoe : smallEnemy;
@@ -393,6 +428,8 @@ public class GameManager : MonoBehaviour
         enemies.Add(a);
         return a;
     }
+
+
 
     public void DestroyActor(Actor a) {
         if(a.layer == Layer.ENEMIES) {
@@ -428,6 +465,12 @@ public class GameManager : MonoBehaviour
     public GameObject GetNewSentryBullet()
     {
         return (GameObject)Instantiate(Resources.Load("Prefabs/EvilBullet"));
+    }
+
+    public void OnDrawGizmos() {
+        if(map != null) {
+            map.DrawTerrainEdgesGizmos();
+        }
     }
 
     //public void BulletMovementUpdate(List<Bullet> bullets) {

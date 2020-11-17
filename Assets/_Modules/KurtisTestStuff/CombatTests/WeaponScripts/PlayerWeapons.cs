@@ -85,7 +85,7 @@ public class PlayerWeapons : MonoBehaviour
         chargeTime += Time.deltaTime;
         playerAnimator.SetFloat("ChargeTime", chargeTime);
 
-        // Render the cone if no parameter is sent.
+        // Render the cone if the renderCone is not explicitly turned off.
         if (renderCone) {
             if (ChargeThresholdReached) {
                 // Draw cone AoE
@@ -128,6 +128,7 @@ public class PlayerWeapons : MonoBehaviour
         List<Actor> objectList = gameManager.ObjectList;
 
         gameManager.player.AddPushForce(Utils.Vector3ToVector2XZ(-FacingDirection), 50f);
+        ParticleEmitter.current.SpawnParticleEffect(this.transform, firingEffect, firingLocation.position);
 
         int hitEnemies = 0;
 

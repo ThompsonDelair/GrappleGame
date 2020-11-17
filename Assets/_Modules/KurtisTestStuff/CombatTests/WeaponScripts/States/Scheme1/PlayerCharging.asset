@@ -18,5 +18,5 @@ MonoBehaviour:
   canBeRefreshed: 0
   interruptable: 1
   finite: 1
-  lightFiringTime: 0.14
+  lightFiringTime: 0.15
   heavyFiringTime: 0.7

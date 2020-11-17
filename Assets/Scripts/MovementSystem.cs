@@ -49,22 +49,40 @@ public static class MovementSystem
             if (a.movement != Movement.WALKING)
                 continue;
 
+            //if (a.momentumForce > 0f) {
+            //    //Debug.Log("FORCE DETECTED");
+            //    a.position2D = a.position2D + a.momentumDir.normalized * a.momentumForce * Time.deltaTime;
+            //    a.momentumForce -= momentumDecay * Time.deltaTime;
 
-            if (a.momentumForce > 0f) {
-                //Debug.Log("FORCE DETECTED");
-                a.position2D = a.position2D + a.momentumDir.normalized * a.momentumForce * Time.deltaTime;
-                a.momentumForce -= momentumDecay * Time.deltaTime;
+            //}
+                       
+            if (a.pushForces.Count > 0) {
+                for(int j = a.pushForces.Count - 1; j >= 0; j--) {
+                    PushInstance p;
+                    try {
+                        p = a.pushForces[j];
+                    } catch{
+                        ;
+                        p = new PushInstance(new Vector2(),0,0);
+                    }
 
-            } else {
-                float speed;
-                if (a == GameManager.main.player) {
-                    speed = GameManager.main.playerStats.GetStat(StatManager.StatType.Speed);
-                } else {
-                    speed = GameManager.main.enemySpeed;
+                    a.position2D = a.position2D + p.dir.normalized * p.force * Time.deltaTime;
+                    p.force -= p.friction * Time.deltaTime;
+                    if(p.force <= 0) {
+                        a.pushForces.RemoveAt(j);
+                    }
                 }
+            } else {
+                //float speed;
+                //if (a == GameManager.main.player) {
+                //    speed = GameManager.main.playerStats.GetStat(StatManager.StatType.Speed);
+                //} else {
+                //    speed = GameManager.main.enemySpeed;
+                //}
 
                 if (a.followingPath) {
                     a.velocity = (a.pathfindWaypoint - a.position2D).normalized * GameManager.main.enemySpeed;
+                    a.transform.LookAt(Utils.Vector2XZToVector3(a.pathfindWaypoint));
                 }
 
                 a.position2D = a.position2D + a.velocity * Time.deltaTime;
@@ -89,11 +107,13 @@ public static class MovementSystem
                 if (path != null) {
                     e.pathfindWaypoint = path[1];
                     e.followingPath = true;
+                    e.animator.SetBool("Walking", true);
 
                     //Debug.Log("found path!");                    
                 } else {
                     e.followingPath = false;
                     e.velocity = Vector2.zero;
+                    e.animator.SetBool("Walking", false);
                 }
 
                 e.pathfindTimer = Time.time + pathfindDelay;

@@ -55,6 +55,7 @@ public class Map
     }
 
     void LoadTerrainEdgeGroup(EdgeGroup eg,out HashSet<EdgePair> implicitEdges,out HashSet<Vector2> navVerts) {
+        eg.drawEdges = false;
         Dictionary<int,Transform> vertMap = eg.GetVertMap();
         implicitEdges = new HashSet<EdgePair>();
         navVerts = new HashSet<Vector2>();
@@ -93,8 +94,8 @@ public class Map
             terrainEdges.Add(edge);
 
             if(ec.edgeType == EdgeType.DoorOpen || ec.edgeType == EdgeType.DoorClosed) {
-                Door d = new Door();
-                d.terrainEdge = edge;
+                Door d = new Door(ec.doorID,edge);
+                doors.Add(d);
             }
 
 
@@ -119,6 +120,7 @@ public class Map
         //List<Layer[]> vertTypesList = new List<Layer[]>();
         implicitEdges = new HashSet<EdgePair>();
         navVerts = new HashSet<Vector2>();
+        doors = new List<Door>();
         Transform[] pChainGroups = Utils.GetChildren(terrainRoot);
 
         for (int i = 0; i < pChainGroups.Length; i++) {
@@ -253,15 +255,23 @@ public class Map
         }
     }
 
-    public void FindDoorHalfEdges() {
+    public void SetDoorHalfEdges() {
         for(int i = 0; i < doors.Count; i++) {
             Door d = doors[i];
             HalfEdge h = vertEdgeMap[d.terrainEdge.vertA_pos2D];
             bool foundH2 = false;
             foreach(HalfEdge h2 in MapProcessing.edgesAroundVert(h)) {
-                if(h2.start == d.terrainEdge.vertB_pos2D) {
+                if(h2.pair.start == d.terrainEdge.vertB_pos2D) {
                     // this is the halfedge
                     d.halfEdge = h2;
+                    foundH2 = true;
+                    if (d.terrainEdge.layer == Layer.NONE) {
+                        h2.type = 0;
+                        h2.pair.type = 0;
+                    } else {
+                        h2.type = 1;
+                        h2.type = 1;
+                    }
                     break;
                 }
             }
@@ -288,23 +298,68 @@ public class Map
         }
         return false;
     }
-}
 
-public class TerrainEdge
-{
-    Vector2 vertA_pos;
-    Vector2 vertB_pos;
-    public Layer layer;
+    public void ToggleAllDoors() {
+        for(int i = 0; i < doors.Count; i++) {
+            doors[i].ToggleDoor();
+        }
+    }
 
-    public Vector2 vertA_pos2D { get { return vertA_pos; } set { vertA_pos = value; } }
-    public Vector2 vertB_pos2D { get { return vertB_pos; } set { vertB_pos = value; } }
+    public void OpenDoor(int id) {
+        for (int i = 0; i < doors.Count; i++) {
+            Door d = doors[i];
+            if (d.ID == id) {
+                d.OpenDoor();
+            }
+        }
+    }
 
-    public Vector3 vertA_pos3D { get { return Utils.Vector2XZToVector3(vertA_pos); } }
-    public Vector3 vertB_pos3D { get { return Utils.Vector2XZToVector3(vertB_pos); } }
+    public void CloseDoor(int id) {
+        for (int i = 0; i < doors.Count; i++) {
+            Door d = doors[i];
+            if (d.ID == id) {
+                d.CloseDoor();
+            }
+        }
+    }
 
-    public TerrainEdge(Vector2 posA,Vector3 posB,Layer type) {
-        vertA_pos = posA;
-        vertB_pos = posB;
-        layer = type;
+    public void ToggleDoor(int id) {
+        for(int i = 0; i < doors.Count; i++) {
+            Door d = doors[i];
+            if(d.ID == id) {
+                d.ToggleDoor();
+            }
+        }
+    }
+
+    public void DrawTerrainEdgesGizmos() {
+        for(int i = 0; i < terrainEdges.Count; i++) {
+            TerrainEdge e = terrainEdges[i];
+            if(Gizmos.color != ColorFromLayer(e.layer)) {
+                Gizmos.color = ColorFromLayer(e.layer);
+            }
+            Gizmos.DrawLine(e.vertA_pos3D,e.vertB_pos3D);
+        }
+        for(int i = 0; i < doors.Count; i++) {
+            Door d = doors[i];
+            Color c = (d.terrainEdge.layer == Layer.NONE) ? Color.cyan : Color.blue;
+            if (Gizmos.color != c)
+                Gizmos.color = c;
+            Gizmos.DrawLine(d.terrainEdge.vertA_pos3D,d.terrainEdge.vertB_pos3D);
+        }
+    }
+
+    public Color ColorFromLayer(Layer l) {
+        if (l == Layer.BLOCK_ALL) {
+            return Color.black;
+        } else if (l == Layer.BLOCK_WALK) {
+            return CustomColors.darkRed;
+        } else if (l == Layer.BLOCK_FLY) {
+            return CustomColors.green;
+        } else if (l == Layer.NONE) {
+            return Color.cyan;
+        }
+        return Color.white;
     }
 }
+

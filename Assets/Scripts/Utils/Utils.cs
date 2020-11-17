@@ -124,6 +124,7 @@ public static class Utils
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
+        mesh.RecalculateNormals();
 
         return mesh;
     }

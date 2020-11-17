@@ -1,0 +1,383 @@
+fileFormatVersion: 2
+guid: dd320aef31c42ec4db814fb788751f7e
+ModelImporter:
+  serializedVersion: 20101
+  internalIDToNameTable:
+  - first:
+      74: 7796336966252748547
+    second: T-Poses
+  - first:
+      74: -3100369314251171874
+    second: AfflictedLumen_Idle
+  - first:
+      74: 6720303635017113406
+    second: Walk
+  - first:
+      74: 2667949614841947897
+    second: Walk
+  - first:
+      74: -6888281341947538476
+    second: AfflictedLumen_StartAttack
+  - first:
+      74: 4734535360470250569
+    second: AfflictedLumen_Walk
+  - first:
+      74: 449018766160868308
+    second: AfflictedLumen_Attack
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Body
+    second: {fileID: 2100000, guid: 4f75a694a935c7a46b1d71d69019f571, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Eyes
+    second: {fileID: 2100000, guid: 39285104c7292ba47b44d2fddb80a8d4, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: AfflictedLumen_Idle
+      takeName: Idle
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 280
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: AfflictedLumen_Walk
+      takeName: Walk
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 80
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: AfflictedLumen_StartAttack
+      takeName: Attack
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: AfflictedLumen_Attack
+      takeName: Attack
+      internalID: 0
+      firstFrame: 31
+      lastFrame: 90
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: AfflictedLumen(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: AfflictedLumen
+      parentName: AfflictedLumen(Clone)
+      position: {x: -0, y: 0.07901209, z: 0}
+      rotation: {x: -0.7071067, y: -0.000000030908616, z: 0.000000030908623, w: 0.7071068}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Armature
+      parentName: AfflictedLumen(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071067, y: -0.000000030908616, z: 0.000000030908623, w: 0.7071068}
+      scale: {x: 100, y: 100, z: 100}
+    - name: DEF-hips
+      parentName: Armature
+      position: {x: -3.8953846e-18, y: 0.00015196942, z: 0.016415216}
+      rotation: {x: 0.6842129, y: 0.052997284, z: -0.04406057, w: 0.72601837}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: DEF-leg-upper.L
+      parentName: DEF-hips
+      position: {x: -0.0029961322, y: 0.00051457336, z: -0.0017341367}
+      rotation: {x: -0.0060935006, y: 0.046401203, z: 0.9946252, w: -0.09236088}
+      scale: {x: 1.0000019, y: 1, z: 1.0000006}
+    - name: DEF-leg-lower.L
+      parentName: DEF-leg-upper.L
+      position: {x: 9.19681e-11, y: 0.007809264, z: 3.958121e-11}
+      rotation: {x: -0.1739227, y: -0.010069933, z: -0.038362913, w: 0.9839603}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DEF-foot.L
+      parentName: DEF-leg-lower.L
+      position: {x: 6.0535965e-11, y: 0.00701664, z: 4.6566126e-11}
+      rotation: {x: 0.5437029, y: 0.00051399437, z: -0.008108113, w: 0.83923846}
+      scale: {x: 0.99999994, y: 1, z: 0.9999999}
+    - name: DEF-leg-upper.R
+      parentName: DEF-hips
+      position: {x: 0.002800909, y: 0.0013134625, z: -0.0016366295}
+      rotation: {x: -0.016866924, y: 0.04525913, z: 0.9978848, w: -0.04350954}
+      scale: {x: 1.0000007, y: 1, z: 1.000001}
+    - name: DEF-leg-lower.R
+      parentName: DEF-leg-upper.R
+      position: {x: -1.9790604e-10, y: 0.0078092646, z: -1.9557773e-10}
+      rotation: {x: -0.17392251, y: 0.01006992, z: 0.03836296, w: 0.98396033}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DEF-foot.R
+      parentName: DEF-leg-lower.R
+      position: {x: -1.5832484e-10, y: 0.0070166397, z: 1.862645e-10}
+      rotation: {x: 0.5437028, y: -0.00051397935, z: 0.008108115, w: 0.8392385}
+      scale: {x: 0.9999999, y: 1, z: 0.99999994}
+    - name: DEF-spine-01
+      parentName: DEF-hips
+      position: {x: 4.217145e-10, y: 0.005279775, z: 1.1641532e-12}
+      rotation: {x: -0.0594182, y: -0.019819988, z: 0.15330493, w: 0.9861918}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DEF-spine-02
+      parentName: DEF-spine-01
+      position: {x: 5.1804817e-11, y: 0.0030578433, z: 2.35741e-10}
+      rotation: {x: 0.08892749, y: 0.0008513338, z: -0.040622186, w: 0.99520904}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+    - name: DEF-shoulder.L
+      parentName: DEF-spine-02
+      position: {x: -0.0045384457, y: 0.0032086535, z: -9.990528e-10}
+      rotation: {x: 0.07473052, y: -0.0019242703, z: 0.7071902, w: 0.7030602}
+      scale: {x: 1, y: 0.9999998, z: 1}
+    - name: DEF-shoulder.R
+      parentName: DEF-spine-02
+      position: {x: 0.004647716, y: 0.0023646948, z: 8.5186763e-10}
+      rotation: {x: 0.0745933, y: -0.0049208445, z: -0.76854575, w: 0.6354126}
+      scale: {x: 1.0000002, y: 1, z: 1}
+    - name: DEF-arm-upper.R
+      parentName: DEF-shoulder.R
+      position: {x: -7.729977e-10, y: 0.0026449075, z: -1.4901161e-10}
+      rotation: {x: -0.0666286, y: -0.00017318862, z: 0.019254217, w: 0.9975921}
+      scale: {x: 0.9999999, y: 1, z: 1}
+    - name: DEF-arm-lower.R
+      parentName: DEF-arm-upper.R
+      position: {x: 0.0000000025797635, y: 0.01044427, z: 0}
+      rotation: {x: 0.033997763, y: 0.005706555, z: 0.018086618, w: 0.99924195}
+      scale: {x: 1, y: 0.99999994, z: 1.0000001}
+    - name: DEF-hand.R
+      parentName: DEF-arm-lower.R
+      position: {x: 7.9162416e-10, y: 0.005923288, z: 1.4901161e-10}
+      rotation: {x: 0.0048974142, y: -0.001752165, z: 0.07882189, w: 0.99687517}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: DEF-finger-index-01.R
+      parentName: DEF-hand.R
+      position: {x: 0.00023389023, y: 0.004848739, z: 0.0021088084}
+      rotation: {x: 0.027122, y: -0.04279489, z: -0.016399903, w: 0.99858105}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: DEF-finger-index-02.R
+      parentName: DEF-finger-index-01.R
+      position: {x: 0.00000069045205, y: 0.003443102, z: -0.000000058003934}
+      rotation: {x: 0.033815086, y: -0.104567245, z: -0.23000944, w: 0.96696323}
+      scale: {x: 1.0000001, y: 1, z: 0.9999999}
+    - name: DEF-finger-middle-01.R
+      parentName: DEF-hand.R
+      position: {x: 0.0000815295, y: 0.005231373, z: 0.0003695023}
+      rotation: {x: -0.0062910593, y: -0.003632632, z: -0.08294691, w: 0.9965275}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: DEF-finger-middle-02.R
+      parentName: DEF-finger-middle-01.R
+      position: {x: 0.0000000016205013, y: 0.0033380215, z: 2.9802322e-10}
+      rotation: {x: 0.0076918984, y: -0.011446702, z: -0.17210501, w: 0.9849821}
+      scale: {x: 1, y: 0.99999994, z: 1.0000001}
+    - name: DEF-finger-pinkie-01.R
+      parentName: DEF-hand.R
+      position: {x: 0.00001529651, y: 0.004643281, z: -0.0018924067}
+      rotation: {x: -0.018743139, y: -0.005054391, z: -0.0706406, w: 0.9973129}
+      scale: {x: 0.9999998, y: 0.99999994, z: 1}
+    - name: DEF-finger-pinkie-02.R
+      parentName: DEF-finger-pinkie-01.R
+      position: {x: -0.0000000029057263, y: 0.0035064826, z: -1.4901161e-10}
+      rotation: {x: -0.03730054, y: 0.042061612, z: -0.14613661, w: 0.9876658}
+      scale: {x: 0.9999998, y: 0.9999999, z: 1}
+    - name: DEF-finger-thumb-01.R
+      parentName: DEF-hand.R
+      position: {x: -0.00025704424, y: 0.0015004298, z: 0.0021828997}
+      rotation: {x: 0.3893939, y: 0.027163245, z: -0.01261765, w: 0.9205842}
+      scale: {x: 0.9999999, y: 0.99999994, z: 1}
+    - name: DEF-finger-thumb-02.R
+      parentName: DEF-finger-thumb-01.R
+      position: {x: -7.45058e-10, y: 0.00322249, z: -8.754432e-10}
+      rotation: {x: -0.48470923, y: -0.10428166, z: 0.009342708, w: 0.86838645}
+      scale: {x: 1.0000001, y: 0.99999994, z: 0.99999994}
+    - name: DEF-spine-03
+      parentName: DEF-spine-02
+      position: {x: 0.000000017491404, y: 0.0035616802, z: -4.6566134e-10}
+      rotation: {x: 0.04478092, y: -0.03147533, z: -0.19790064, w: 0.97869265}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DEF-head
+      parentName: DEF-spine-03
+      position: {x: 2.0909931e-10, y: 0.0024767555, z: 2.9802322e-10}
+      rotation: {x: 0.15641494, y: 0.09855185, z: 0.34542456, w: 0.9200564}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

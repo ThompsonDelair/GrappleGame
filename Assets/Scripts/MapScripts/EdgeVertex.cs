@@ -5,7 +5,6 @@ using UnityEngine;
 
 
 [ExecuteInEditMode]
-[CanEditMultipleObjects]
 public class EdgeVertex : MonoBehaviour
 {
     public int ID { get { return id; } }

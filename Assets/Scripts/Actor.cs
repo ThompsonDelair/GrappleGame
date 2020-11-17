@@ -5,10 +5,12 @@ using UnityEngine;
 public class Actor
 {
     public NewCircleCollider collider;
+    public AABB_2D aabb;
     public Transform transform;
     public Vector2 velocity;
-    public float momentumForce;
-    public Vector2 momentumDir;
+    //public float momentumForce;
+    //public Vector2 momentumDir;
+    public List<PushInstance> pushForces = new List<PushInstance>();
     public Vector3 position3D { get { return transform.position; } set { transform.position = value; } }
     public Movement movement = Movement.WALKING;
 
@@ -29,6 +31,7 @@ public class Actor
 
     public Ability ability;
 
+    public Animator animator;
 
     public Vector2 position2D {
         get {
@@ -46,17 +49,26 @@ public class Actor
         health = hp;
         maxHealth = hp; // Initial HP is max that player can have.
         ability = ab;
+        aabb = new AABB_2D(this);
+
+        animator = t.GetComponent<Animator>();
     }
 
-    public void StartNewPush(Vector2 direction,float force) {
-        momentumDir = direction;
-        momentumForce = force;
+    public PushInstance StartNewPush(Vector2 direction,float force, float friction = 100f) {
+        //momentumDir = direction;
+        //momentumForce = force;
+        pushForces.Clear();
+        PushInstance p = new PushInstance(direction,force,friction);
+        pushForces.Add(p);
+        return p;
     }
 
-    public void AddPushForce(Vector2 direction, float force) {
-        Vector2 combined = momentumDir.normalized * momentumForce + direction.normalized * force;
-        momentumDir = combined;
-        momentumForce = combined.magnitude;
+    public void AddPushForce(Vector2 direction, float force, float friction = 100f) {
+        //Vector2 combined = momentumDir.normalized * momentumForce + direction.normalized * force;
+        //momentumDir = combined;
+        //momentumForce = combined.magnitude;
+        pushForces.Add(new PushInstance(direction,force,friction));
+
     }
 
     public void PlayAudioClip(AudioClip clip,bool loop = false) {

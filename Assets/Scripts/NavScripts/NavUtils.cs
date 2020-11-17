@@ -114,7 +114,7 @@ public static class NavUtils
                 verts.Add(start);
                 Vector3 normal = (mode == Vector2Mode.XY) ? Vector3.forward : Vector3.up;
                 normals.Add(Vector3.forward);
-                uv.Add(new Vector2(0,0));
+                uv.Add(new Vector2(curr.start.x,curr.start.y));
                 tris.Add(verts.Count - 1);
 
 

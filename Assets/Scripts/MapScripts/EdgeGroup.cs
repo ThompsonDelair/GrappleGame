@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 using UnityEngine;
 
 
@@ -12,7 +16,8 @@ public class EdgeGroup : MonoBehaviour
     //public List<string> edgeList;
     [SerializeField]
     public List<EdgeConnection> edgeList;
-
+    //HashSet<int> doorIDs;
+    public bool drawEdges;
     
 
     // Start is called before the first frame update
@@ -85,6 +90,9 @@ public class EdgeGroup : MonoBehaviour
             if(!IDs.Contains(e.vertA_ID) || !IDs.Contains(e.vertB_ID)) {
                 edgeList.RemoveAt(i);
             }
+            if((e.edgeType == EdgeType.DoorOpen || e.edgeType == EdgeType.DoorClosed) && e.doorID == 0) {
+                e.doorID = GetNewDoorID();
+            }
         }
     }
 
@@ -134,23 +142,6 @@ public class EdgeGroup : MonoBehaviour
         return ev;
     }
 
-    public static EdgeConnection EdgeConnectionFromID(string s) {
-        EdgeConnection e = new EdgeConnection();
-        string[] ids = s.Split(',');
-        if(ids.Length != 2) {
-            return e;
-        }
-        int.TryParse(ids[0],out e.vertA_ID);
-        string[] b = s.Split('-');
-        if(b.Length == 1) {
-            int.TryParse(ids[1],out e.vertB_ID);
-        } else if(b.Length == 2) {
-            int.TryParse(b[0],out e.vertB_ID);
-            //int.TryParse(b[1],out e.bOtherGroup);
-        }
-        return e;
-    }
-
     public void RemoveConnectionsWithVertID(int ID) {
         for(int i = edgeList.Count - 1; i >= 0 ; i--) {
             EdgeConnection ec = edgeList[i];
@@ -188,7 +179,30 @@ public class EdgeGroup : MonoBehaviour
     }
 
     private void OnDrawGizmos() {
-        GizmosDrawEdges();        
+        if (drawEdges) {
+            GizmosDrawEdges();
+        }     
+    }
+
+    int GetNewDoorID() {
+        HashSet<int> usedIDs = new HashSet<int>();
+        int highest = 0;
+        for(int i = 0; i < edgeList.Count; i++) {
+            EdgeConnection e = edgeList[i];
+            if (e.doorID != 0){
+                usedIDs.Add(e.doorID);
+                if(e.doorID > highest) {
+                    highest = e.doorID;
+                }
+            }
+        }
+        for(int i = 1; i <= highest + 1; i++) {
+            if (!usedIDs.Contains(i)) {
+                Debug.LogFormat("New door id: {0}",i);
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void SetEdgeType(int vertA_ID, int vertB_ID, EdgeType type) {
@@ -205,11 +219,27 @@ public class EdgeGroup : MonoBehaviour
         for (int i = 0; i < edgeList.Count; i++) {
             EdgeConnection e = edgeList[i];
             if(e.vertA_ID == first && e.vertB_ID == second) {
+
+                if (e.edgeType != EdgeType.DoorClosed && e.edgeType != EdgeType.DoorOpen) {
+                    if (type == EdgeType.DoorClosed || type == EdgeType.DoorOpen) {
+                        // wasn't a door and now is a door
+                        e.doorID = GetNewDoorID();
+                    }
+                } else {
+                    if (type != EdgeType.DoorClosed && type != EdgeType.DoorOpen) {
+                        // was a door, now isn't
+                        e.doorID = 0;
+                    }
+                }
+
                 e.edgeType = type;
                 foundEdge = true;
+
                 break;
             }
         }
+
+
 
         if (!foundEdge) {
             Debug.LogError("Couldn't find edge to change");
@@ -218,12 +248,39 @@ public class EdgeGroup : MonoBehaviour
 
     public void SetEdgeType(int edgeIndex, EdgeType type) {
         EdgeConnection e = edgeList[edgeIndex];
+        if (e.edgeType != EdgeType.DoorClosed && e.edgeType != EdgeType.DoorOpen) {
+            if (type == EdgeType.DoorClosed || type == EdgeType.DoorOpen) {
+                // wasn't a door and now is a door
+                e.doorID = GetNewDoorID();
+            }
+        } else {
+            if (type != EdgeType.DoorClosed && type != EdgeType.DoorOpen) {
+                // was a door, now isn't
+                e.doorID = 0;
+            }
+        }
         e.edgeType = type;
-        edgeList[edgeIndex] = e;
     }
 
+    // found this online from a stack exchange
+    //static void DrawString(string text,Vector3 worldPos,Color? colour = null) {
+    //    UnityEditor.Handles.BeginGUI();
+    //    if (colour.HasValue)
+    //        GUI.color = colour.Value;
+    //    var view = UnityEditor.SceneView.currentDrawingSceneView;
+    //    Vector3 screenPos = view.camera.WorldToScreenPoint(worldPos);
+    //    Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
+    //    GUI.Label(new Rect(screenPos.x - (size.x / 2),-screenPos.y + view.position.height + 4,size.x,size.y),text);
+    //    UnityEditor.Handles.EndGUI();
+    //}
+
     void GizmosDrawEdges() {
+
+        //Debug.Log("drawing edges");
+        GUI.color = Color.white;
+
         Transform[] children = Utils.GetChildren(transform);
+        //Dictionary<int,Transform> vertMap = GetVertMap();
         for (int i = 0; i < edgeList.Count; i++) {
             EdgeConnection e = edgeList[i];
             int a = FindIDInArray(e.vertA_ID,children);
@@ -234,6 +291,29 @@ public class EdgeGroup : MonoBehaviour
                 //Gizmos.color = Color.black;
                 Gizmos.DrawLine(children[a].position,children[b].position);
                 //Debug.DrawLine(children[a].position,children[b].position,Color.black);
+
+
+                if (e.doorID != 0) {
+                    //Debug.Log("Doing door stuff");
+                    Vector3 halfway = children[a].position - (children[a].position - children[b].position) / 2 + Vector3.up;
+
+                    #if UNITY_EDITOR
+
+                    //UnityEditor.Handles.BeginGUI();
+
+                    //var view = UnityEditor.SceneView.currentDrawingSceneView;
+                    //Vector3 screenPos = view.camera.WorldToScreenPoint(worldPos);
+                    //Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
+                    //GUI.Label(new Rect(screenPos.x - (size.x / 2),-screenPos.y + view.position.height + 4,size.x,size.y),text);
+                    Handles.Label(halfway,e.doorID.ToString());
+
+                    //UnityEditor.Handles.EndGUI();
+
+                    #endif
+                    //DrawString(e.doorID.ToString(),halfway,Color.white);
+                } else {
+
+                }
             }
         }
     }
@@ -259,9 +339,9 @@ public class EdgeGroup : MonoBehaviour
         } else if(type == EdgeType.NonGrappleWall) {
             return Color.red;
         } else if(type == EdgeType.DoorClosed) {
-            return Color.cyan;
-        } else if(type == EdgeType.DoorOpen) {
             return Color.blue;
+        } else if(type == EdgeType.DoorOpen) {
+            return Color.cyan;
         }
 
         return Color.white;
@@ -269,12 +349,12 @@ public class EdgeGroup : MonoBehaviour
 }
 
 [System.Serializable]
-public struct EdgeConnection
+public class EdgeConnection
 {
     public int vertA_ID;
     public int vertB_ID;
     public EdgeType edgeType;
-    int doorID;
+    public int doorID;
 
     public EdgeConnection(int aID, int bID, EdgeType type = EdgeType.Wall) {
 
@@ -288,7 +368,7 @@ public struct EdgeConnection
         vertA_ID = first;
         vertB_ID = second;
         edgeType = type;
-        doorID = -1;
+        doorID = 0;
     }
 
 }

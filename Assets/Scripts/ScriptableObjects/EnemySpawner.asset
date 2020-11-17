@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d64d6ef426e7d49b26f55dc4d23e3e, type: 3}
   m_Name: EnemySpawner
   m_EditorClassIdentifier: 
-  maxHP: 20
+  maxHP: 10
   radius: 0.75
+  targetLockTime: 0
+  mainAttack: 

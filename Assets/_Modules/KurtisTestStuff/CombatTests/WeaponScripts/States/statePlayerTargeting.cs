@@ -21,7 +21,8 @@ public class statePlayerTargeting : State {
         }
 
         // If the player inputs the Grapple Button again while grappling, Reel the grapple early and strike nearby enemies.
-        if (frame.input.ActionTriggered(InputName.Grapple, true)) { // && frame.weapons.gameManager.Grappler.GrappleLanded) {
+        if (frame.input.ActionTriggered(InputName.Grapple, true)
+            && GameManager.main.map.IsPointWalkable(Utils.Vector3ToVector2XZ(GameManager.main.player.transform.position))) { // && frame.weapons.gameManager.Grappler.GrappleLanded) {
             frame.StateTransition(frame.weapons.grappleCancelState);
         }
     }

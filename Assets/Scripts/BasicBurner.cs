@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicBurner : Area
+public class BasicBurner : Area 
 {
     Dictionary<Actor,float> actorMemory = new Dictionary<Actor,float>();
     [SerializeField] float reburnTime = 1f;
