@@ -26,12 +26,12 @@ public class PathfindTest : MonoBehaviour
         GameManager gm = GameManager.main;
         Vector2 start2D = Utils.Vector3ToVector2XZ(start);
         Vector2 goal2D = Utils.Vector3ToVector2XZ(goal);
-        path = Pathfinding.getPath(start2D,goal2D,0.5f,gm.map.TriKDMap,gm.map.VertEdgeMap);
+        path = Pathfinding.getPath(start2D,goal2D,0.5f,gm.gameData.map.TriKDMap,gm.gameData.map.VertEdgeMap);
 
-        NavTri startTri = NavCalc.TriFromPoint(start2D,gm.map.TriKDMap,gm.map.VertEdgeMap);
-        NavTri goalTri = NavCalc.TriFromPoint(goal2D,gm.map.TriKDMap,gm.map.VertEdgeMap);
+        NavTri startTri = NavCalc.TriFromPoint(start2D,gm.gameData.map.TriKDMap,gm.gameData.map.VertEdgeMap);
+        NavTri goalTri = NavCalc.TriFromPoint(goal2D,gm.gameData.map.TriKDMap,gm.gameData.map.VertEdgeMap);
 
-        tripath = Pathfinding.pathfind(start2D,goal2D,startTri,goalTri);
+        tripath = Pathfinding.pathfind(start2D,goal2D,startTri,goalTri,Movement.WALKING);
         //path = Pathfinding.funnel(start2D,goal2D,tripath);
         ;
     }

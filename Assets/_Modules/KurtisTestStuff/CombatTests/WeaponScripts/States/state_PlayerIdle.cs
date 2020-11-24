@@ -13,12 +13,12 @@ public class state_PlayerIdle : State {
         }
 
         // The grapple button was pressed
-        if (frame.input.ActionTriggered(InputName.Grapple, true) && frame.weapons.gameManager.player.movement == Movement.WALKING) {
+        if (frame.input.ActionTriggered(InputName.Grapple, true) && frame.weapons.canGrapple && frame.weapons.gameManager.player.currMovement == Movement.WALKING) {
             frame.StateTransition(frame.weapons.grapplingState);
         }
 
         // The dodge button was pressed
-        if (frame.input.ActionTriggered(InputName.Dodge, true)  && frame.weapons.CanDodge && frame.weapons.gameManager.player.movement == Movement.WALKING) {
+        if (frame.input.ActionTriggered(InputName.Dodge, true)  && frame.weapons.CanDodge && frame.weapons.gameManager.player.currMovement == Movement.WALKING) {
             frame.StateTransition(frame.weapons.dodgeState);
         }
     }

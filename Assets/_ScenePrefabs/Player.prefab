@@ -968,7 +968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0901134, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.24035501, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1038,6 +1038,7 @@ GameObject:
   - component: {fileID: 3178843251030035239}
   - component: {fileID: 3178843251030035236}
   - component: {fileID: 3178843252045924417}
+  - component: {fileID: 8936748317783228055}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1239,11 +1240,12 @@ MonoBehaviour:
   chargeTimeThreshold: 0.2
   chargeRateModifier: 1.9
   blasterDamage: 1
-  attackKnockback: 100
+  attackKnockback: 50
   maxRailAngle: 110
   minRailAngle: 75
   maxRailRange: 10
   minRailRange: 5
+  canGrapple: 1
   meleeStrikeRange: 6
   meleeStrikeAngle: 360
   meleeStrikeDamage: 1
@@ -1256,8 +1258,14 @@ MonoBehaviour:
     type: 2}
   firingEffect: {fileID: 1391969009755379683, guid: 363257f570efe7344b2a96b0efc88d20,
     type: 3}
+  chargeEffect: {fileID: 2693229667329373444, guid: 7d3ed86b3b32cef4d8028a1bc5cffc70,
+    type: 3}
+  chargeFireEffect: {fileID: 2143049691207660724, guid: 610915c502f0a254298d183fe6a61c6e,
+    type: 3}
   grapplingState: {fileID: 11400000, guid: efa75f9ecfbc37b478cbca8865b6abf7, type: 2}
   grappleCancelState: {fileID: 11400000, guid: 7e9f03267e470ae489e652371270f481, type: 2}
+  grappleRecoveryState: {fileID: 11400000, guid: 86402aa58f380934aaec36ab87a90be8,
+    type: 2}
   dodgeState: {fileID: 11400000, guid: cc4f13889d69b854aaa34bd47bbcf876, type: 2}
   dodgeRecoveryState: {fileID: 11400000, guid: 7764dd712a99c7946adcd1fc96e5a2df, type: 2}
 --- !u!114 &3178843251030035238
@@ -1331,6 +1339,102 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!120 &8936748317783228055
+LineRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3178843251030035237}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 2af47370f753b5640bbe3526e3da388f, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Positions: []
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.1948719
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_UseWorldSpace: 1
+  m_Loop: 0
 --- !u!1 &3178843251065412439
 GameObject:
   m_ObjectHideFlags: 0
@@ -2056,7 +2160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.023584902, b: 0.023584902, a: 1}
+  m_Color: {r: 1, g: 0.02352941, b: 0.23709883, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3118,7 +3222,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: ex. Destroy the Spawners to proceed
+  m_Text: 
 --- !u!1 &8814266534754609969
 GameObject:
   m_ObjectHideFlags: 0

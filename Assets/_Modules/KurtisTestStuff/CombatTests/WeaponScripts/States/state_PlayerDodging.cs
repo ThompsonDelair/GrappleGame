@@ -20,7 +20,7 @@ public class state_PlayerDodging : State {
         frame.AddSubstate(dodgeRecov);
 
         // The dodge button was pressed
-        if (frame.input.ActionTriggered(InputName.Dodge, true)  && frame.weapons.CanDodge && frame.weapons.gameManager.player.movement == Movement.WALKING) {
+        if (frame.input.ActionTriggered(InputName.Dodge, true)  && frame.weapons.CanDodge && frame.weapons.gameManager.player.currMovement == Movement.WALKING) {
             frame.StateTransition(frame.weapons.dodgeState);
         }
 

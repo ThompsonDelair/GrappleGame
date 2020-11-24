@@ -35,7 +35,7 @@ public class objSub_SpawnObjectsAtLocations : ObjectiveSubscriber
         if (validParameters) {
             for (int i = 0; i < currentObjects.Count; ++i) {
                 if (currentObjects[i] == null) {
-                    GameObject newObject = GameManager.main.SpawnActorAsObject ( objectToSpawn, Utils.Vector3ToVector2XZ(spawnLocations[i].position) );
+                    GameObject newObject = GameManager.main.SpawnActor ( objectToSpawn, Utils.Vector3ToVector2XZ(spawnLocations[i].position) ).transform.gameObject;
                     currentObjects[i] = newObject;
                 }
             }

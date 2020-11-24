@@ -7,19 +7,30 @@ using UnityEngine.UI;
 //      Once it's objective has been completed, it sends a signal to the GameEventDirector.
 //      The only aspect that must be implemented in inheriting members is the ListenForObjectiveCompletion() function.
 public abstract class ObjectiveTracker : MonoBehaviour {
-    protected GameManager gameManager;
 
-    [Header("Objective Config Fields")]
+    [Header("Incoming ID to listen for.")]
     // This field can be toggled off when an objective has been completed.
+    [SerializeField] int myDispatchID = 0;
     public bool objectiveActive = true;
 
+    [Header("Outgoing Objective ID List.")]
     [SerializeField] protected List<int> objectiveIdList;
-    [SerializeField] protected string currentObjective;
-    [SerializeField] protected string victoryMessage;
+    // [SerializeField] protected string currentObjective;
+    // [SerializeField] protected string victoryMessage;
 
     void Start() {
-        gameManager = Object.FindObjectOfType<GameManager>();
-        DisplayCurrentObjective();
+        // DisplayCurrentObjective();
+
+        // Track for objectiveActive
+        GameEventDirector.current.onObjectiveCompletion += ToggleActive;
+    }
+
+
+    // This 
+    protected void ToggleActive(int id) {
+        if (id == myDispatchID) {
+            objectiveActive = !objectiveActive;
+        }
     }
 
     // Called once per frame.
@@ -35,8 +46,12 @@ public abstract class ObjectiveTracker : MonoBehaviour {
         
     }
 
-    protected void DisplayCurrentObjective() {
-        GameObject.Find("ObjectiveText").GetComponent<Text>().text = currentObjective;
+    // protected void DisplayCurrentObjective() {
+    //     GameObject.Find("ObjectiveText").GetComponent<Text>().text = currentObjective;
+    // }
+
+    private void OnDestroy() {
+        GameEventDirector.current.onObjectiveCompletion -= ToggleActive;
     }
 
 

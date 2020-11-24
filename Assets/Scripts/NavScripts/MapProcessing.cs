@@ -679,9 +679,13 @@ public static class MapProcessing{
 
                 orphans.Add(ep);
             } else {
-                implicitEdge.type = 1;
+                Layer moveBlock = Layer.BLOCK_ALL;
+                if(ep.moveBlock != Layer.NONE) {
+                    moveBlock = ep.moveBlock;
+                }
+                implicitEdge.moveBlock = moveBlock;
                 if (implicitEdge.pair != null) {
-                    implicitEdge.pair.type = 1;
+                    implicitEdge.pair.moveBlock = moveBlock;
                 }
             }
         }
@@ -997,7 +1001,7 @@ public static class MapProcessing{
                         if (e.CompareEdgePair(kvp.Key)) {
                             e.pair = kvp.Value;
                             kvp.Value.pair = e;
-                            e.type = kvp.Value.type;
+                            e.moveBlock = kvp.Value.moveBlock;
                             pairFound = true;
                             goto next;
                         }

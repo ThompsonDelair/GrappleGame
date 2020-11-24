@@ -16,8 +16,8 @@ public class ParticleEmitter : MonoBehaviour {
     }
 
     // Spawn a particle effect at given position. Destroy after duration comletion.
-    public void SpawnParticleEffect(GameObject effect, Vector3 position) {
-        GameObject newEffect = Instantiate(effect, position, Quaternion.identity);
+    public void SpawnParticleEffect(GameObject effect, Vector3 position, Quaternion rotation) {
+        GameObject newEffect = Instantiate(effect, position, rotation);
         DestroyParticleAfterDuration(newEffect);
     }
 

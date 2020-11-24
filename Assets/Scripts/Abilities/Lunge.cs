@@ -3,80 +3,101 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Lunge : Ability
-{   
-    private bool isAttacking = false; // Read only to other classes
-    private bool isLunging = false;
-    public bool lunging { get { return isLunging; } }
+{
+    LungeStats stats;
+
+
+    private bool isLunging = false; // Read only to other classes
+    //private bool isLunging = false;
+    bool lockedon;
+    //public bool lunging { get { return isLunging; } }
 
 
     // THESE FIELDS MAY BE IN A SCRIPTABLE OBJECT AFTER, ABILITY STATS?
     // STATIC DATA SHOULD SCRIPTABLE OBJECT IDEALLY
-    [SerializeField]
-    private float range = 5f;
-    private float chargeTime = 0.75f;
-    private float lungeSpeed = 40f;
+    //[SerializeField]
+    //private float range = 5f;
+    //private float chargeTime = 0.75f;
+    //private float lungeSpeed = 40f;
 
-    // Timing and cooldown for attack
-    private float coolDown = 1.5f;
+    //// Timing and cooldown for attack
+    //private float coolDown = 1.5f;
+    
+    
     private float timestamp;
 
     private Vector2 dir;
 
     private PushInstance p;
 
-    public Lunge() { }
+    private Lunge() { }
 
+    public Lunge(LungeStats s) {
+        stats = s;
+    }
 
-    public override bool attacking() { return isAttacking; }
+    //public override bool attacking() { return isAttacking; }
 
     // Check for if ability's pre-cast requirements have been met
-    public override bool StartAbilityCheck(Vector2 pos, EnemyActor actor) // Position is of the thing they want to attack
+    public override bool StartAbilityCheck(Actor actor,GameData data) // Position is of the thing they want to attack
     {
         
         if (timestamp < Time.time) // Charge setup
         {
-            if (Time.time - timestamp >= actor.targetLockTime)
-            {
-                //Debug.Log("player position: " + pos + "\nEnemy position: " + actor.position2D);
-                // Want the attack direction to be position at the specified targetLockTime.
-                dir = (pos - actor.position2D);
-            }
-
-            if (Vector2.Distance(actor.position2D, pos) >= range) // Range check
+            if (Vector2.Distance(actor.position2D,data.player.position2D) >= stats.range) // Range check
             {
                 return false; // OUT OF RANGE
             }
 
-            timestamp = Time.time + chargeTime;
+            timestamp = Time.time + stats.chargeTime;
             // Disable movement
-            actor.movement = Movement.NONE;
+            actor.currMovement = Movement.NONE;
             actor.transform.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
             
             actor.transform.GetComponent<Animator>().SetTrigger("StartAttack");
 
+            //Debug.Log("start lunge");
             return true;
         }
         return false;
     }
 
     // Updates the ability
-    public override bool RunAbilityUpdate(Vector2 pos, EnemyActor actor)
+    public override bool RunAbilityUpdate(Actor actor, GameData data)
     {
-       // Debug.Log("LUNGE: " + actor.transform.gameObject.name + " attack status through actor: " + actor.ability.attacking + " attack status through local attacking: " + attacking);
-
+        //Debug.Log("LUNGE: " + actor.transform.gameObject.name + " attack status through actor: " + actor.ability.attacking + " attack status through local attacking: " + attacking);
+       
         if (Time.time > timestamp) // Lunges after finished charging time
         {
             actor.transform.GetComponent<Animator>().SetTrigger("Attack");
-            isAttacking = true;
-            timestamp = Time.time + coolDown;
-            actor.movement = Movement.WALKING;
+            isLunging = true;
+            timestamp = Time.time + stats.coolDown;
+            actor.currMovement = Movement.WALKING;
             //Debug.Log("Direction when lunging: " + dir);
-            p = actor.StartNewPush(dir, lungeSpeed); // Using direction assigned at start of charge time
+            p = actor.StartNewPush(dir,stats.lungeForce,stats.lungeFriction); // Using direction assigned at start of charge time
         }
-        if (!actor.pushForces.Contains(p) && isAttacking) // Decreases momentum and return to non attack state
+
+        if (timestamp - Time.time <= stats.targetLockTime && !isLunging && !lockedon) {
+            dir = (data.player.position2D - actor.position2D);
+            lockedon = true;
+        }
+
+        if (!lockedon) {
+            actor.transform.LookAt(data.player.position3D);
+        }
+
+        if (isLunging) {
+            float dist = Vector2.Distance(actor.position2D,data.player.position2D);
+            float threshold = actor.collider.Radius + data.player.collider.Radius + 0.2f;
+            if(dist < threshold) {
+                DamageSystem.DealDamage(data.player,stats.damage);
+            }
+        }
+        if (!actor.pushForces.Contains(p) && isLunging) // Decreases momentum and return to non attack state
         {
             actor.transform.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
-            isAttacking = false;
+            isLunging = false;
+            lockedon = false;
             return false; // Finished the ability
         }
 

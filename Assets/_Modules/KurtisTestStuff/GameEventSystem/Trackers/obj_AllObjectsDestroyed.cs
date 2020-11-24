@@ -7,12 +7,10 @@ public class obj_AllObjectsDestroyed : ObjectiveTracker {
     [Header("Target Neutralization Configs")]
     [SerializeField] protected GameObject[] targetObjects;
 
-    // This implementation of objective will check if all enemies have been cleared, and the given targets destroyed.
+    // This implementation of objective will check if all enemies have been cleared, and the specific given targets destroyed.
     protected override void ListenForObjectiveCompletion() {
-        Debug.Log("The objective is to destroy all objects in the game list.");
-
         // Check enemy count. If 0, check target objects.
-        if (GameManager.main.EnemyList.Count <= 0) {
+        if (GameManager.main.gameData.enemyActors.Count <= 0) {
             int numTargetsDestroyed = 0;
 
             // If a GameObject in the list is null , it means it is Destroyed

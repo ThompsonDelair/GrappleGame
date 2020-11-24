@@ -15,6 +15,12 @@ EditorBuildSettings:
     path: Assets/_Modules/KurtisTestStuff/01_DropZone.unity
     guid: 00029737a2e80e845aae6111627a6e47
   - enabled: 1
+    path: Assets/_Modules/KurtisTestStuff/02_EnigmaticVault.unity
+    guid: 9d6c0bceb62ef604b9d5eb63cfe72ca1
+  - enabled: 1
+    path: Assets/_Modules/KurtisTestStuff/03_CoreApproach.unity
+    guid: eb764ac258a781344b1a2e88a5942c21
+  - enabled: 1
     path: Assets/Scenes/Menus/EndScene.unity
     guid: f429f913f12d47a40818221eb060cfd8
   m_configObjects: {}

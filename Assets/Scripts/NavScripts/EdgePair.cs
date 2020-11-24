@@ -7,6 +7,7 @@ public class EdgePair : IEquatable<EdgePair> {
 
     public Vector2 a;
     public Vector2 b;
+    public Layer moveBlock;
 
     public EdgePair() { }
 

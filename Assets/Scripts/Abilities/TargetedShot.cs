@@ -4,31 +4,35 @@ using UnityEngine;
 
 public class TargetedShot : Ability
 {
+    ShootStats stats;
 
     float shootingTimestamp;
-    public float timeBetweenShots = 2f;
     private bool isAttacking = false;
-    private EnemyActor actor = null;
 
-    public TargetedShot() { }
+    private TargetedShot() { }
 
-    public override bool attacking() { return isAttacking; }
+    //public override bool attacking() { return isAttacking; }
 
-    public override bool RunAbilityUpdate(Vector2 pos, EnemyActor a)
-    {
-        if(actor == null)
-        {
-            actor = a;
-        }
-        if (a.transform == null) // HACKY WAY TO STOP ABILITY, workaround so that I dont have to refactor some code for now
-        {
-            return false;
-        }
-
-        return ShootUpdate();
+    public TargetedShot(ShootStats s) {
+        stats = s;
     }
 
-    public override bool StartAbilityCheck(Vector2 pos, EnemyActor a)
+    public override bool RunAbilityUpdate(Actor a, GameData data)
+    {
+        //if(actor == null)
+        //{
+        //    actor = a;
+        //    timeBetweenShots = a.transform.gameObject.GetComponent<ActorInfo>().stats.timeBetweenAttack;
+        //}
+        //if (a.transform == null) // HACKY WAY TO STOP ABILITY, workaround so that I dont have to refactor some code for now
+        //{
+        //    return false;
+        //}
+
+        return ShootUpdate(a);
+    }
+
+    public override bool StartAbilityCheck(Actor a,GameData data)
     {
         
         return true; // hardcoded to return true as pre cast check not necessary with sentry logic. Should redo abstract class as abstract methods aren't implemented in all children.
@@ -36,17 +40,17 @@ public class TargetedShot : Ability
 
 
     // Modified to return boolean based on whether casting should cease or not
-    private bool ShootUpdate()
+    private bool ShootUpdate(Actor a)
     {
-        if (CanSeePlayer())
+        if (CanSeePlayer(a))
         {
             // rotate to look at player
-            actor.transform.LookAt(GameManager.main.player.position3D);
+            a.transform.LookAt(GameManager.main.player.position3D);
 
             if (shootingTimestamp < Time.time)
             {
-                shootingTimestamp = Time.time + timeBetweenShots;
-                ShootAtPlayer();
+                shootingTimestamp = Time.time + stats.timeBetweenShots;
+                ShootAtPlayer(a);
             }
             return true;
         }
@@ -56,51 +60,51 @@ public class TargetedShot : Ability
         }
     }
 
-    void ShootAtPlayer()
+    void ShootAtPlayer(Actor a)
     {
         GameObject gameObjBullet = GameManager.main.GetNewSentryBullet(); // Since ability does not derive from MonoBehaviour we have to get another mono class to do the work of instantiation for us.
-        Bullet bullet = new Bullet(gameObjBullet.transform, 0.5f, Layer.PLAYER, 1f);
-        bullet.speed = 20f;
-        bullet.position3D = actor.transform.position;
-        GameManager.main.bullets.Add(bullet);
+        Bullet bullet = new Bullet(gameObjBullet.transform, stats.bulletStats.radius, Team.PLAYER, stats.damage);
+        bullet.speed = stats.bulletStats.speed;
+        bullet.position3D = a.transform.position;
+        GameManager.main.gameData.bullets.Add(bullet);
 
         //GetComponent<Actor>().PlayAudioClip(AudioClips.singleton.gunShot);
         // Set to shoot in that direction
-        bullet.transform.rotation = actor.transform.rotation;
+        bullet.transform.rotation = a.transform.rotation;
     }
 
-    bool CanSeePlayer()
+    bool CanSeePlayer(Actor a)
     {
         Vector2 playerPos2D = GameManager.main.player.position2D;
-        Vector2 sentryPos2D = Utils.Vector3ToVector2XZ(actor.transform.position);
-        Map map = GameManager.main.map;
+        Vector2 sentryPos2D = Utils.Vector3ToVector2XZ(a.transform.position);
+        Map map = GameManager.main.gameData.map;
         for (int i = 0; i < map.terrainEdges.Count; i++)
         {
             TerrainEdge e = map.terrainEdges[i];
             if (CollisionSystem.LayerOrCheck(e.layer, Layer.BLOCK_FLY) && Calc.DoLinesIntersect(playerPos2D, sentryPos2D, e.vertA_pos2D, e.vertB_pos2D))
             {
-                TurnOffLineRenderer();
+                TurnOffLineRenderer(a);
                 return false;
             }
         }
         //Debug.DrawLine(GameManager.main.player.position3D,transform.position,Color.red);
-        UpdateLineRenderer();
+        UpdateLineRenderer(a);
         return true;
     }
 
-    void UpdateLineRenderer()
+    void UpdateLineRenderer(Actor a)
     {
-        LineRenderer lr = actor.transform.gameObject.GetComponent<LineRenderer>();
+        LineRenderer lr = a.transform.gameObject.GetComponent<LineRenderer>();
         if (lr.positionCount != 2)
             lr.positionCount = 2;
 
-        Vector3[] points = { actor.transform.position, GameManager.main.player.position3D };
+        Vector3[] points = { a.transform.position, GameManager.main.player.position3D };
         lr.SetPositions(points);
     }
 
-    void TurnOffLineRenderer()
+    void TurnOffLineRenderer(Actor a)
     {
-        LineRenderer lr = actor.transform.gameObject.GetComponent<LineRenderer>();
+        LineRenderer lr = a.transform.gameObject.GetComponent<LineRenderer>();
         if (lr.positionCount != 0)
             lr.positionCount = 0;
     }

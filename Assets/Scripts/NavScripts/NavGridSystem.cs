@@ -226,7 +226,7 @@ public static class NavGridSystem
                                                                           
                     //tc.AddBorderPair(h,h.pair);
                     addToScanList(h,xScans,yScans,map);
-                    if (h.type == 1) {
+                    if (h.moveBlock != Layer.NONE) {
                         map.implicitEdges.Remove(new EdgePair(h.start,h.next.start));
                     }
                     continue;
@@ -244,7 +244,7 @@ public static class NavGridSystem
                     // || e.a == h.start || e.a == h.next.start || e.b == h.start || e.b == h.next.start
                     if (Calc.DoesLineIntersect(e.a,e.b,h.start,h.next.start)) {
                         intersect = true;
-                        if (h.type == 1) {
+                        if (h.moveBlock != Layer.NONE) {
                             terrain = true;
                             break;
                         }

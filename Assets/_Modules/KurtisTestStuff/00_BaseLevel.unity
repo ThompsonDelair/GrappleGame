@@ -328,7 +328,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &274082086
 GameObject:
@@ -552,45 +552,59 @@ MonoBehaviour:
   - vertA_ID: 1
     vertB_ID: 2
     edgeType: 0
+    doorID: 0
   - vertA_ID: 1
     vertB_ID: 42
     edgeType: 0
+    doorID: 0
   - vertA_ID: 2
     vertB_ID: 3
     edgeType: 0
+    doorID: 0
   - vertA_ID: 3
     vertB_ID: 48
     edgeType: 0
+    doorID: 0
   - vertA_ID: 7
     vertB_ID: 8
     edgeType: 1
+    doorID: 0
   - vertA_ID: 7
     vertB_ID: 10
     edgeType: 1
+    doorID: 0
   - vertA_ID: 8
     vertB_ID: 9
     edgeType: 1
+    doorID: 0
   - vertA_ID: 9
     vertB_ID: 10
     edgeType: 1
+    doorID: 0
   - vertA_ID: 11
     vertB_ID: 42
     edgeType: 4
+    doorID: 1
   - vertA_ID: 11
     vertB_ID: 47
     edgeType: 0
+    doorID: 0
   - vertA_ID: 11
     vertB_ID: 48
     edgeType: 0
+    doorID: 0
   - vertA_ID: 42
     vertB_ID: 45
     edgeType: 0
+    doorID: 0
   - vertA_ID: 45
     vertB_ID: 46
     edgeType: 0
+    doorID: 0
   - vertA_ID: 46
     vertB_ID: 47
     edgeType: 0
+    doorID: 0
   drawEdges: 1
 --- !u!114 &389192084
 MonoBehaviour:
@@ -855,7 +869,7 @@ Transform:
   - {fileID: 1445950820}
   - {fileID: 845613449}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &658970097
 GameObject:
@@ -1705,10 +1719,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036180526794b564286ac4eef8cd5cff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myDispatchID: 0
   objectiveActive: 1
-  objectiveId: 0
-  currentObjective: 'DIRECTIVE: Destroy(allTargets)'
-  victoryMessage: enemies destroyed! next level ...
+  objectiveIdList: 
   targetObjects:
   - {fileID: 0}
   - {fileID: 0}
@@ -1986,6 +1999,11 @@ PrefabInstance:
       propertyPath: playerStats
       value: 
       objectReference: {fileID: 750254841}
+    - target: {fileID: 1876556927220249663, guid: 70ef52e3ae4b8134a9805fd6eb937af1,
+        type: 3}
+      propertyPath: drawGrappleRange
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70ef52e3ae4b8134a9805fd6eb937af1, type: 3}
 --- !u!1 &1806880485

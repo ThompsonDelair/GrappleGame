@@ -16,7 +16,7 @@ public class obj_CaptureZone : ObjectiveTracker
     }
 
     protected override void ListenForObjectiveCompletion() {
-        if (fov.WithinRadius(gameManager.player.transform.position, fov.ViewRadius) && currentTime < captureTime) {
+        if (fov.WithinRadius(GameManager.main.player.transform.position, fov.ViewRadius) && currentTime < captureTime) {
             currentTime += Time.deltaTime;
         }
 

@@ -15,14 +15,14 @@ public class statePlayerTargeting : State {
         frame.weapons.Grappling();
         
         // Transition back to idle when the player actor returns to it's base state
-        if (frame.weapons.gameManager.player.movement == Movement.WALKING) {
+        if (frame.weapons.gameManager.player.currMovement == Movement.WALKING) {
             frame.weapons.Grappling();
             frame.ReturnToIdle();
         }
 
         // If the player inputs the Grapple Button again while grappling, Reel the grapple early and strike nearby enemies.
         if (frame.input.ActionTriggered(InputName.Grapple, true)
-            && GameManager.main.map.IsPointWalkable(Utils.Vector3ToVector2XZ(GameManager.main.player.transform.position))) { // && frame.weapons.gameManager.Grappler.GrappleLanded) {
+            && GameManager.main.gameData.map.IsPointWalkable(Utils.Vector3ToVector2XZ(GameManager.main.gameData.player.transform.position))) { // && frame.weapons.gameManager.Grappler.GrappleLanded) {
             frame.StateTransition(frame.weapons.grappleCancelState);
         }
     }

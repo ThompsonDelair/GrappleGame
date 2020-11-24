@@ -8,7 +8,9 @@ public class HalfEdge : IEquatable<HalfEdge> {
     public HalfEdge next;
     public HalfEdge pair;
     public NavTri face;
-    public short type;     // I want to have this be a more memory efficient data type in the future. packed binary format?
+    //public short type;     // I want to have this be a more memory efficient data type in the future. packed binary format?
+    public Layer moveBlock;
+
 
     public HalfEdge prev() {
         return next.next;

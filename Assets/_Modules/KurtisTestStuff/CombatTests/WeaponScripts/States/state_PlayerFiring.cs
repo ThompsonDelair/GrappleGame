@@ -9,7 +9,7 @@ public class state_PlayerFiring : State {
         frame.AddSubstate(frame.weapons.blasterRecoveryState);
 
         // Listen for grapple inputs directly after firing.
-        if (frame.input.ActionTriggered(InputName.Grapple, true) && frame.weapons.gameManager.player.movement == Movement.WALKING) {
+        if (frame.input.ActionTriggered(InputName.Grapple, true) && frame.weapons.canGrapple && frame.weapons.gameManager.player.currMovement == Movement.WALKING) {
             frame.StateTransition(frame.weapons.grapplingState);
         }
 

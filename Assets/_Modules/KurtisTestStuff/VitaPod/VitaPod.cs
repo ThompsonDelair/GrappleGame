@@ -27,6 +27,10 @@ public class VitaPod : ObjectiveTracker
     // VitaPod has been implemented as an Objective Tracker.
     // As such, it will dispatch it's event when depleted.
     protected override void ListenForObjectiveCompletion() {
+        if ( GameManager.main.player.health == GameManager.main.player.stats.maxHP && objectiveIdList.Count <= 0 ) {
+            return;
+        }
+
         if (fov.WithinRadius(GameManager.main.player.transform.position, fov.ViewRadius) && currentTime < chargeTime) {
             currentTime += Time.deltaTime;
         }

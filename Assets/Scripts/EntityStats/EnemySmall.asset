@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57d64d6ef426e7d49b26f55dc4d23e3e, type: 3}
+  m_Name: EnemySmall
+  m_EditorClassIdentifier: 
+  maxHP: 1
+  radius: 0.6
+  speed: 8
+  movement: 16
+  invulnerable: 0
+  abilityStats:
+  - {fileID: 11400000, guid: facaeb545c38cdd4a83fa00138dc095c, type: 2}
+  behaviorStats:
+  - {fileID: 11400000, guid: 7ffe3f9f769e4274f8034f4fcd965502, type: 2}

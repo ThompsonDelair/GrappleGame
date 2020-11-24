@@ -1,11 +1,4 @@
-﻿using Microsoft.CSharp;
-using System;
-using System.CodeDom.Compiler;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using UnityEditor;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,37 +14,35 @@ public class GameManager : MonoBehaviour
 
     public bool drawTerrain;
     public bool drawNavMesh;
-
+    public bool drawGrappleRange;
 
     public static GameManager main; 
     private Camera mainCamera;
-    public float enemySpeed;
 
     [Header("Player Config Fields")]
     public float playerTurnSpeed = 0.1f;
     public Actor player;
     public StatManager playerStats;
     public Animator playerAnimator;
-    public float playerRadius;
     public float playerBulletDamage = 1f;
 
-    List<EnemyActor> enemies;
+    //List<Actor> enemies;
 
-    public List<EnemyActor> EnemyList { get { return enemies; } }
-    public List<Actor> ObjectList { get { return map.objects; } }
+    //public List<Actor> EnemyList { get { return enemies; } }
+    //public List<Actor> ObjectList { get { return map.objects; } }
 
-    List<Actor> allActors = new List<Actor>();
+    //List<Actor> allActors = new List<Actor>();
 
-    public List<Bullet> bullets = new List<Bullet>();
+    //public List<Bullet> bullets = new List<Bullet>();
     public GameObject playerBulletHit;
 
-    
+
 
     //public List<Area> Areas { get { return areas; } }
 
-    public List<Area> areas = new List<Area>();
+    //public List<Area> areas = new List<Area>();
 
-    Grapple grapple = new Grapple();
+    Grapple grapple;
     public Grapple Grappler { get { return grapple; } }
     Transform cursor;
 
@@ -62,14 +53,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject smallEnemy = null;
     [SerializeField] private GameObject bigJoe = null;
 
-    public Map map;
+    //public Map map;
 
     public bool hazardColliding;
 
     int playerHazardTimer = 40;
 
-    public LineRenderer lineRenderer;
+    //public LineRenderer lineRenderer;
 
+    public GameData gameData;
 
     // THIS MUST BE MOVED TO DAMAGESYSTEM AND ACCESSED THRU SOME KIND OF DATASTRUCT LATER, SHOULDNT BE HERE, JUST BEIN HACKY FOR NOW -All Caps Zora
  //   [Header("Health Params")]
@@ -81,11 +73,13 @@ public class GameManager : MonoBehaviour
 
     private void Awake() {
 
+
+
         AudioListener.volume = 0.3f;
 
         Time.timeScale = 1f;
 
-        map = new Map();
+
         main = this;
         cursor = GameObject.Find("Cursor").transform;
         mainCamera = Camera.main;
@@ -93,7 +87,7 @@ public class GameManager : MonoBehaviour
         inputBuffer = GetComponent<InputBuffer>();
         
         Init();
-        lineRenderer = GetComponent<LineRenderer>();
+        //lineRenderer = GetComponent<LineRenderer>();
 
         playerStats = player.transform.GetComponent<StatManager>();
 
@@ -113,70 +107,56 @@ public class GameManager : MonoBehaviour
 
         InputUpdate();
 
-        HazardCheck();
+        MovementSystem.MovementUpdate(gameData);
+        CollisionSystem.CollisionUpdate(gameData);
+        DamageSystem.HealthUpdate(gameData.allActors);
+        AbilitySystem.Update(gameData);
 
+        //DamageSystem.HealthUpdate(map.objects);
 
-
-
-        MovementSystem.MovementUpdate(enemies,allActors,bullets,map);
-        CollisionSystem.CollisionUpdate(allActors,enemies,bullets,map);
-        DamageSystem.HealthUpdate(allActors);
-        DamageSystem.HealthUpdate(map.objects);
-        AbilitySystem.AbilityUpdate(enemies, player.position2D, map.enemyObjects);
-
-
-        // Update for enemy melee stuff is here for now....
-        //enemyScanUpdate();
-        if (Input.GetKeyDown(KeyCode.E)) {
-            map.OpenDoor(1);
-        }
-        if (Input.GetKeyDown(KeyCode.R)) {
-            map.CloseDoor(1);
-        }
-        if (Input.GetKeyDown(KeyCode.T)) {
-            map.ToggleDoor(1);
-        }
     }
 
     private void FixedUpdate() {
-        if (player.movement == Movement.IGNORE_CLIFFS) {
-            grapple.GrappleUpdate(map);
+        if (player.currMovement == Movement.FLYING) {
+            grapple.GrappleUpdate(gameData.map);
         }
     }
 
     void Init() {
-        FindActors();        
-        map.InitNavMesh(GameObject.Find("MapRoot").transform);
-        map.FindAreas(GameObject.Find("Areas").transform);
-        map.FindObjects(GameObject.Find("Objects").transform);
-        map.FindZones();
-        map.SetDoorHalfEdges();
+        gameData = new GameData();
+        FindActors();
+        FindObjects();
+        gameData.map.InitNavMesh(GameObject.Find("MapRoot").transform);
+        gameData.map.FindAreas(GameObject.Find("Areas").transform);
+        gameData.map.FindZones();
+        gameData.map.SetDoorHalfEdges();
+        
     }
 
-    void HazardCheck() {
-        if (hazardColliding) {
-            playerStats.AddModifier(StatManager.StatType.Speed, -0.9f);
-            player.velocity = player.velocity.normalized * playerStats.GetStat(StatManager.StatType.Speed);
-            playerHazardTimer--;
-            if (playerHazardTimer <= 0) {
-                hazardColliding = false;
-                playerHazardTimer = 40;
-            }
+    //void HazardCheck() {
+    //    if (hazardColliding) {
+    //        playerStats.AddModifier(StatManager.StatType.Speed, -0.9f);
+    //        player.velocity = player.velocity.normalized * playerStats.GetStat(StatManager.StatType.Speed);
+    //        playerHazardTimer--;
+    //        if (playerHazardTimer <= 0) {
+    //            hazardColliding = false;
+    //            playerHazardTimer = 40;
+    //        }
 
-            if (player.movement == Movement.IGNORE_CLIFFS) {
-                grapple.EndGrapple();
-            }
+    //        if (player.currMovement == Movement.FLYING) {
+    //            grapple.EndGrapple();
+    //        }
 
-            //Debug.Log("Collision...");
-        } else {
-           playerStats.RemoveModifier(StatManager.StatType.Speed, -0.9f);
-        }
-    }
+    //        //Debug.Log("Collision...");
+    //    } else {
+    //       playerStats.RemoveModifier(StatManager.StatType.Speed, -0.9f);
+    //    }
+    //}
 
     void DrawTerrain() {
-        for(int i = 0; i < map.terrainEdges.Count; i++) {
+        for(int i = 0; i < gameData.map.terrainEdges.Count; i++) {
             //Layer[] types = map.VertTypes[i];
-            TerrainEdge e = map.terrainEdges[i];
+            TerrainEdge e = gameData.map.terrainEdges[i];
             Color c;
 
             if (e.layer == Layer.BLOCK_FLY) {
@@ -194,51 +174,70 @@ public class GameManager : MonoBehaviour
 
         Transform p = dudes.Find("Player");
         ActorStats stats = p.GetComponent<ActorInfo>().stats;
-        player = new Actor(p,stats.radius,Layer.PLAYER, stats.maxHP, null);
-        grapple.owner = player;
-        allActors.Add(player);
+        player = new Actor(p,stats,Team.PLAYER);
+        grapple = new Grapple(player);
+        gameData.allActors.Add(player);
+        gameData.player = player;
         if(player == null) {
             Debug.LogError("cant find player");
         }        
 
-        List<EnemyActor> enemyList = new List<EnemyActor>();
+        //List<Actor> enemyList = new List<Actor>();
         
         int count = 0;
 
         foreach (Transform child in dudes.Find("Enemies")) {
-            stats = child.GetComponent<ActorInfo>().stats;
-            // Ability class is created based on string stored in stats.mainAttack
-            Ability ab = AbilityStringToClass(stats.mainAttack);
-            EnemyActor a = new EnemyActor(child,stats.radius,Layer.ENEMIES, stats.maxHP, stats.targetLockTime, ab);
-            enemyList.Add(a);
-            allActors.Add(a);
+            AddActorFromGameobject(child.gameObject);
             count++;
         }
-        enemies = enemyList;
+        //enemies = enemyList;
+    }
+
+    public void FindObjects() {
+        Transform objectRoot = GameObject.Find("Objects").transform;
+        Transform[] children = Utils.GetChildren(objectRoot);
+        for (int i = 0; i < children.Length; i++) {
+            //ActorNameComponent name = children[i].GetComponent<ActorNameComponent>();
+            ActorStats stats = children[i].GetComponent<ActorInfo>().stats;
+
+            AddActorFromGameobject(children[i].gameObject);
+
+            //if (stats.mainAttack == "TargetedShot") // Hacky way to segregate other objects from enemy sentry for now
+            //{
+            //    Actor a = new Actor(children[i],stats,Team.ENEMIES);
+            //    //Debug.Log("THIS GUY: " + i + enemyActor.transform.gameObject.name);
+            //    enemyObjects.Add(enemyActor);
+            //    objects.Add(enemyActor);
+            //} else {
+            //    Actor a = new Actor(children[i],stats,Layer.ENEMIES);
+            //    objects.Add(a);
+            //}
+
+        }
     }
 
     // 
-    public Ability AbilityStringToClass(string abilityName)
-    {
-        Debug.Log("BUILDING " + abilityName + " ABILITY CLASS FOR ");
-        if(abilityName == "Lunge")
-        {
-            Ability ability = new Lunge();
-            return ability;
-        }
-        else if (abilityName == "TargetedShot")
-        {
+    //public Ability AbilityStringToClass(string abilityName)
+    //{
+    //    Debug.Log("BUILDING " + abilityName + " ABILITY CLASS FOR ");
+    //    if(abilityName == "Lunge")
+    //    {
+    //        Ability ability = new Lunge();
+    //        return ability;
+    //    }
+    //    else if (abilityName == "TargetedShot")
+    //    {
             
-            Ability ability = new TargetedShot();
-            return ability;
-        }
+    //        Ability ability = new TargetedShot();
+    //        return ability;
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
 
     public void PlayerMovementInput() {
-        if (player.movement != Movement.WALKING)
+        if (player.currMovement != Movement.WALKING)
         {
             return;
         }
@@ -342,9 +341,9 @@ public class GameManager : MonoBehaviour
     public void ShootBullet(Quaternion targetRotation)
     {
         GameObject gameObjBullet = (GameObject)Instantiate(Resources.Load("Prefabs/ProtoBullet"));
-        Bullet bullet = new Bullet(gameObjBullet.transform, 0.5f,Layer.ENEMIES,playerBulletDamage);
+        Bullet bullet = new Bullet(gameObjBullet.transform, 0.5f,Team.ENEMIES,playerBulletDamage);
         bullet.position3D = player.position3D;
-        bullets.Add(bullet);
+        gameData.bullets.Add(bullet);
 
         player.PlayAudioClip(AudioClips.singleton.gunShot);
         // Set to shoot in that direction
@@ -353,7 +352,7 @@ public class GameManager : MonoBehaviour
 
     public void ShootGrapple(Vector2 dir) {
         playerAnimator.SetBool("Running", false);
-        grapple.StartGrapple(dir,map);
+        grapple.StartGrapple(dir,gameData.map);
     }
 
     public bool RaycastWorldMousePos(out Vector3 worldPos) {
@@ -376,73 +375,47 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public GameObject SpawnActorAsObject(GameObject go, Vector2 pos2D) {
+    
+    public Actor SpawnActor(GameObject prefab, Vector2 pos2D) {
 
-        if(go.GetComponent<ActorInfo>() == null) {
+        if(prefab.GetComponent<ActorInfo>() == null) {
             Debug.LogError("this object doesn't have an actor component");
             return null;
         }
 
-        GameObject g = GameObject.Instantiate(go);
-        ActorStats s = g.GetComponent<ActorInfo>().stats;
+        GameObject g = Instantiate(prefab);
 
-        if (s.mainAttack == "TargetedShot") // Hacky way to segregate other objects from enemy sentry for now
-{
-            EnemyActor enemyActor = new EnemyActor(g.transform,s.radius,Layer.ENEMIES,s.maxHP,0f,GameManager.main.AbilityStringToClass(s.mainAttack));
-            //Debug.Log("THIS GUY: " + i + enemyActor.transform.gameObject.name);
-            map.enemyObjects.Add(enemyActor);
-            map.objects.Add(enemyActor);
-            enemyActor.position2D = pos2D;
-        } else {
-            Actor a = new Actor(g.transform,s.radius,Layer.ENEMIES,s.maxHP,GameManager.main.AbilityStringToClass(s.mainAttack));
-            map.objects.Add(a);
-            a.position2D = pos2D;
-        }
+        Actor a = AddActorFromGameobject(g);
 
-        return go;
-    }
+        a.position2D = pos2D;
 
-    public Actor SpawnEnemy(Vector2 pos) {
-        int rand = UnityEngine.Random.Range(0,12);
-        GameObject prefab = (rand == 0) ? bigJoe : smallEnemy;
-        float radius = (rand == 0) ? 1 : 0.25f;
-        GameObject go = Instantiate(prefab,Utils.Vector2XZToVector3(pos),Quaternion.identity);
-        ActorStats stats = go.GetComponent<ActorInfo>().stats;
-
-        //float health = 0f;
-        // Temp health val selection
-        //if (prefab.tag == "HeavyEnemy")
-        //{
-        //    health = go.GetComponentheavyEnemyHealth;
-        //}
-        //else if (prefab.tag == "LightEnemy")
-        //{
-        //    health = lightEnemyHealth;
-        //} else if(health == 0)
-        //{
-        //    Debug.LogError("Could not find enemy type via GameObject tag");
-        //}
-
-        EnemyActor a = new EnemyActor(go.transform,stats.radius,Layer.ENEMIES,stats.maxHP,stats.targetLockTime, AbilityStringToClass(stats.mainAttack));
-        allActors.Add(a);
-        enemies.Add(a);
         return a;
     }
 
+    public Actor AddActorFromGameobject(GameObject go) {
+        ActorStats s = go.GetComponent<ActorInfo>().stats;
+        Actor a = new Actor(go.transform,s,Team.ENEMIES);
+        gameData.allActors.Add(a);
+        gameData.enemyActors.Add(a);
+        return a;
+    }
 
-
+    public Actor SpawnRandomEnemy(Vector2 pos) {
+        int rand = UnityEngine.Random.Range(0,12);
+        GameObject prefab = (rand == 0) ? bigJoe : smallEnemy;
+        GameObject go = Instantiate(prefab,Utils.Vector2XZToVector3(pos),Quaternion.identity);
+        Actor a = AddActorFromGameobject(go);
+        return a;
+    }
+       
     public void DestroyActor(Actor a) {
-        if(a.layer == Layer.ENEMIES) {
-            if(allActors.Contains(a))
-                allActors.Remove(a);
-            if (enemies.Contains(a))
-                enemies.Remove((EnemyActor) a);
-            if (map.objects.Contains(a))
-                map.objects.Remove(a);
+        if(a.team == Team.ENEMIES) {
+            gameData.enemyActors.Remove(a);
+            gameData.allActors.Remove(a);
             Destroy(a.transform.gameObject);
-        } else if (a.layer == Layer.PLAYER) // PLAYER DEATH CASE Using hacky method of disabling updates for now until proper death anim and conditions are made
+        } else if (a.team == Team.PLAYER) // PLAYER DEATH CASE Using hacky method of disabling updates for now until proper death anim and conditions are made
         {
-            allActors.Remove(a);
+            gameData.allActors.Remove(a);
 
             // Update healthbar text to help convey death occured for now
             UnityEngine.UI.Text text = a.transform.Find("PlayerCanvas").GetChild(0).GetComponent<Text>();
@@ -468,8 +441,21 @@ public class GameManager : MonoBehaviour
     }
 
     public void OnDrawGizmos() {
-        if(map != null) {
-            map.DrawTerrainEdgesGizmos();
+        if(gameData != null) {
+            gameData.map.DrawTerrainEdgesGizmos();
+        }
+
+
+        if (drawGrappleRange && GameObject.Find("Player") != null) {
+            Vector3 playerPos = GameObject.Find("Player").transform.position;
+            Vector2[] circles = Calc.CircularPointsAroundPosition(Utils.Vector3ToVector2XZ(playerPos),20,Grapple.grappleRange);
+            for (int i = 0; i < circles.Count(); i++) {
+                Debug.DrawLine(Utils.Vector2XZToVector3(circles[i]),Utils.Vector2XZToVector3(circles[(i + 1) % circles.Count()]),CustomColors.green);
+            }
+            Debug.DrawLine(playerPos,playerPos + Vector3.forward * Grapple.grappleRange,CustomColors.green);
+            Debug.DrawLine(playerPos,playerPos + Vector3.back * Grapple.grappleRange,CustomColors.green);
+            Debug.DrawLine(playerPos,playerPos + Vector3.left * Grapple.grappleRange,CustomColors.green);
+            Debug.DrawLine(playerPos,playerPos + Vector3.right * Grapple.grappleRange,CustomColors.green);
         }
     }
 

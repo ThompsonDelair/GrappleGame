@@ -64,7 +64,7 @@ public class TriChunk {
                         h.pair = kvp.Value;
                         kvp.Value.pair = h;
 
-                        h.type = kvp.Value.type;
+                        h.moveBlock = kvp.Value.moveBlock;
 
                         pairFound = true;
                         break;

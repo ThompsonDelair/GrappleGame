@@ -176,7 +176,7 @@ public static class NavUtils
             NavTri curr = frontier.Pop();
 
             foreach (HalfEdge e in curr.Edges()) {
-                if (e.type == 0 && e.pair != null && !visited.Contains(e.pair.face)) {
+                if (e.moveBlock == Layer.NONE && e.pair != null && !visited.Contains(e.pair.face)) {
                     frontier.Push(e.pair.face);
                 }
             }
@@ -185,6 +185,44 @@ public static class NavUtils
             tris.Add(curr);
         }
 
+        return tris;
+    }
+
+    public static List<NavTri> FindConnectedTrisWithAABB(NavTri start, out AABB_2D aabb) {
+        Vector2 bottomLeft = Vector2.positiveInfinity;
+        Vector2 topRight = Vector2.negativeInfinity;
+        List<NavTri> tris = new List<NavTri>();
+        HashSet<NavTri> visited = new HashSet<NavTri>();
+        Stack<NavTri> frontier = new Stack<NavTri>();
+
+        frontier.Push(start);
+        int counter;
+
+        while (frontier.Count != 0) {
+            NavTri curr = frontier.Pop();
+
+            foreach (HalfEdge e in curr.Edges()) {
+                if (e.moveBlock == Layer.NONE && e.pair != null && !visited.Contains(e.pair.face)) {
+                    frontier.Push(e.pair.face);
+                }
+
+                if(e.start.x < bottomLeft.x) {
+                    bottomLeft.x = e.start.x;
+                } else if(e.start.x > topRight.x) {
+                    topRight.x = e.start.x;
+                }
+
+                if (e.start.y < bottomLeft.y) {
+                    bottomLeft.y = e.start.y;
+                } else if (e.start.y > topRight.y) {
+                    topRight.y = e.start.y;
+                }
+            }
+
+            visited.Add(curr);
+            tris.Add(curr);
+        }
+        aabb = new AABB_2D(bottomLeft,topRight);
         return tris;
     }
 }

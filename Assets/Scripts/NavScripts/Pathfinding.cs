@@ -5,33 +5,34 @@ using UnityEngine;
 
 public static class Pathfinding {
 
-    public static List<Vector2> getPath(Vector2 start, Vector2 goal, float radius, Map map) {
+    public static List<Vector2> getPath(Vector2 start, Vector2 goal, float radius, Movement movement, Map map) {
         return getPath(
             start,
             goal,
             NavCalc.TriFromPoint(start,map.triKDMap,map.VertEdgeMap),
             NavCalc.TriFromPoint(goal,map.triKDMap,map.VertEdgeMap),
-            radius
+            radius,
+            movement
             );
     }
 
     public static List<Vector2> getPath(MapChunked map,Vector2 start,Vector2 goal,float radius) {
-        return getPath(start,goal,map.triFromPoint(start),map.triFromPoint(goal),radius);
+        return getPath(start,goal,map.triFromPoint(start),map.triFromPoint(goal),radius,Movement.WALKING);
     }
 
     public static List<Vector2> getPath(OldMap map, Vector2 start, Vector2 goal,float radius) {
-        return getPath(start,goal,map.triFromPoint(start),map.triFromPoint(goal),radius);
+        return getPath(start,goal,map.triFromPoint(start),map.triFromPoint(goal),radius,Movement.WALKING);
     }
 
     public static List<Vector2> getPath(Vector2 start, Vector2 goal, float radius, KDNode root,Dictionary<Vector2,HalfEdge> vertEdgeMap) {
-        return getPath(start,goal,NavCalc.TriFromPoint(start,root,vertEdgeMap),NavCalc.TriFromPoint(goal,root,vertEdgeMap),radius);
+        return getPath(start,goal,NavCalc.TriFromPoint(start,root,vertEdgeMap),NavCalc.TriFromPoint(goal,root,vertEdgeMap),radius,Movement.WALKING);
     }
 
-    public static List<Vector2> getPath(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri,float radius, HashSet<NavTri> pathTris = null) {
+    public static List<Vector2> getPath(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri,float radius, Movement m, HashSet<NavTri> pathTris = null) {
         if(startTri == null || goalTri == null) {
             return null;
         }
-        List<NavTri> triPath = pathfind(start,goal,startTri,goalTri);
+        List<NavTri> triPath = pathfind(start,goal,startTri,goalTri,m);
         if (triPath == null) {
             return null;
         }
@@ -46,7 +47,7 @@ public static class Pathfinding {
         return path;
     }
 
-    public static List<NavTri> pathfind(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri) {
+    public static List<NavTri> pathfind(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri, Movement movement) {
         
         List<NavTri> path = new List<NavTri>();
 
@@ -100,7 +101,7 @@ public static class Pathfinding {
 
             // analyze each of current node's neighbours
             foreach (HalfEdge e in MapProcessing.TriEdges(curr)) {
-                if (e.type != 0 || e.pair == null) {
+                if (Utils.BitwiseOverlapCheck((int)e.moveBlock,(int)movement) || e.pair == null) {
                     continue;
                 }
 

@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexSide:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Noise:
@@ -48,12 +48,12 @@ Material:
     - _NoiseScale: -0
     - _RimPower: 12.1
     - _Scale: 0.31
-    - _SideScale: -0.1
+    - _SideScale: 0.31
     - _TopSpread: 2.52
     m_Colors:
     - _EdgeColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
     - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _RimColor2: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _SideColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
+    - _SideColor: {r: 0.21960784, g: 0.21176471, b: 0.22745098, a: 1}
     - _TopColor: {r: 0.21889463, g: 0.21253115, b: 0.2264151, a: 1}
   m_BuildTextureStacks: []
