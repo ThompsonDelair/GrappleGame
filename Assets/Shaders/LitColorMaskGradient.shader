@@ -1,4 +1,6 @@
-﻿Shader "Toon/2ToneGradientMask" {
+﻿
+// Example provided by MinionsArt
+Shader "Toon/2ToneGradientMask" {
     Properties {
         [Header(Basic Colors)]
         _Color ("Main Color", Color) = (0.5,0.5,0.5,1)

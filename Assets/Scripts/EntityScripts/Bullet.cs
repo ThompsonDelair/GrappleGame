@@ -8,8 +8,11 @@ public class Bullet
 {
     public NewCircleCollider collider;
     public Transform transform;
-    public float speed = 50f;
-    public float damage;
+
+    public BulletStats stats;
+    public BulletBehavior behavior;
+
+    //public Actor target;
 
     public Team team;
     public Movement movement = Movement.FLYING;
@@ -29,12 +32,22 @@ public class Bullet
             transform.position = new Vector3(value.x,0,value.y);
         }
     }
-
-    public Bullet(Transform t, float r, Team l, float dmg)
-    {
-        collider = new NewCircleCollider(r,t);
-        transform = t;
-        team = l;
-        damage = dmg;
+          
+    public virtual void OnExpire(GameData data) {
+        SoundManager.PlayOneClipAtLocation(AudioClips.singleton.bulletImpact,position2D,6f);
+        //DestroyGameobject(transform.gameObject);
+        ParticleEmitter.current.SpawnParticleEffect(GameManager.main.playerBulletHit,transform.position,Quaternion.identity);
+        GameManager.main.DestroyBullet(this);
     }
+
+    public Bullet(Transform t,BulletStats stats)
+    {
+        collider = new NewCircleCollider(stats.radius,t);
+        transform = t;
+        team = stats.targetTeam;
+        this.stats = stats;
+        behavior = stats.GetBehavior();
+        //this.target = target;
+    }
+
 }

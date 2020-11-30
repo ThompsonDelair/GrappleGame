@@ -26,21 +26,7 @@ public class GameManager : MonoBehaviour
     public Animator playerAnimator;
     public float playerBulletDamage = 1f;
 
-    //List<Actor> enemies;
-
-    //public List<Actor> EnemyList { get { return enemies; } }
-    //public List<Actor> ObjectList { get { return map.objects; } }
-
-    //List<Actor> allActors = new List<Actor>();
-
-    //public List<Bullet> bullets = new List<Bullet>();
     public GameObject playerBulletHit;
-
-
-
-    //public List<Area> Areas { get { return areas; } }
-
-    //public List<Area> areas = new List<Area>();
 
     Grapple grapple;
     public Grapple Grappler { get { return grapple; } }
@@ -53,32 +39,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject smallEnemy = null;
     [SerializeField] private GameObject bigJoe = null;
 
-    //public Map map;
-
-    public bool hazardColliding;
-
-    int playerHazardTimer = 40;
-
-    //public LineRenderer lineRenderer;
 
     public GameData gameData;
 
-    // THIS MUST BE MOVED TO DAMAGESYSTEM AND ACCESSED THRU SOME KIND OF DATASTRUCT LATER, SHOULDNT BE HERE, JUST BEIN HACKY FOR NOW -All Caps Zora
- //   [Header("Health Params")]
-    //public float playerHealth;
-    //public float lightEnemyHealth;
-    //public float basicEnemyHealth;
-    //public float heavyEnemyHealth;
- 
+    public bool drawNavGrid;
+    public bool drawZones;
+    public bool drawPlayerSight;
 
     private void Awake() {
-
-
-
+               
         AudioListener.volume = 0.3f;
 
         Time.timeScale = 1f;
-
 
         main = this;
         cursor = GameObject.Find("Cursor").transform;
@@ -91,26 +63,29 @@ public class GameManager : MonoBehaviour
 
         playerStats = player.transform.GetComponent<StatManager>();
 
+        gameData.navGrid = new NavGrid();
+        gameData.navGrid.Init(gameData.map);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-
+        // Start ambient sound for scene
+        SoundManager.StartAmbientSound(AudioClips.singleton.ambientCave1, 0.4f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (drawTerrain)
-            DrawTerrain();
+
 
         InputUpdate();
 
         MovementSystem.MovementUpdate(gameData);
         CollisionSystem.CollisionUpdate(gameData);
         DamageSystem.HealthUpdate(gameData.allActors);
-        AbilitySystem.Update(gameData);
+        MapSystem.Update(gameData);
+        BehaviorSystem.Update(gameData);
 
         //DamageSystem.HealthUpdate(map.objects);
 
@@ -124,13 +99,13 @@ public class GameManager : MonoBehaviour
 
     void Init() {
         gameData = new GameData();
-        FindActors();
-        FindObjects();
+
         gameData.map.InitNavMesh(GameObject.Find("MapRoot").transform);
-        gameData.map.FindAreas(GameObject.Find("Areas").transform);
+        gameData.map.FindAreas(GameObject.Find("Areas").transform,gameData);
         gameData.map.FindZones();
         gameData.map.SetDoorHalfEdges();
-        
+        FindActors();
+        FindObjects();
     }
 
     //void HazardCheck() {
@@ -336,19 +311,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Instantiates bullet and adds bullet to global list of bullets in game
-    // Attaches bullet gameobject to bullet class
-    public void ShootBullet(Quaternion targetRotation)
-    {
-        GameObject gameObjBullet = (GameObject)Instantiate(Resources.Load("Prefabs/ProtoBullet"));
-        Bullet bullet = new Bullet(gameObjBullet.transform, 0.5f,Team.ENEMIES,playerBulletDamage);
-        bullet.position3D = player.position3D;
-        gameData.bullets.Add(bullet);
 
-        player.PlayAudioClip(AudioClips.singleton.gunShot);
-        // Set to shoot in that direction
-        bullet.transform.rotation = targetRotation;
-    }
 
     public void ShootGrapple(Vector2 dir) {
         playerAnimator.SetBool("Running", false);
@@ -388,16 +351,37 @@ public class GameManager : MonoBehaviour
         Actor a = AddActorFromGameobject(g);
 
         a.position2D = pos2D;
+        a.currZone = gameData.map.ZoneFromPoint(pos2D);
 
         return a;
     }
 
     public Actor AddActorFromGameobject(GameObject go) {
-        ActorStats s = go.GetComponent<ActorInfo>().stats;
+        ActorInfo i = go.GetComponent<ActorInfo>();
+        ActorStats s = i.stats;
         Actor a = new Actor(go.transform,s,Team.ENEMIES);
+        i.actor = a;
+        a.currZone = gameData.map.ZoneFromPoint(Utils.Vector3ToVector2XZ(transform.position));
         gameData.allActors.Add(a);
         gameData.enemyActors.Add(a);
         return a;
+    }
+
+    // Instantiates bullet and adds bullet to global list of bullets in game
+    // Attaches bullet gameobject to bullet class
+    public void ShootBullet(Quaternion targetRotation) {
+        Bullet bullet2 = SpawnBullet((GameObject)Resources.Load("Prefabs/ProtoBullet"),gameData.player.position2D);
+        bullet2.transform.rotation = targetRotation;
+        SoundManager.StartClipOnActor(AudioClips.singleton.gunShot,player,6f,false);
+    }
+
+    public Bullet SpawnBullet(GameObject prefab, Vector2 pos) {
+        GameObject go = GameObject.Instantiate(prefab);
+        Bullet bullet = new Bullet(go.transform,go.GetComponent<BulletInfo>().stats);
+        bullet.position2D = pos;
+        gameData.bullets.Add(bullet);
+
+        return bullet;
     }
 
     public Actor SpawnRandomEnemy(Vector2 pos) {
@@ -418,7 +402,7 @@ public class GameManager : MonoBehaviour
             gameData.allActors.Remove(a);
 
             // Update healthbar text to help convey death occured for now
-            UnityEngine.UI.Text text = a.transform.Find("PlayerCanvas").GetChild(0).GetComponent<Text>();
+            UnityEngine.UI.Text text = GameObject.FindGameObjectWithTag("HealthText").GetComponent<Text>();
             text.text = "HP: DEAD";
             text.color = Color.red;
             text.fontSize += 5;
@@ -431,6 +415,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void DestroyBullet(Bullet b) {
+        gameData.bullets.Remove(b);
+        Destroy(b.transform.gameObject);
+    }
+
+    public void SpawnArea(GameObject prefab,Vector2 pos) {
+        GameObject go = Instantiate(prefab);
+        Area area = go.GetComponent<Area>();
+        area.transform.position = Utils.Vector2XZToVector3(pos);
+        gameData.areas.Add(area);
+    }
+
+    public void DestroyArea(Area a) {
+        gameData.areas.Remove(a);
+        Destroy(a.transform.gameObject);
+    }
+
     public void DestroyGameobject(GameObject go) {
         Destroy(go);
     }
@@ -441,21 +442,59 @@ public class GameManager : MonoBehaviour
     }
 
     public void OnDrawGizmos() {
+
+        if (gameData == null)
+            return;
+
         if(gameData != null) {
             gameData.map.DrawTerrainEdgesGizmos();
         }
 
+        if (drawNavGrid) {
+            NavGrid navGrid = gameData.navGrid;
+
+            navGrid.Draw();
+
+            Vector4 cell = navGrid.PartitionPosFromPos2D(Utils.Vector3ToVector2XZ(cursor.position));
+            int cellValue = navGrid.CellValue((int)cell.x,(int)cell.y,(int)cell.z,(int)cell.w);
+            Color c = Color.white;
+            if (cellValue == (int)Movement.FLYING) {
+                c = Color.red;
+            } else if(cellValue == (int)Movement.WALKING) {
+                c = Color.cyan;
+            }
+            navGrid.DrawSquareWithCross(navGrid.PosFromPartition((int)cell.x,(int)cell.y,(int)cell.z,(int)cell.w),navGrid.cellSize,c);
+        }
+
+        if (drawPlayerSight) {
+            gameData.navGrid.DrawPlayerSight();
+        }
+
+        if (drawZones) {
+            for (int i = 0; i < gameData.map.zones.Count; i++) {
+                gameData.map.zones[i].aabb.DrawBox(Color.red);
+            }
+        }
+
+        if (drawTerrain)
+            DrawTerrain();
 
         if (drawGrappleRange && GameObject.Find("Player") != null) {
             Vector3 playerPos = GameObject.Find("Player").transform.position;
             Vector2[] circles = Calc.CircularPointsAroundPosition(Utils.Vector3ToVector2XZ(playerPos),20,Grapple.grappleRange);
-            for (int i = 0; i < circles.Count(); i++) {
-                Debug.DrawLine(Utils.Vector2XZToVector3(circles[i]),Utils.Vector2XZToVector3(circles[(i + 1) % circles.Count()]),CustomColors.green);
+            for (int i = 0; i < circles.Length; i++) {
+                Debug.DrawLine(Utils.Vector2XZToVector3(circles[i]),Utils.Vector2XZToVector3(circles[(i + 1) % circles.Length]),CustomColors.green);
             }
             Debug.DrawLine(playerPos,playerPos + Vector3.forward * Grapple.grappleRange,CustomColors.green);
             Debug.DrawLine(playerPos,playerPos + Vector3.back * Grapple.grappleRange,CustomColors.green);
             Debug.DrawLine(playerPos,playerPos + Vector3.left * Grapple.grappleRange,CustomColors.green);
             Debug.DrawLine(playerPos,playerPos + Vector3.right * Grapple.grappleRange,CustomColors.green);
+        }
+    }
+
+    public void DestroyAllEnemies() {
+        for(int i = 0; i < gameData.enemyActors.Count; i++) {
+            DestroyActor(gameData.enemyActors[i]);
         }
     }
 

@@ -126,6 +126,8 @@ public class PlayerWeapons : MonoBehaviour
     }
 
     public void FireRailCannon() {
+        SoundManager.StartClipOnActor(AudioClips.singleton.chargeShotShot, GameManager.main.player, 6f, false);
+
         //Debug.Log("Fire Heavy Blaster");
         playerAnimator.SetTrigger("HeavyBlaster");
 
@@ -265,7 +267,9 @@ public class PlayerWeapons : MonoBehaviour
         
         // 1. Increment dodge counter
         currentDodgeCounter++;
-        
+
+        SoundManager.StartClipOnActor(AudioClips.singleton.dash, GameManager.main.player, 0.025f, false);
+
         // 2. Apply force to the player
         if (inputDir != Vector2.zero) {
             gameManager.player.StartNewPush(inputDir, dodgeForce);

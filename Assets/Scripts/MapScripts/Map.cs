@@ -15,7 +15,7 @@ public class Map
     HashSet<NavTri> floorTris;
     HashSet<NavTri> roofTris;
 
-    List<Zone> zones;
+    public List<Zone> zones;
     List<Zone> pitZones;
     List<Zone> floorZones;
 
@@ -29,7 +29,7 @@ public class Map
     public KDNode triKDMap;
     public Dictionary<Vector2,HalfEdge> vertEdgeMap = new Dictionary<Vector2,HalfEdge>();
 
-    public List<Area> areas = new List<Area>();
+    //public List<Area> areas = new List<Area>();
     //public List<Actor> objects = new List<Actor>();
 
     // Added for object ability updates, needed enemy actors
@@ -193,12 +193,12 @@ public class Map
         return Layer.NONE;
     }
 
-    public void FindAreas(Transform areaRoot) {
+    public void FindAreas(Transform areaRoot,GameData data) {
         Transform[] children = Utils.GetChildren(areaRoot);
         for(int i = 0; i < children.Length; i++) {
             Area a = children[i].GetComponent<Area>();
             if (a != null) {
-                areas.Add(a);
+                data.areas.Add(a);
             }
         }
     }
@@ -225,6 +225,7 @@ public class Map
             }
 
             Zone zone = finder.FindZone(this);
+            zones.Add(zone);
 
             HashSet<NavTri> triSet = new HashSet<NavTri>(zone.tris);
 
@@ -316,6 +317,22 @@ public class Map
             }
         }
         return false;
+    }
+
+    public bool ClearSightLine(Vector2 a, Vector2 b) {
+        AABB_2D aabb = new AABB_2D(a,b);
+        for (int i = 0; i < terrainEdges.Count; i++) {
+            TerrainEdge e = terrainEdges[i];
+
+            if (!aabb.OverlapCheck(e.aabb)) {
+                continue;
+            }
+            if (CollisionSystem.LayerOrCheck(e.layer,Layer.BLOCK_FLY) && Calc.DoLinesIntersect(a,b,e.vertA_pos2D,e.vertB_pos2D)) {
+
+                return false;
+            }
+        }
+        return true;
     }
 
     public void ToggleAllDoors() {

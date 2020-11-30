@@ -12,11 +12,13 @@ public class SpawnerStats : AbilityStats
     public float eggGrowTime;
     public bool spawnAllTogether;
     public float spawnRange;
+    public float eggRadius;
     public GameObject egg;
-    public List<GameObject> entitiesToSpawn;
-    
+    public int instaSpawnAmount;
+    //public List<GameObject> spawnGuards;
+    public List<GameObject> eggSpawn;
 
     public override Ability GetAbilityInstance() {
-        return new SpawnerNew(this);
+        return new SpawnerAbility(this);
     }
 }

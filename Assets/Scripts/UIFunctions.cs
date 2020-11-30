@@ -14,6 +14,7 @@ public class UIFunctions : MonoBehaviour
             deathUI = GameObject.Find("DeathUI");
         }
         
+        
         deathUI.SetActive(false);
     }
 

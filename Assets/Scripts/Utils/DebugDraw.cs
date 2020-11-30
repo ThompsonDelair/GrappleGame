@@ -2,21 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugDraw : MonoBehaviour
+public static class DebugDraw
 {
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public static void DrawTransformsAsPolygon(Transform[] transforms, Color c) {
         for(int i = 0; i < transforms.Length; i++) {
@@ -24,4 +12,12 @@ public class DebugDraw : MonoBehaviour
         }
     }
 
+    public static void DrawPath3D(List<Vector2> path,Color c) {
+
+        for(int i = 0; i < path.Count - 1; i++) {
+            Vector3 a = Utils.Vector2XZToVector3(path[i]);
+            Vector3 b = Utils.Vector2XZToVector3(path[i+1]);
+            Debug.DrawLine(a,b,c);
+        }
+    }
 }

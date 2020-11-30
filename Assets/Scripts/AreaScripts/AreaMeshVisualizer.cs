@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 
+[RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
 public class AreaMeshVisualizer : MonoBehaviour
 {
     
@@ -17,16 +18,10 @@ public class AreaMeshVisualizer : MonoBehaviour
         PolygonCollider p = a.PolygonCollider;
         List<NavTri> tris = NavUtils.TrisFromPoints(new List<Vector2>(p.Verts));
         Mesh mesh = NavUtils.MeshFromTris(tris,transform.position * -1,Vector2Mode.XZ);
-        MeshFilter mf;
-        if ((mf = GetComponent<MeshFilter>()) == null) {
-            mf = gameObject.AddComponent<MeshFilter>();
-        }
-        MeshRenderer mr;
-        if ((mr = GetComponent<MeshRenderer>()) == null) {
-            mr = gameObject.AddComponent<MeshRenderer>();
-        }
+        MeshFilter mf = GetComponent<MeshFilter>();
+
         mf.mesh = mesh;
-        mr.material = Resources.Load<Material>("Materials/Orange");
+        //mr.material = Resources.Load<Material>("Materials/Orange");
     }
 
     // Update is called once per frame

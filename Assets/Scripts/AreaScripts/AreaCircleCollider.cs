@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AreaCircleCollider : AreaCollider
 {
+    public NewCircleCollider CircleCollider { get { return circleCollider; } }
     NewCircleCollider circleCollider;
     [SerializeField] private float radius;
 

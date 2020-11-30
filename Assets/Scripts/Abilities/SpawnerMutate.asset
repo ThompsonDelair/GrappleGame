@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2d6ff360cfdf784680e44d619772717, type: 3}
+  m_Name: SpawnerMutate
+  m_EditorClassIdentifier: 
+  totalSpawnedLimit: 3
+  spawnedPerWave: 2
+  timeBetweenSpawns: 5
+  waitForFirstSpawn: 4
+  eggGrowTime: 2
+  spawnAllTogether: 0
+  spawnRange: 5
+  eggRadius: 1
+  egg: {fileID: 4410226063173504890, guid: fc8a359945069594cabdf512398c68c7, type: 3}
+  instaSpawnAmount: 0
+  eggSpawn:
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 2067371835699031399, guid: 048b3b219ff678d4ea9436058ad38f88, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}

@@ -163,7 +163,9 @@ MonoBehaviour:
   smallEnemy: {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24,
     type: 3}
   bigJoe: {fileID: 2067371835699031399, guid: 048b3b219ff678d4ea9436058ad38f88, type: 3}
-  hazardColliding: 0
+  drawNavGrid: 0
+  drawZones: 0
+  drawPlayerSight: 0
 --- !u!114 &1876556927220249661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +186,21 @@ MonoBehaviour:
   gunShot: {fileID: 8300000, guid: e331aba43cb80c54892886a383eda8db, type: 3}
   playerDie: {fileID: 8300000, guid: 367e2680aab019d46a7da3ebf9d081a1, type: 3}
   bulletImpact: {fileID: 8300000, guid: e331aba43cb80c54892886a383eda8db, type: 3}
+  chargeShotCharge: {fileID: 8300000, guid: 0e55376a6a476034ba2a4582f8b5d0ac, type: 3}
+  chargeShotShot: {fileID: 8300000, guid: 3443453a41281ba468f848f6bf31cb44, type: 3}
+  HPCharge: {fileID: 8300000, guid: 9ede5194f24f18c4ca52711a5a108acc, type: 3}
+  HPIncrement: {fileID: 8300000, guid: c85811e641ac91a49951ab9d40d6a4a7, type: 3}
+  littleWalk: {fileID: 8300000, guid: 194a8441a47c42e47aaecf6882b4db8d, type: 3}
+  wingFlutter: {fileID: 8300000, guid: 00b09d939b6516549bea4c0d082e81f6, type: 3}
+  ambientCave1: {fileID: 8300000, guid: 1afac6fefacfe0342a5b3a8b5220f215, type: 3}
+  dash: {fileID: 8300000, guid: f9d30488d827dbd439ecad51779c2c2d, type: 3}
+  burn: {fileID: 8300000, guid: e8a02025c3e4cb448a259b2eec85f030, type: 3}
+  playerHurt: {fileID: 8300000, guid: 1395208650b6eae458dbfa4918f32817, type: 3}
+  fireCast: {fileID: 8300000, guid: 39ec7314065d0d24388d6a4f96f0746d, type: 3}
+  fireLand: {fileID: 8300000, guid: 9db69da88efdec943b86c4552512245e, type: 3}
+  enemyShot: {fileID: 8300000, guid: 1b6cebe1712b64049b449fa1b025790a, type: 3}
+  playerDmg: {fileID: 8300000, guid: 3fe109d294c42af42a4c56ccb25a2efc, type: 3}
+  doorToggle: {fileID: 8300000, guid: 17dd22ed9bd703349b42546d8e80e5ab, type: 3}
 --- !u!114 &1876556927220249648
 MonoBehaviour:
   m_ObjectHideFlags: 0

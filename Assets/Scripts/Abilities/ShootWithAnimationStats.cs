@@ -11,7 +11,7 @@ public class ShootWithAnimationStats : AbilityStats
     public float coolDown;
     public float windDown;
     public float damage;
-    public BulletStats bulletStats;
+    public GameObject bulletPrefab;
 
     public override Ability GetAbilityInstance() {
         return new ShootWithAnimation(this);

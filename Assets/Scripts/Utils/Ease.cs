@@ -4,12 +4,17 @@ using UnityEngine;
 
 public static class Ease
 {
-    public static float InCubic(float t) {
-        return t * t * t;
+    public static float InSine(float t) {
+        return 1 - Mathf.Cos((t * Mathf.PI) / 2);
     }
 
-    public static float OutExpo(float t) {
-        return (t == 1) ? 1 : 1 - Mathf.Pow(2,-10 * t);
+    public static float OutSine(float t) {
+        return Mathf.Sin((t * Mathf.PI) / 2);
+    }
+
+
+    public static float InCubic(float t) {
+        return t * t * t;
     }
 
     public static float OutCubic(float t) {
@@ -25,6 +30,10 @@ public static class Ease
             return 8 * t * t * t * t;
 
         return 1 - Mathf.Pow(-2 * t + 2,4) / 2;
+    }
+
+    public static float OutExpo(float t) {
+        return (t == 1) ? 1 : 1 - Mathf.Pow(2,-10 * t);
     }
 
     public static float InOutExpo(float t) {

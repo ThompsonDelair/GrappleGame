@@ -2,9 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public class ParticleEffect {
+    public GameObject effect;
+    public bool continuous;
+    public bool expired;
+
+}
+
 public class ParticleEmitter : MonoBehaviour {
 
     public static ParticleEmitter current;
+    protected Dictionary<int, ParticleEffect> particleSlots;
 
     void Awake() {
         // Singleton implementation
@@ -13,6 +22,11 @@ public class ParticleEmitter : MonoBehaviour {
         } else {
             Destroy(this.gameObject);
         }
+    }
+
+    // Find the first unused entry in the table of slots.
+    public int RequestParticleSlot() {
+        return 0;
     }
 
     // Spawn a particle effect at given position. Destroy after duration comletion.

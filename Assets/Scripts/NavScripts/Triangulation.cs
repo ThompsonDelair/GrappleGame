@@ -174,7 +174,15 @@ public static class Triangulation
                     edge.Value.face = newFace;
                     edge.Value.next = eB;
 
-                    polygon.Add(edge.Value.start,edge.Value);
+                    //if (polygon.ContainsKey(edge.Value.start)) {
+
+                    //}
+                    try {
+                        polygon.Add(edge.Value.start,edge.Value);
+                    } catch {
+                        Debug.LogError("already in polygon??");
+                    }
+                    
                     tris.Add(newFace);
                     // need to manage adding new tris to tris
                     // we already removed the original polygon hole triangles when we checked for bad triangles

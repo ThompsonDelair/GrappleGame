@@ -14,7 +14,7 @@ public static class MovementSystem
     public const float pathfindDelay = 1f;
     const float pathfindWanderAmount = 20f;
     const float pathfindWanderDelay = 3f;
-    const float zoneUpdateDelay = 0.3f;
+    const float zoneUpdateDelay = 0.2f;
     static float zoneUpdateTimestamp;
 
     public static void MovementUpdate(GameData data) {
@@ -25,7 +25,7 @@ public static class MovementSystem
 
         if(zoneUpdateTimestamp < Time.time) {
             UpdateCurrZone(data.allActors,data.map);
-            zoneUpdateTimestamp = Time.time + zoneUpdateTimestamp;
+            zoneUpdateTimestamp = Time.time + zoneUpdateDelay;
         }
         //EnemyScanForPlayer(enemies);
     }
@@ -160,7 +160,7 @@ public static class MovementSystem
         for (int i = 0; i < bullets.Count; i++) {
             if (bullets[i].transform != null) {
                 bullets[i].prevPos = bullets[i].position2D;
-                bullets[i].transform.position += bullets[i].transform.rotation * new Vector3(0, 0, 1) * Time.deltaTime * bullets[i].speed;
+                bullets[i].transform.position += bullets[i].transform.rotation * new Vector3(0, 0, 1) * Time.deltaTime * bullets[i].stats.speed;
             }
         }
     }

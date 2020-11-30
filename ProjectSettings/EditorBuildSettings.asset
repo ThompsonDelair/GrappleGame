@@ -10,9 +10,9 @@ EditorBuildSettings:
     guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Menus/MainMenu.unity
-    guid: 07f5ee09a2947a64998bfedf08703f3b
+    guid: 63fdfa31f2df21647be4c3f4efe11beb
   - enabled: 1
-    path: Assets/_Modules/KurtisTestStuff/01_DropZone.unity
+    path: Assets/_Modules/KurtisTestStuff/01_DropZone_new.unity
     guid: 00029737a2e80e845aae6111627a6e47
   - enabled: 1
     path: Assets/_Modules/KurtisTestStuff/02_EnigmaticVault.unity
@@ -21,6 +21,12 @@ EditorBuildSettings:
     path: Assets/_Modules/KurtisTestStuff/03_CoreApproach.unity
     guid: eb764ac258a781344b1a2e88a5942c21
   - enabled: 1
+    path: Assets/_Modules/KurtisTestStuff/04_CorruptedCore.unity
+    guid: e5dc16c93b25854488678c7bb7f058cd
+  - enabled: 1
     path: Assets/Scenes/Menus/EndScene.unity
     guid: f429f913f12d47a40818221eb060cfd8
+  - enabled: 1
+    path: Assets/Scenes/Menus/MainMenuCompletion.unity
+    guid: 84d7c40d843dfef4f8977abdd757ddf5
   m_configObjects: {}

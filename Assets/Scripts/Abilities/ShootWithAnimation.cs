@@ -28,6 +28,10 @@ public class ShootWithAnimation : Ability
                 return false; // OUT OF RANGE
             }
 
+            if (!data.map.ClearSightLine(a.position2D,data.player.position2D)) {
+                return false;
+            }
+
             timestamp = Time.time + stats.chargeTime;
             // Disable movement
             a.currMovement = Movement.NONE;
@@ -64,17 +68,21 @@ public class ShootWithAnimation : Ability
         if (Time.time > timestamp) // Lunges after finished charging time
         {
             a.transform.GetComponent<Animator>().SetTrigger("Attack");
+            SoundManager.PlayOneClipAtLocation(AudioClips.singleton.enemyShot, a.position2D, 6f);
+            Bullet b = GameManager.main.SpawnBullet(stats.bulletPrefab,a.position2D);
+            b.transform.rotation = a.transform.rotation;
+            //b.transform.LookAt(Utils.Vector2XZToVector3(a.position2D + dir));
 
-            GameObject gameObjBullet = GameManager.main.GetNewSentryBullet(); // Since ability does not derive from MonoBehaviour we have to get another mono class to do the work of instantiation for us.
-            Bullet bullet = new Bullet(gameObjBullet.transform,stats.bulletStats.radius,Team.PLAYER,stats.damage);
-            bullet.speed = stats.bulletStats.speed;
-            bullet.position3D = a.transform.position;
-            bullet.transform.LookAt(Utils.Vector2XZToVector3(a.position2D + dir));
-            GameManager.main.gameData.bullets.Add(bullet);
+            //GameObject gameObjBullet = GameManager.main.GetNewSentryBullet(); // Since ability does not derive from MonoBehaviour we have to get another mono class to do the work of instantiation for us.
+            //Bullet bullet = new Bullet(gameObjBullet.transform,stats.bulletStats.radius,Team.PLAYER,stats.damage);
+            //bullet.speed = stats.bulletStats.speed;
+            //bullet.position3D = a.transform.position;
+            //bullet.transform.LookAt(Utils.Vector2XZToVector3(a.position2D + dir));
+            //GameManager.main.gameData.bullets.Add(bullet);
 
             //GetComponent<Actor>().PlayAudioClip(AudioClips.singleton.gunShot);
             // Set to shoot in that direction
-            bullet.transform.rotation = a.transform.rotation;
+            
             timestamp = Time.time + stats.windDown;
             shot = true;
 

@@ -12,7 +12,7 @@ public class state_PlayerCharging : State
 
     public override void OnStateEnter(StateDriver frame) {
         frame.weapons.EnterChargeState();
-
+        SoundManager.StartClipOnActor(AudioClips.singleton.chargeShotCharge, GameManager.main.player, 6f, false);
     }
 
     public override void Listen(StateDriver frame) {
@@ -52,6 +52,12 @@ public class state_PlayerCharging : State
             frame.StateTransition(heavyFiringState);
         }
 
+    }
+
+    // Added for stopping the sound started during state
+    public override void OnStateExit(StateDriver frame)
+    {
+        SoundManager.StopClipOnActor(AudioClips.singleton.chargeShotCharge, GameManager.main.player);
     }
 
 }

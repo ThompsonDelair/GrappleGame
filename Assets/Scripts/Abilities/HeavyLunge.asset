@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 899834603e8a9af48b921bee6ccf0e23, type: 3}
   m_Name: HeavyLunge
   m_EditorClassIdentifier: 
-  range: 6
-  chargeTime: 1
-  lungeForce: 60
-  lungeFriction: 100
-  coolDown: 1.5
+  range: 12
+  chargeTime: 1.6
+  lungeForce: 80
+  lungeFriction: 300
+  coolDown: 2.4
   damage: 1
-  targetLockTime: 0
+  targetLockTime: 0.35
+  warningPrefab: {fileID: 6507558174538112671, guid: 771882bb3de2f7c4dbaee68d853699f1,
+    type: 3}

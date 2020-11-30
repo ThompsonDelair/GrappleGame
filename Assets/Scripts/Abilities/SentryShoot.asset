@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeBetweenShots: 2
   damage: 1
-  bulletStats: {fileID: 11400000, guid: 4c8353d68e91d8d409159cc2b6dae389, type: 2}
+  bullet: {fileID: 2031171136853957172, guid: baa3965d55cbad34a80faa18d0658062, type: 3}

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: EnemyRangedProto
   m_EditorClassIdentifier: 
   maxHP: 6
-  radius: 2
+  radius: 1
   speed: 6
   movement: 16
   invulnerable: 0
   abilityStats:
   - {fileID: 11400000, guid: 6fb0e46b66e32774ca47f9c3759af81a, type: 2}
   behaviorStats:
-  - {fileID: 11400000, guid: f36c2e942c785a0449c953990b57f312, type: 2}
+  - {fileID: 11400000, guid: a6f78e8df094384409353b41645aec04, type: 2}

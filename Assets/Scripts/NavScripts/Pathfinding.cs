@@ -5,7 +5,9 @@ using UnityEngine;
 
 public static class Pathfinding {
 
-    public static List<Vector2> getPath(Vector2 start, Vector2 goal, float radius, Movement movement, Map map) {
+
+
+    public static List<Vector2> getPath(Vector2 start, Vector2 goal, float radius, Movement movement, Map map, PathfindVars vars = new PathfindVars()) {
         return getPath(
             start,
             goal,
@@ -28,7 +30,7 @@ public static class Pathfinding {
         return getPath(start,goal,NavCalc.TriFromPoint(start,root,vertEdgeMap),NavCalc.TriFromPoint(goal,root,vertEdgeMap),radius,Movement.WALKING);
     }
 
-    public static List<Vector2> getPath(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri,float radius, Movement m, HashSet<NavTri> pathTris = null) {
+    public static List<Vector2> getPath(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri,float radius, Movement m, HashSet<NavTri> pathTris = null,PathfindVars vars = new PathfindVars()) {
         if(startTri == null || goalTri == null) {
             return null;
         }
@@ -47,7 +49,7 @@ public static class Pathfinding {
         return path;
     }
 
-    public static List<NavTri> pathfind(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri, Movement movement) {
+    public static List<NavTri> pathfind(Vector2 start,Vector2 goal,NavTri startTri,NavTri goalTri, Movement movement,PathfindVars vars = new PathfindVars()) {
         
         List<NavTri> path = new List<NavTri>();
 
@@ -93,6 +95,10 @@ public static class Pathfinding {
                     curr = t;
                     lowScore = contenderScore;
                 }
+            }
+
+            if(vars.rangeLimit != 0 && lowScore > vars.rangeLimit) {
+                return null;
             }
 
             // this is now our current now and must be processed
@@ -388,4 +394,12 @@ public static class Pathfinding {
     }
 
 
+
+}
+
+public struct PathfindVars
+{
+    public float radius;
+    public float rangeFind;
+    public float rangeLimit;
 }

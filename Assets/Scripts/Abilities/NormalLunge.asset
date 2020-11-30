@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 5
   chargeTime: 1
-  lungeForce: 60
-  lungeFriction: 100
+  lungeForce: 65
+  lungeFriction: 250
   coolDown: 1.5
   damage: 1
-  targetLockTime: 0
+  targetLockTime: 1

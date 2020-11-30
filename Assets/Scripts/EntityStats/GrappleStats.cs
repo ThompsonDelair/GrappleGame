@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GrappleStats",menuName = "ScriptableObjects/GrappleStats",order = 2)]
+[CreateAssetMenu(fileName = "GrappleStats",menuName = "Stats/GrappleStats",order = 2)]
 public class GrappleStats : ScriptableObject
 {
     public float stopDist = 0.6f;

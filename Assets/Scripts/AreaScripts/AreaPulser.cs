@@ -41,11 +41,13 @@ public class AreaPulser : MonoBehaviour
 
     void AreaOn() {
         area.active = true;
+        
         SetMeshAlpha(255);
     }
 
     void AreaOff() {
         area.active = false;
+        
         SetMeshAlpha(30);
     }
 

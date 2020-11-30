@@ -21,6 +21,7 @@ public class objSub_ToggleDoor : ObjectiveSubscriber {
             }
 
             GameManager.main.gameData.map.ToggleDoor(doorsToToggle[i]);
+
         }
         
     }

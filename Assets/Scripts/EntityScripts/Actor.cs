@@ -76,7 +76,6 @@ public class Actor
 
         behaviors = stats.GetBehaviorInstances();
         abilities = stats.GetAbilityInstances();        
-
     }
 
     public PushInstance StartNewPush(Vector2 direction,float force, float friction = 100f) {
@@ -96,7 +95,8 @@ public class Actor
 
     }
 
-    public void PlayAudioClip(AudioClip clip,bool loop = false) {
+    // Using SoundManager now
+    /*public void PlayAudioClip(AudioClip clip,bool loop = false) {
         AudioSource source = transform.GetComponent<AudioSource>();
         if (source == null) {
             source = transform.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
@@ -112,5 +112,5 @@ public class Actor
             source = transform.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
         }
         source.Stop();
-    }
+    }*/
 }

@@ -50,11 +50,13 @@ public class Grapple
             grapplePos = owner.position2D;
             grapFailed = false;
             grappleLanded = false;
-            owner.PlayAudioClip(AudioClips.singleton.grapShoot);
+            //owner.PlayAudioClip(AudioClips.singleton.grapShoot);
+            SoundManager.StartClipOnActor(AudioClips.singleton.grapShoot, owner, 6f, false);
             timestamp = Time.time;
             lr.positionCount = 2;
         } else {
-            owner.PlayAudioClip(AudioClips.singleton.grapEnd);
+            //owner.PlayAudioClip(AudioClips.singleton.grapEnd);
+            SoundManager.StartClipOnActor(AudioClips.singleton.grapEnd, owner, 6f, false);
             grapFailed = true;
         }
 
@@ -169,7 +171,8 @@ public class Grapple
     }
 
     public void EndGrapple() {
-        owner.PlayAudioClip(AudioClips.singleton.grapEnd); 
+        //owner.PlayAudioClip(AudioClips.singleton.grapEnd);
+        SoundManager.StartClipOnActor(AudioClips.singleton.grapEnd, owner, 6f, false);
         owner.currMovement = Movement.WALKING;
         //Vector3[] noPoints = new Vector3[0];
         lr.positionCount = 0;

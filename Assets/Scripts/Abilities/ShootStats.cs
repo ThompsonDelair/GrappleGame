@@ -7,7 +7,7 @@ public class ShootStats : AbilityStats
 {
     public float timeBetweenShots;
     public float damage;
-    public BulletStats bulletStats;
+    public GameObject bullet;
     
     public override Ability GetAbilityInstance() {
         return new TargetedShot(this);

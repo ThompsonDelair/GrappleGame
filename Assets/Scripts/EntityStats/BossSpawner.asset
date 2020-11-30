@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57d64d6ef426e7d49b26f55dc4d23e3e, type: 3}
+  m_Name: BossSpawner
+  m_EditorClassIdentifier: 
+  maxHP: 50
+  radius: 3
+  speed: 0
+  movement: 0
+  invulnerable: 0
+  abilityStats:
+  - {fileID: 11400000, guid: fc3951a478fe2064ba967088e7efcb72, type: 2}
+  - {fileID: 11400000, guid: e673b6b42062e2040b8834f56cc40714, type: 2}
+  behaviorStats: []

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3142b15830c5249bf473a472cb77dd, type: 3}
   m_Name: ChasePlayerFly
   m_EditorClassIdentifier: 
-  wanderDegrees: 0
+  AggroDistance: 30

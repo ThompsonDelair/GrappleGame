@@ -7,7 +7,6 @@ public class TargetedShot : Ability
     ShootStats stats;
 
     float shootingTimestamp;
-    private bool isAttacking = false;
 
     private TargetedShot() { }
 
@@ -15,6 +14,7 @@ public class TargetedShot : Ability
 
     public TargetedShot(ShootStats s) {
         stats = s;
+        shootingTimestamp = Time.time + stats.timeBetweenShots;
     }
 
     public override bool RunAbilityUpdate(Actor a, GameData data)
@@ -62,15 +62,17 @@ public class TargetedShot : Ability
 
     void ShootAtPlayer(Actor a)
     {
-        GameObject gameObjBullet = GameManager.main.GetNewSentryBullet(); // Since ability does not derive from MonoBehaviour we have to get another mono class to do the work of instantiation for us.
-        Bullet bullet = new Bullet(gameObjBullet.transform, stats.bulletStats.radius, Team.PLAYER, stats.damage);
-        bullet.speed = stats.bulletStats.speed;
-        bullet.position3D = a.transform.position;
-        GameManager.main.gameData.bullets.Add(bullet);
+        //GameObject gameObjBullet = GameManager.main.GetNewSentryBullet(); // Since ability does not derive from MonoBehaviour we have to get another mono class to do the work of instantiation for us.
+        //Bullet bullet = new Bullet(gameObjBullet.transform, stats.bulletStats.radius, Team.PLAYER, stats.damage);
+        //bullet.speed = stats.bulletStats.speed;
+        //bullet.position3D = a.transform.position;
+        //GameManager.main.gameData.bullets.Add(bullet);
+
+        Bullet b =  GameManager.main.SpawnBullet(stats.bullet,a.position2D);
 
         //GetComponent<Actor>().PlayAudioClip(AudioClips.singleton.gunShot);
         // Set to shoot in that direction
-        bullet.transform.rotation = a.transform.rotation;
+        b.transform.rotation = a.transform.rotation;
     }
 
     bool CanSeePlayer(Actor a)

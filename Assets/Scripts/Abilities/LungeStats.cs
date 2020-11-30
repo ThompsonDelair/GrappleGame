@@ -13,7 +13,9 @@ public class LungeStats : AbilityStats
     public float damage;
     //public float lockPercent;
     public float targetLockTime;
-       
+
+    public GameObject warningPrefab;
+
     public override Ability GetAbilityInstance() {
         return new Lunge(this);
     }

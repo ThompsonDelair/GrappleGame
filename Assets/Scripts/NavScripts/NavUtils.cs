@@ -188,6 +188,9 @@ public static class NavUtils
         return tris;
     }
 
+
+
+
     public static List<NavTri> FindConnectedTrisWithAABB(NavTri start, out AABB_2D aabb) {
         Vector2 bottomLeft = Vector2.positiveInfinity;
         Vector2 topRight = Vector2.negativeInfinity;
@@ -196,7 +199,7 @@ public static class NavUtils
         Stack<NavTri> frontier = new Stack<NavTri>();
 
         frontier.Push(start);
-        int counter;
+        int counter = 0;
 
         while (frontier.Count != 0) {
             NavTri curr = frontier.Pop();
@@ -208,21 +211,35 @@ public static class NavUtils
 
                 if(e.start.x < bottomLeft.x) {
                     bottomLeft.x = e.start.x;
-                } else if(e.start.x > topRight.x) {
+                }
+                if(e.start.x > topRight.x) {
                     topRight.x = e.start.x;
                 }
 
                 if (e.start.y < bottomLeft.y) {
                     bottomLeft.y = e.start.y;
-                } else if (e.start.y > topRight.y) {
+                } 
+                if (e.start.y > topRight.y) {
                     topRight.y = e.start.y;
                 }
             }
 
             visited.Add(curr);
             tris.Add(curr);
+
+            if (Utils.WhileCounterIncrementAndCheck(ref counter))
+                break;
         }
         aabb = new AABB_2D(bottomLeft,topRight);
         return tris;
+    }
+
+    public static bool TrisContainPoint(List<NavTri> tris, Vector2 point) {
+        for (int j = 0; j < tris.Count; j++) {
+            if (NavCalc.PointInOrOnTri(point,tris[j])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -14,7 +14,7 @@ public class LoadMainMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.timeSinceLevelLoad > 5f)
-            SceneManager.LoadScene("MainMenu");
+        if (Time.timeSinceLevelLoad > 10f)
+            SceneManager.LoadScene("MainMenuCompletion");
     }
 }

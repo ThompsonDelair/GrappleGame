@@ -13,11 +13,8 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   maxHP: 5
-  radius: 1
+  radius: 0.75
   speed: 0
-  targetLockTime: 0
-  mainAttack: 
-  timeBetweenAttack: 0
   movement: 16
   invulnerable: 0
   abilityStats: []

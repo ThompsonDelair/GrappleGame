@@ -10,6 +10,9 @@ public class ZoneFinder : MonoBehaviour
     public bool makeMeshFromZone;
     public Material wallMat;
 
+    public float wallHeight = 2f;
+    const float floorLevel = 0.5f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +30,7 @@ public class ZoneFinder : MonoBehaviour
 
     Movement MovementFromZoneType(ZoneType z) {
         if(z == ZoneType.FLOOR) {
-            return Movement.WALKING;
+            return Movement.WALKING;    
         } else if(z == ZoneType.PIT) {
             return Movement.FLYING;
         }
@@ -55,13 +58,13 @@ public class ZoneFinder : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
 
         if (zoneType == ZoneType.ROOF) {
-            transform.Translate(Vector3.up * 2);
-            MakeWalls(2.5f,1.5f,false);
+            transform.Translate(Vector3.up * wallHeight);
+            MakeWalls(wallHeight + floorLevel,wallHeight-floorLevel,false);
         } else if (zoneType == ZoneType.PIT) {
-            transform.Translate(Vector3.up * -2);
-            MakeWalls(1.5f,-2.5f);
+            transform.Translate(Vector3.up * -wallHeight);
+            MakeWalls(wallHeight - floorLevel,-wallHeight-floorLevel);
         } else if(zoneType == ZoneType.FLOOR) {
-            transform.Translate(Vector2.down * 0.5f);
+            transform.Translate(Vector2.down * floorLevel);
         }
     }
 
@@ -102,5 +105,21 @@ public class ZoneFinder : MonoBehaviour
             }
         }
         return edges;
+    }
+
+    private void OnDrawGizmos() {
+        Color c = Color.white;
+
+        if (zoneType == ZoneType.ROOF) {
+            c = Color.black;
+        } else if (zoneType == ZoneType.PIT) {
+            c = CustomColors.darkRed;
+        } else if (zoneType == ZoneType.FLOOR) {
+            c = Color.blue;
+        }
+
+        Gizmos.color = c;
+
+        Gizmos.DrawSphere(transform.position,1f);
     }
 }

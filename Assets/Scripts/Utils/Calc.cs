@@ -316,6 +316,14 @@ public static class Calc
         }
         return closest;
     } 
+
+    public static float TotalDistanceTravelled(List<Vector2> path) {
+        float dist = 0;
+        for(int i = 0; i < path.Count -1; i++) {
+            dist += Vector2.Distance(path[i],path[i + 1]);
+        }
+        return dist;
+    }
 }
 
 public enum ANGLE_TYPE { DEGREES, RADIANS }

@@ -19,7 +19,7 @@ public class PlayerHazardCollision : MonoBehaviour
     }
 
     private void OnTriggerStay(UnityEngine.Collider other) {
-        GameManager.main.hazardColliding = true;
+        //GameManager.main.hazardColliding = true;
         
     }
 

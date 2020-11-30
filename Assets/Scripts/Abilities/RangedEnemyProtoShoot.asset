@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: RangedEnemyProtoShoot
   m_EditorClassIdentifier: 
   targetLockTime: 0.15
-  range: 15
+  range: 18
   chargeTime: 0.6
   coolDown: 1
   windDown: 0.75
   damage: 1
-  bulletStats: {fileID: 11400000, guid: ee8220442b33dc14fad61fd8f3e7a850, type: 2}
+  bulletPrefab: {fileID: 2031171136853957172, guid: a6e26a2761c967940bf64f2cc8e88a68,
+    type: 3}

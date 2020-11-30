@@ -23,9 +23,13 @@ public class obj_CaptureZone : ObjectiveTracker
         fov.ViewAngle = (currentTime/captureTime) * 360 > 360 ? 360 : (currentTime/captureTime) * 360;
         fov.DrawFieldOfView();
 
-        if (currentTime >= captureTime) {
+        if (ObjectiveParametersComplete()) {
             GameEventDirector.current.ObjectiveCompletion(objectiveIdList);
             objectiveActive = false;
         }
+    }
+
+    public override bool ObjectiveParametersComplete() {
+        return currentTime >= captureTime;
     }
 }

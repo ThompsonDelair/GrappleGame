@@ -7,16 +7,19 @@ using UnityEngine;
 //      and we don't want the camera to inherit that rotation.
 public class CameraController : MonoBehaviour {
     private Vector3 cameraTarget;
-    [SerializeField] private Camera playerCamera = null;
-    [SerializeField] private Transform target = null;
+    private Camera playerCamera = null;
+    private Transform target = null;
 
     [SerializeField] protected float followSpeed = 0.05f;
     [SerializeField] protected float locOffsetX = 0;
-    [SerializeField] protected float locOffsetY = 20f;
-    [SerializeField] protected float locOffsetZ = -5f;
+    [SerializeField] protected float locOffsetY = 32f;
+    [SerializeField] protected float locOffsetZ = -9f;
 
     void Start() {
         playerCamera = GetComponentInChildren<Camera>();
+        playerCamera.transform.localRotation = Quaternion.Euler(78, 0, 0);
+
+        target = GameManager.main.player.transform;
     }
 	
 	// Update is called once per frame

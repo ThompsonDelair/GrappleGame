@@ -7,28 +7,16 @@ public class Lunge : Ability
     LungeStats stats;
 
 
-    private bool isLunging = false; // Read only to other classes
-    //private bool isLunging = false;
+    private bool isLunging = false; 
+
     bool lockedon;
-    //public bool lunging { get { return isLunging; } }
-
-
-    // THESE FIELDS MAY BE IN A SCRIPTABLE OBJECT AFTER, ABILITY STATS?
-    // STATIC DATA SHOULD SCRIPTABLE OBJECT IDEALLY
-    //[SerializeField]
-    //private float range = 5f;
-    //private float chargeTime = 0.75f;
-    //private float lungeSpeed = 40f;
-
-    //// Timing and cooldown for attack
-    //private float coolDown = 1.5f;
-    
     
     private float timestamp;
 
     private Vector2 dir;
 
     private PushInstance p;
+    private GameObject warning;
 
     private Lunge() { }
 
@@ -55,6 +43,17 @@ public class Lunge : Ability
             actor.transform.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
             
             actor.transform.GetComponent<Animator>().SetTrigger("StartAttack");
+            actor.transform.LookAt(data.player.position3D);
+            if (stats.warningPrefab != null) {
+                warning = GameObject.Instantiate(stats.warningPrefab,actor.position3D,actor.transform.rotation,actor.transform);
+
+
+                //warning.transform.position = actor.position3D;
+                //warning.transform.rotation = actor.transform.rotation;
+                //warning.transform.parent = actor.transform;
+                
+            }
+
 
             //Debug.Log("start lunge");
             return true;
@@ -74,21 +73,30 @@ public class Lunge : Ability
             timestamp = Time.time + stats.coolDown;
             actor.currMovement = Movement.WALKING;
             //Debug.Log("Direction when lunging: " + dir);
-            p = actor.StartNewPush(dir,stats.lungeForce,stats.lungeFriction); // Using direction assigned at start of charge time
+            p = actor.StartNewPush(Utils.Vector3ToVector2XZ(actor.transform.forward),stats.lungeForce,stats.lungeFriction); // Using direction assigned at start of charge time
+            if (stats.warningPrefab != null) {
+                warning.transform.parent = null;
+            }
         }
 
         if (timestamp - Time.time <= stats.targetLockTime && !isLunging && !lockedon) {
-            dir = (data.player.position2D - actor.position2D);
+            //dir = (data.player.position2D - actor.position2D);
             lockedon = true;
         }
 
         if (!lockedon) {
-            actor.transform.LookAt(data.player.position3D);
+            //actor.transform.LookAt(data.player.position3D);
+
+            float step = 0.85f * Time.deltaTime;
+            Vector3 target = data.player.position3D - actor.position3D;
+            Vector3 newDir = Vector3.RotateTowards(actor.transform.forward,target,step,0.0f);
+            actor.transform.rotation = Quaternion.LookRotation(newDir);
+
         }
 
         if (isLunging) {
             float dist = Vector2.Distance(actor.position2D,data.player.position2D);
-            float threshold = actor.collider.Radius + data.player.collider.Radius + 0.2f;
+            float threshold = actor.collider.Radius + data.player.collider.Radius + 0.6f;
             if(dist < threshold) {
                 DamageSystem.DealDamage(data.player,stats.damage);
             }
@@ -98,6 +106,10 @@ public class Lunge : Ability
             actor.transform.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
             isLunging = false;
             lockedon = false;
+            if(stats.warningPrefab != null) {
+                GameObject.Destroy(warning);
+            }
+            
             return false; // Finished the ability
         }
 

@@ -38,6 +38,7 @@ public static class DamageSystem
                     Debug.Log("DAMAGIING");
                     a.health = a.health + amt <= 0 ? 0 : a.health -= amt;
                     timeStamp = Time.time + playerDamageCooldown;
+                    SoundManager.PlayOneClipAtLocation(AudioClips.singleton.playerHurt, a.position2D, 6f);
                 }
 
             }
@@ -99,13 +100,15 @@ public static class DamageSystem
         {
             // If having audio isssues here with infinite play, it is likely caused by the chain reaction 
             // of destroying actor being interupted, it should be playSound->DestroyActor->DestroyObject could be stuck between playSound->DestroyActor
-            AudioSource.PlayClipAtPoint(AudioClips.singleton.playerDie, a.position3D, 6f); 
+            //AudioSource.PlayClipAtPoint(AudioClips.singleton.playerDie, a.position3D, 6f); 
+            SoundManager.PlayOneClipAtLocation(AudioClips.singleton.playerDie, a.position3D, 6f);
             GameManager.main.DestroyActor(a);
             //Debug.Break(); // HACKY WAY TON STOP GAMEPLAY ONCE PLAYER DIES FOR NOW, NEED PROPER LOSS CONDITION
         }
         else
         {
-            AudioSource.PlayClipAtPoint(AudioClips.singleton.enemyDie, a.position3D, 6f);
+            //AudioSource.PlayClipAtPoint(AudioClips.singleton.enemyDie, a.position3D, 6f);
+            SoundManager.PlayOneClipAtLocation(AudioClips.singleton.enemyDie, a.position3D, 6f);
             GameManager.main.DestroyActor(a);
         }
         //Debug.Break();
@@ -115,10 +118,29 @@ public static class DamageSystem
     // Adjust the slider UI element on the Actor's GameObject's Slider component by assiging it's value the percentage of health out of maxHealth
     private static void UpdateHealthSlider(Actor a)
     {
-        try {
-            a.transform.gameObject.GetComponentInChildren<Slider>().value = a.health / a.stats.maxHP;
-        } catch(Exception e) {
-            //Debug.LogError(e.ToString());
+        if(a == GameManager.main.player) // In case of player we dont want to access canvas through gameObject
+        {
+            GameObject playerSliderObj = GameObject.FindGameObjectWithTag("PlayerSlider");
+
+            try
+            {
+                playerSliderObj.GetComponent<Slider>().value = a.health / a.stats.maxHP;
+            }
+            catch (Exception e)
+            {
+                //Debug.LogError(e.ToString());
+            }
+        }
+        else // Otherwise update through the game object
+        {
+            try
+            {
+                a.transform.gameObject.GetComponentInChildren<Slider>().value = a.health / a.stats.maxHP;
+            }
+            catch (Exception e)
+            {
+                //Debug.LogError(e.ToString());
+            }
         }
     }
 }

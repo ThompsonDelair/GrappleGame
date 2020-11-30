@@ -32,15 +32,19 @@ public class SentryGun : MonoBehaviour
     }
 
     void ShootAtPlayer() {
-        GameObject gameObjBullet = (GameObject)Instantiate(Resources.Load("Prefabs/EvilBullet"));
-        Bullet bullet = new Bullet(gameObjBullet.transform,0.5f,Team.PLAYER,1f);
-        bullet.speed = 20f;
-        bullet.position3D = transform.position;
-        GameManager.main.gameData.bullets.Add(bullet);
+        //GameObject gameObjBullet = (GameObject)Instantiate(Resources.Load("Prefabs/EvilBullet"));
+        //Bullet bullet = new Bullet(gameObjBullet.transform,0.5f,Team.PLAYER,1f);
+        //bullet.speed = 20f;
+        //bullet.position3D = transform.position;
+
+
+        Bullet b = GameManager.main.SpawnBullet((GameObject)Resources.Load("Prefabs/EvilBullet"),Utils.Vector3ToVector2XZ(transform.position));
+        b.transform.rotation = transform.rotation;
+        //GameManager.main.gameData.bullets.Add(bullet);
 
         //GetComponent<Actor>().PlayAudioClip(AudioClips.singleton.gunShot);
         // Set to shoot in that direction
-        bullet.transform.rotation = transform.rotation;
+
     }
 
     bool CanSeePlayer() {

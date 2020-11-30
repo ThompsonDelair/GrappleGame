@@ -39,8 +39,8 @@ public static class CollisionSystem
         ActorActorCollisionUpdate(data.allActors);
         //CheckPlayerEnemyCollisions(enemies);
         ActorTerrainCollision(data.allActors,data.map);
-        AreaActorCollisionUpdate(data.map.areas,data.allActors);
-        CheckBulletCollisions(data.allActors,data.bullets);
+        AreaActorCollisionUpdate(data.areas,data.allActors);
+        CheckBulletCollisions(data.allActors,data.bullets,data);
         //CheckBulletCollisions(map.objects,bullets);
         CheckBulletTerrainCollision(data.bullets,data.map);
 
@@ -132,7 +132,7 @@ public static class CollisionSystem
     }
 
     // checks for collision between enemy actors and bullets in game
-    static void CheckBulletCollisions(List<Actor> actors, List<Bullet> bullets) {
+    static void CheckBulletCollisions(List<Actor> actors, List<Bullet> bullets,GameData data) {
 
         for (int i = bullets.Count - 1; i >= 0; --i) {
             Bullet b = bullets[i];
@@ -142,19 +142,19 @@ public static class CollisionSystem
 
                 // If they are overlapping
                 if (Utils.BitwiseOverlapCheck((int)a.team,(int)b.team) && a.collider.DetectCircleCollision(b.collider)) {
-                    AudioSource.PlayClipAtPoint(AudioClips.singleton.bulletImpact, a.position3D,6f);
+                    // USE POSITION 2D FOR SOUND
                     //Debug.Log("HIT DETECTED");
 
                     // Need to destroy in a better way so that references are deleted as well.
 
-                    GameManager.main.DestroyGameobject(b.transform.gameObject);
-                    ParticleEmitter.current.SpawnParticleEffect(GameManager.main.playerBulletHit, b.transform.position, Quaternion.identity);
-
-                    bullets.RemoveAt(i);
+                    //GameManager.main.DestroyGameobject(b.transform.gameObject);
+                    //ParticleEmitter.current.SpawnParticleEffect(GameManager.main.playerBulletHit, b.transform.position, Quaternion.identity);
+                    bullets[i].behavior.OnActorCollision(bullets[i],a,data);
+                    //bullets.RemoveAt(i);
 
                     // Now instead of destroying actors here we call dealDamage() in DamageSystem instead and all actors health is managed from there.
                     //DamageSystem.DealDamageToPlayerWithoutCoolDown(a, b.damage, false);
-                    DamageSystem.DealDamage(a, b.damage);
+                    //DamageSystem.DealDamage(a, b.s);
                     //destroyedBullet = true;
                     break;
                 }
@@ -176,8 +176,9 @@ public static class CollisionSystem
                     aabb.OverlapCheck(e.aabb) && 
                     Calc.DoLinesIntersect(b.position2D,b.prevPos,e.vertA_pos2D,e.vertB_pos2D)) {
 
+                    // If we want to have different impact sounds for different bullets must add check for bullet type here.
+                    SoundManager.PlayOneClipAtLocation(AudioClips.singleton.bulletImpact, b.position2D, 6f);
 
-                    AudioSource.PlayClipAtPoint(AudioClips.singleton.bulletImpact,b.position3D,6f);
                     GameManager.main.DestroyGameobject(b.transform.gameObject);
                     ParticleEmitter.current.SpawnParticleEffect(GameManager.main.playerBulletHit,b.transform.position, Quaternion.identity);
                     bullets.RemoveAt(i);

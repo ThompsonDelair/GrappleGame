@@ -46,6 +46,10 @@ public abstract class ObjectiveTracker : MonoBehaviour {
         
     }
 
+    public virtual bool ObjectiveParametersComplete() {
+        return false;
+    }
+
     // protected void DisplayCurrentObjective() {
     //     GameObject.Find("ObjectiveText").GetComponent<Text>().text = currentObjective;
     // }

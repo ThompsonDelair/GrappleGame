@@ -44,12 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a23c7a95f402d4eaa8348c30f457c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 6015816200285225779}
-  target: {fileID: 0}
   followSpeed: 0.5
   locOffsetX: 0
-  locOffsetY: 25
-  locOffsetZ: -5
+  locOffsetY: 30
+  locOffsetZ: -8.5
 --- !u!1 &6015816200285225777
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,7 +58,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6015816200285225780}
   - component: {fileID: 6015816200285225779}
-  - component: {fileID: 6015816200285225778}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -125,11 +122,3 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &6015816200285225778
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6015816200285225777}
-  m_Enabled: 1

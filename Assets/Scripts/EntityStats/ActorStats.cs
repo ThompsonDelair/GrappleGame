@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewEntityStats",menuName = "ScriptableObjects/ActorStats",order = 1)]
+[CreateAssetMenu(fileName = "NewEntityStats",menuName = "Stats/ActorStats",order = 1)]
 public class ActorStats : ScriptableObject
 {
     public float maxHP;

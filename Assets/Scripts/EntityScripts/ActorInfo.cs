@@ -5,4 +5,6 @@ using UnityEngine;
 public class ActorInfo : MonoBehaviour
 {
     public ActorStats stats;
+    public Actor actor;
+
 }
