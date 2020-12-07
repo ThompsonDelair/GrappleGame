@@ -14,6 +14,7 @@ public class ActorStats : ScriptableObject
     //public bool moveable;
     public Movement movement;
     public bool invulnerable;
+    public bool burnImmune;
 
     public List<AbilityStats> abilityStats;
     public List<BehaviorStats> behaviorStats;

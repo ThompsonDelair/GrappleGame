@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Map
 {
-    //public Vector2[][] PChains { get { return pChains; } }
 
     public List<TerrainEdge> terrainEdges;
 
@@ -19,22 +18,16 @@ public class Map
     List<Zone> pitZones;
     List<Zone> floorZones;
 
-    //public Layer[][] VertTypes { get { return vertTypes; } }
     public KDNode TriKDMap { get { return triKDMap; } }
     public Dictionary<Vector2,HalfEdge> VertEdgeMap { get { return vertEdgeMap; } }
 
-    //Vector2[][] pChains;
-    //Layer[][] vertTypes;
     public List<NavTri> navTris;
     public KDNode triKDMap;
     public Dictionary<Vector2,HalfEdge> vertEdgeMap = new Dictionary<Vector2,HalfEdge>();
 
-    //public List<Area> areas = new List<Area>();
-    //public List<Actor> objects = new List<Actor>();
 
-    // Added for object ability updates, needed enemy actors
-    //public List<EnemyActor> enemyObjects = new List<EnemyActor>();
-
+    // Initializes the nav mesh
+    // uses a triangulation algorithm and reinforces implicit edges if the tri algorithmn does not produce them
     public void InitNavMesh(Transform terrainRoot) {
         HashSet<Vector2> navVerts;
         HashSet<EdgePair> implicitEdges;
@@ -58,6 +51,7 @@ public class Map
         triKDMap = new KDNode(vertEdgeMap.Keys.ToList());
     }
 
+    // makes a list of edges based off the edges from the edgeGroup game object
     void LoadTerrainEdgeGroup(EdgeGroup eg,out HashSet<EdgePair> implicitEdges,out HashSet<Vector2> navVerts) {
         eg.drawEdges = false;
         Dictionary<int,Transform> vertMap = eg.GetVertMap();
@@ -82,7 +76,6 @@ public class Map
             Vector2 posB = Utils.Vector3ToVector2XZ(vertMap[ec.vertB_ID].position);
 
 
-
             Layer layer = Layer.NONE;
             if(ec.edgeType == EdgeType.Wall || ec.edgeType == EdgeType.NonGrappleWall || ec.edgeType == EdgeType.DoorClosed) {
                 layer = Layer.BLOCK_WALK | Layer.BLOCK_FLY;
@@ -102,8 +95,6 @@ public class Map
                 doors.Add(d);
             }
 
-
-
             // add as implicit edge
             EdgePair implicitEdge = new EdgePair(posA,posB);
             implicitEdge.moveBlock = layer;
@@ -119,10 +110,10 @@ public class Map
         }
     }
 
-   void FindTerrain(Transform terrainRoot,out HashSet<EdgePair> implicitEdges,out HashSet<Vector2> navVerts) {
+    // old function, used in old prototype maps
+    // essentially does the same thing as LoadTerrainEdgeGroup()
+    void FindTerrain(Transform terrainRoot,out HashSet<EdgePair> implicitEdges,out HashSet<Vector2> navVerts) {
         terrainEdges = new List<TerrainEdge>();
-        //List<Vector2[]> pChainList = new List<Vector2[]>();
-        //List<Layer[]> vertTypesList = new List<Layer[]>();
         implicitEdges = new HashSet<EdgePair>();
         navVerts = new HashSet<Vector2>();
         doors = new List<Door>();
@@ -134,10 +125,6 @@ public class Map
             for (int j = 0; j < pChains.Length; j++) {
                 PolygonalChain pChain = pChains[j].GetComponent<PolygonalChain>();
                 Transform[] pChainTransforms = Utils.GetChildren(pChains[j]);
-                //Vector2[] pChainVerts = (pChain.connectEnds) ?
-                //    new Vector2[pChainTransforms.Length + 1] : new Vector2[pChainTransforms.Length];
-                //Layer[] pChainVertTypes = (pChain.connectEnds) ?
-                //    new Layer[pChainTransforms.Length + 1] : new Layer[pChainTransforms.Length];
 
                 int edges = (pChain.connectEnds) ? pChainTransforms.Length : pChainTransforms.Length - 1;
 
@@ -145,7 +132,6 @@ public class Map
 
                     TerrainVertex vertA = pChainTransforms[k].GetComponent<TerrainVertex>();
                     Vector2 vertA_pos = Utils.Vector3ToVector2XZ(vertA.SnapPos);
-                    //pChainVerts[k] = Utils.Vector3ToVector2XZ(vertA.SnapPos);
                     Layer l = LayerFromVertType(vertA.VertType);
 
                     TerrainVertex vertB = pChainTransforms[(k + 1) % pChainTransforms.Length].GetComponent<TerrainVertex>();
@@ -173,13 +159,9 @@ public class Map
                         }
                     }
                 }
-                //pChainList.Add(pChainVerts);
-                //vertTypesList.Add(pChainVertTypes);
             }
             pChains[i].gameObject.SetActive(false);
         }
-        //pChains = pChainList.ToArray();
-        //vertTypes = vertTypesList.ToArray();
    }
 
     Layer LayerFromVertType(VertType v) {
@@ -193,6 +175,7 @@ public class Map
         return Layer.NONE;
     }
 
+    // Iterate through area gameObjects and add them to the list
     public void FindAreas(Transform areaRoot,GameData data) {
         Transform[] children = Utils.GetChildren(areaRoot);
         for(int i = 0; i < children.Length; i++) {
@@ -203,8 +186,7 @@ public class Map
         }
     }
 
-
-
+    // Iterate through zoneFinder objects and get a list of zones
     public void FindZones() {
 
         zones = new List<Zone>();
@@ -246,6 +228,7 @@ public class Map
         }
     }
 
+    // sets the proper pathfinding value for door edges
     public void SetDoorHalfEdges() {
         for(int i = 0; i < doors.Count; i++) {
             Door d = doors[i];
@@ -253,7 +236,6 @@ public class Map
             bool foundH2 = false;
             foreach(HalfEdge h2 in MapProcessing.edgesAroundVert(h)) {
                 if(h2.pair.start == d.terrainEdge.vertB_pos2D) {
-                    // this is the halfedge
                     d.halfEdge = h2;
                     foundH2 = true;
                     if (d.terrainEdge.layer == Layer.NONE) {
@@ -272,15 +254,7 @@ public class Map
         }
     }
 
-    //public bool IsPointInPit(Vector2 v) {
-    //    foreach(NavTri t in pitTris) {
-    //        if (NavCalc.PointInOrOnTri(v,t)) {
-    //            return true;
-    //        }
-    //    }
-    //    return false;
-    //}
-
+    // find what zone the point is in
     public Zone ZoneFromPoint(Vector2 point) {
         List<Zone> candidates = new List<Zone>();
         for(int i = 0; i < floorZones.Count; i++) {
@@ -310,6 +284,7 @@ public class Map
         return null;
     }
 
+    // is the point on a floor zone?
     public bool IsPointWalkable(Vector2 v) {
         foreach (NavTri t in floorTris) {
             if (NavCalc.PointInOrOnTri(v,t)) {
@@ -318,7 +293,8 @@ public class Map
         }
         return false;
     }
-
+    
+    // Do these verts form a line that does not intersect a wall?
     public bool ClearSightLine(Vector2 a, Vector2 b) {
         AABB_2D aabb = new AABB_2D(a,b);
         for (int i = 0; i < terrainEdges.Count; i++) {

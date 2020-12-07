@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-//using UnityEditor;
-//using UnityEditorInternal;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,15 +7,6 @@ public static class DamageSystem
     private static float playerDamageCooldown = 0.7f;
     private static float timeStamp;
 
-    // use later for pickups and healing
-    /*    public static void healHealth(Actor a, float amt)
-        {
-            // If max health is exceeded set to max, otherwise add onto health
-            if (a.health + amt >= a.maxHealth ? a.health = a.maxHealth : a.health += amt;)
-            {
-                a.health = 0;
-            }
-        }*/
 
     // Deducts amount of damage float from actor's health property
     // If health is below or equal to 0 set to 0, otherwise deduct amt from health
@@ -59,16 +46,7 @@ public static class DamageSystem
         {
             if (a.team == Team.PLAYER) // PLAYER CASE, DEDUCT BASED ON TIME INTERVALs
             {
-                // if (DebugControl.main.playerInvulnerable)
-                //     return;
-
-
-                // if (Time.time > timeStamp)
-                // {
-                //     Debug.Log("DAMAGIING");
                 a.health = a.health + amt > stats.maxHP ? stats.maxHP : a.health += amt;
-                //     timeStamp = Time.time + playerDamageCooldown;
-                // }
 
             }
             else // ENEMY CASE
@@ -98,20 +76,17 @@ public static class DamageSystem
     {
         if(a.transform.gameObject.tag == "Player")
         {
-            // If having audio isssues here with infinite play, it is likely caused by the chain reaction 
-            // of destroying actor being interupted, it should be playSound->DestroyActor->DestroyObject could be stuck between playSound->DestroyActor
-            //AudioSource.PlayClipAtPoint(AudioClips.singleton.playerDie, a.position3D, 6f); 
             SoundManager.PlayOneClipAtLocation(AudioClips.singleton.playerDie, a.position3D, 6f);
             GameManager.main.DestroyActor(a);
-            //Debug.Break(); // HACKY WAY TON STOP GAMEPLAY ONCE PLAYER DIES FOR NOW, NEED PROPER LOSS CONDITION
+            ScoreDirector.main.AddDeath();
         }
         else
         {
-            //AudioSource.PlayClipAtPoint(AudioClips.singleton.enemyDie, a.position3D, 6f);
             SoundManager.PlayOneClipAtLocation(AudioClips.singleton.enemyDie, a.position3D, 6f);
+            ParticleEmitter.current.SpawnParticleEffect(ParticleEffectRefs.singleton.enemyDeathEffect, a.position3D + Vector3.up, Quaternion.identity);
             GameManager.main.DestroyActor(a);
+            ScoreDirector.main.AddKill();
         }
-        //Debug.Break();
     }
 
 
@@ -126,7 +101,7 @@ public static class DamageSystem
             {
                 playerSliderObj.GetComponent<Slider>().value = a.health / a.stats.maxHP;
             }
-            catch (Exception e)
+            catch 
             {
                 //Debug.LogError(e.ToString());
             }
@@ -137,7 +112,7 @@ public static class DamageSystem
             {
                 a.transform.gameObject.GetComponentInChildren<Slider>().value = a.health / a.stats.maxHP;
             }
-            catch (Exception e)
+            catch
             {
                 //Debug.LogError(e.ToString());
             }

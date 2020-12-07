@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate float EaseDelegate(float t);
+
+// A collection of ease in/out functions for animation
 public static class Ease
 {
     public static float InSine(float t) {
@@ -11,7 +14,6 @@ public static class Ease
     public static float OutSine(float t) {
         return Mathf.Sin((t * Mathf.PI) / 2);
     }
-
 
     public static float InCubic(float t) {
         return t * t * t;

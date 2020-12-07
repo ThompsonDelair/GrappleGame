@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Behavior for a bullet that damages actors on impact and collides wtih walls
 public class BasicBulletBehavior : BulletBehavior
 {
     public BasicBulletStats stats;

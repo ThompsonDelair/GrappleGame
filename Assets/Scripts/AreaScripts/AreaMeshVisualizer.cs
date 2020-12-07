@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// this component creates a 3D mesh from the shape of an polygon area collider
+
 [RequireComponent(typeof(AreaPolygonCollider))]
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-
 [RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
 public class AreaMeshVisualizer : MonoBehaviour
-{
-    
-
+{    
     // Start is called before the first frame update
     void Start()
     {
@@ -21,12 +21,5 @@ public class AreaMeshVisualizer : MonoBehaviour
         MeshFilter mf = GetComponent<MeshFilter>();
 
         mf.mesh = mesh;
-        //mr.material = Resources.Load<Material>("Materials/Orange");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

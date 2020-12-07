@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+// represents a wall or cliff or door
+// used for collision
 public class TerrainEdge
 {
     Vector2 vertA_pos;

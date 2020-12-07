@@ -10,6 +10,6 @@ public class ShootStats : AbilityStats
     public GameObject bullet;
     
     public override Ability GetAbilityInstance() {
-        return new TargetedShot(this);
+        return new ShootWithNoAnimation(this);
     }
 }

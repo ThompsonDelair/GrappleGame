@@ -2,32 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// shoots using a bullet prefab
+// plays animation and locks movement while ability is casting
 public class ShootWithAnimation : Ability
 {
     ShootWithAnimationStats stats;
     float timestamp;
-    Vector2 dir;
     bool shot;
     bool lockedon;
-
-    //public override bool attacking() {
-    //    throw new System.NotImplementedException();
-    //}
 
     public ShootWithAnimation(ShootWithAnimationStats s) {
         stats = s;
     }
 
     public override bool StartAbilityCheck(Actor a,GameData data) {
-        if (timestamp < Time.time) // Charge setup
+        if (timestamp < Time.time) // check if ability is on cool down
         {
-
 
             if (Vector2.Distance(a.position2D,data.player.position2D) >= stats.range) // Range check
             {
                 return false; // OUT OF RANGE
             }
 
+            // check line of sight
             if (!data.map.ClearSightLine(a.position2D,data.player.position2D)) {
                 return false;
             }
@@ -40,55 +37,46 @@ public class ShootWithAnimation : Ability
             a.transform.GetComponent<Animator>().SetTrigger("StartAttack");
             shot = false;
             lockedon = false;
-            //Debug.Log("start lunge");
-            return true;
+            a.transform.LookAt(data.player.position3D);
+            return true; // ability is ready to execute
         }
-        return false;
+        return false; // ability is not ready to execute
     }
 
     public override bool RunAbilityUpdate(Actor a,GameData data) {
-        //Debug.Log("LUNGE: " + actor.transform.gameObject.name + " attack status through actor: " + actor.ability.attacking + " attack status through local attacking: " + attacking);
+
 
         if (Time.time > timestamp && shot) {
+            // ability is finished
             timestamp = Time.time + stats.coolDown;
             a.currMovement = Movement.WALKING;
             return false;
         } 
 
         if(timestamp - Time.time <= stats.targetLockTime && !shot && !lockedon) {
-            dir = (data.player.position2D - a.position2D);
+            // stop tracking target movement if we reach lock on time
             lockedon = true;
         }
 
         if (!lockedon) {
-            a.transform.LookAt(data.player.position3D);
+            // rotate to try to face target
+            float step = 0.85f * Time.deltaTime;
+            Vector3 target = data.player.position3D - a.position3D;
+            Vector3 newDir = Vector3.RotateTowards(a.transform.forward,target,step,0.0f);
+            a.transform.rotation = Quaternion.LookRotation(newDir);
         }
 
 
-        if (Time.time > timestamp) // Lunges after finished charging time
+        if (Time.time > timestamp) // shoot
         {
             a.transform.GetComponent<Animator>().SetTrigger("Attack");
             SoundManager.PlayOneClipAtLocation(AudioClips.singleton.enemyShot, a.position2D, 6f);
             Bullet b = GameManager.main.SpawnBullet(stats.bulletPrefab,a.position2D);
             b.transform.rotation = a.transform.rotation;
-            //b.transform.LookAt(Utils.Vector2XZToVector3(a.position2D + dir));
-
-            //GameObject gameObjBullet = GameManager.main.GetNewSentryBullet(); // Since ability does not derive from MonoBehaviour we have to get another mono class to do the work of instantiation for us.
-            //Bullet bullet = new Bullet(gameObjBullet.transform,stats.bulletStats.radius,Team.PLAYER,stats.damage);
-            //bullet.speed = stats.bulletStats.speed;
-            //bullet.position3D = a.transform.position;
-            //bullet.transform.LookAt(Utils.Vector2XZToVector3(a.position2D + dir));
-            //GameManager.main.gameData.bullets.Add(bullet);
-
-            //GetComponent<Actor>().PlayAudioClip(AudioClips.singleton.gunShot);
-            // Set to shoot in that direction
-            
+              
             timestamp = Time.time + stats.windDown;
             shot = true;
-
         }
-
-
 
         return true; // Ability still casting
     }

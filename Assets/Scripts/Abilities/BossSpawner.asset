@@ -15,16 +15,17 @@ MonoBehaviour:
   totalSpawnedLimit: 10
   spawnedPerWave: 5
   timeBetweenSpawns: 10
-  waitForFirstSpawn: 4
+  waitForFirstSpawn: 3
   eggGrowTime: 0
   spawnAllTogether: 0
-  spawnRange: 5
+  spawnRange: 10
   eggRadius: 0
   egg: {fileID: 4410226063173504890, guid: fc8a359945069594cabdf512398c68c7, type: 3}
   instaSpawnAmount: 99
-  eggSpawn:
+  entitySpawnList:
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
-  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
-  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 2067371835699031399, guid: 2d73f9549040f9448a1095c3334dfaaf, type: 3}
+  - {fileID: 2067371835699031399, guid: 048b3b219ff678d4ea9436058ad38f88, type: 3}
+  - {fileID: 2067371835699031399, guid: 048b3b219ff678d4ea9436058ad38f88, type: 3}

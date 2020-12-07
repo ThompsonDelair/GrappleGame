@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// this component searches the navmesh at game start to find the triangles that make up a zone
+//      it can also generate a mesh for a mesh renderer, creating the visual map geometry for the zone
 public enum ZoneType { FLOOR, PIT, ROOF}
 public class ZoneFinder : MonoBehaviour
 {
@@ -17,15 +19,9 @@ public class ZoneFinder : MonoBehaviour
     void Start()
     {
         if(zone == null) {
-            zone = FindZone(GameManager.main.gameData.map);
+            zone = FindZone(GameManager.main.GameData.map);
         }
         MakeMesh();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     Movement MovementFromZoneType(ZoneType z) {
@@ -44,11 +40,6 @@ public class ZoneFinder : MonoBehaviour
         List<NavTri> navTris = NavUtils.FindConnectedTrisWithAABB(startTri,out aabb);
         zone = new Zone(MovementFromZoneType(zoneType),navTris,aabb);
         return zone;
-    }
-
-    List<NavTri> FindTris(Vector2 startPoint,Map map) {
-        NavTri startTri = NavCalc.TriFromPoint(startPoint,map.TriKDMap,map.vertEdgeMap);
-        return NavUtils.FindConnectedTris(startTri);
     }
 
     void MakeMesh() {

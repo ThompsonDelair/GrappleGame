@@ -3,16 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this class runs the mechanics for the player's grapple ability
 public class Grapple
 {
     const float grapEndMargin = 0.5f;
+    // how fast the grapple extends
     const float launchSpeed = 85f;
+    // how fast the grapple retracts
     const float rewindSpeed = 38f;
     public const float grappleRange = 20f;
     const float minGrappleDist = 1.25f;
-    const float failedGrapModifier = 1.5f;
+    //const float failedGrapModifier = 1.5f;
 
-    public Actor owner;
+    Actor owner;
     EaseDelegate shoot = Ease.OutCubic;
     EaseDelegate retract = Ease.InOutCubic;
 
@@ -20,8 +23,8 @@ public class Grapple
     float shootTime;   
     float retractTime;
 
-    public bool GrappleLanded { get { return grappleLanded; } } // This is a useful thing to have readable (but not editable) by outside components. - Kurt
-    bool grappleLanded = false;
+    public bool GrappleLanded { get { return grappleAnimationLanded; } } // This is a useful thing to have readable (but not editable) by outside components. - Kurt
+    bool grappleAnimationLanded = false;
     bool grapFailed = false;
 
     Vector2 grapplePos;
@@ -33,37 +36,39 @@ public class Grapple
     LineRenderer lr;
 
     List<Tuple<Vector2,Color>> grapCollisionPoints = new List<Tuple<Vector2,Color>>();
+    //Material m;
 
     public Grapple(Actor a) {
         owner = a;
         lr = a.transform.GetComponent<LineRenderer>();
+        //m = lr.material;
     }
 
+    
     public void StartGrapple(Vector2 dir,Map map) {
 
-
         FindGrappleEndPoint(owner.position2D,dir,map);
+        SetTravelSpeed(owner.position2D,grappleEndPoint);
 
-        if(Vector2.Distance(grappleEndPoint,owner.position2D) > minGrappleDist) {
+        if (Vector2.Distance(grappleEndPoint,owner.position2D) > minGrappleDist) {
             owner.currMovement = Movement.FLYING;
             playerPosAtGrapStart = owner.position2D;
             grapplePos = owner.position2D;
             grapFailed = false;
-            grappleLanded = false;
-            //owner.PlayAudioClip(AudioClips.singleton.grapShoot);
+            grappleAnimationLanded = false;
             SoundManager.StartClipOnActor(AudioClips.singleton.grapShoot, owner, 6f, false);
             timestamp = Time.time;
             lr.positionCount = 2;
         } else {
-            //owner.PlayAudioClip(AudioClips.singleton.grapEnd);
             SoundManager.StartClipOnActor(AudioClips.singleton.grapEnd, owner, 6f, false);
             grapFailed = true;
+            Vector3 endPos = owner.position3D + Utils.Vector2XZToVector3(dir).normalized * grappleRange;
+            owner.transform.GetComponent<GrappleFailedVisuals>().ShowVisual(endPos);
         }
 
-
-        //GrappleDebug(dir,pos);
     }
 
+    // tries to find a valid point to grapple to
     void FindGrappleEndPoint(Vector2 start, Vector2 dir, Map map) {
         Vector2 end = dir.normalized * grappleRange + start;
         List<CollisionPoint> points = CollisionCalc.CollisionPointsOnLine(start,end,map.terrainEdges);
@@ -71,33 +76,24 @@ public class Grapple
         bool hitWall = false;
 
         if (points.Count == 0) {
+            // our grapple has no collision with any terrain so it can automatically grapple its furthest distance
             grappleEndPoint = end;
         } else {
-            //Vector2 closest = points[0].pos;
-            //float bestDist = Vector2.SqrMagnitude(start - points[0].pos);
-            //for(int i = 1; i < points.Count; i++) {
-            //    CollisionPoint c = points[i];
-            //    float currDist = Vector2.SqrMagnitude(start - c.pos);
 
-            //    if (currDist < bestDist) {
-            //        closest = c.pos;
-            //        bestDist = currDist;
-            //    }
-            //}
+            // go through all terrain collision points to try to find a valid end point
 
             points.Sort(delegate (CollisionPoint a,CollisionPoint b) {
                 return a.dist.CompareTo(b.dist);
             });
+
+            // backpoint is used to check the area right behind a collision
             Vector2 backPoint = dir.normalized * -owner.collider.Radius;
             
             int i = 0;
-            //grappleEndPoint = closest;
             for(; i < points.Count; i++) {
                 CollisionPoint c = points[i];
 
-                //if (CollisionSystem.LayerOrCheck(c.layer,Layer.BLOCK_FLY)) {
-                //    break;
-                //}
+                // if our grapple hit a wall, it can't go any further
 
                 if (CollisionSystem.LayerOrCheck(c.layer,Layer.BLOCK_FLY)){
                     hitWall = true;
@@ -106,9 +102,12 @@ public class Grapple
             }
 
             if (!hitWall && map.IsPointWalkable(end + backPoint)) {
+
                 grappleEndPoint = end + backPoint;
-                Debug.Log("end point is walkable");
             } else {
+
+                // if our grapple git a wall, loop backwards and try to find a valid walkable point to land on
+
                 if (i >= points.Count)
                     i = points.Count - 1;
                 for (; i >= 0; i--) {
@@ -119,9 +118,7 @@ public class Grapple
                         break;
                     }
                 }
-            }
-
-           
+            }           
         }
 
         if (hitWall) {
@@ -130,60 +127,29 @@ public class Grapple
             grappleEndPointWithOffset = grappleEndPoint;
         }
 
-        
 
+    }
 
-        float dist = Vector2.Distance(start,grappleEndPoint);
+    
+    void SetTravelSpeed(Vector2 start, Vector2 end) {
+        float dist = Vector2.Distance(start,end);
         retractTime = dist / rewindSpeed;
         shootTime = dist / launchSpeed;
     }
 
-    //void GrappleDebug(Vector2 dir, Vector2 pos) {
-        
-    //    Map map = GameManager.main.map;
-    //    Vector2 pos2 = dir.normalized * 999 + pos;
-    //    grapCollisionPoints.Clear();
-    //    for (int i = 0; i < map.terrainEdges.Count; i++) {
-    //        TerrainEdge e = map.terrainEdges[i];
-    //        Vector2 point;
-    //        if (Calc.LineIntersect(pos,pos2,e.vertA_pos2D,e.vertB_pos2D,out point)) {
-    //            Layer l = e.layer;
-    //            Color c = Color.magenta;
-
-    //            if (l == Layer.BLOCK_FLY) {
-    //                c = Color.blue;
-    //            } else if (l == Layer.BLOCK_WALK) {
-    //                c = Color.white;
-    //            }
-    //            Tuple<Vector2,Color> tuple = new Tuple<Vector2,Color>(point,c);
-    //            grapCollisionPoints.Add(tuple);
-    //        }
-    //    }
-    //    if (DebugControl.main.breakOnGrappleUpdate)
-    //        Debug.Break();
-    //}
-
-    void DrawCollisionPoints() {
-        foreach(Tuple<Vector2,Color> t in grapCollisionPoints) {
-            Vector3 pos = Utils.Vector2XZToVector3(t.Item1);
-            Utils.debugStarPoint(pos,1f,t.Item2);
-        }
-    }
-
     public void EndGrapple() {
-        //owner.PlayAudioClip(AudioClips.singleton.grapEnd);
         SoundManager.StartClipOnActor(AudioClips.singleton.grapEnd, owner, 6f, false);
         owner.currMovement = Movement.WALKING;
-        //Vector3[] noPoints = new Vector3[0];
         lr.positionCount = 0;
     }
 
     public void GrappleUpdate(Map map) {
-        //DrawCollisionPoints();
-        if (grappleLanded) {
+
+        if (grappleAnimationLanded) {
+
+            // pull the player towards the grapple point
 
             float t = (Time.time - timestamp) / retractTime;
-
 
             if (!grapFailed) {
                 owner.position2D = (grappleEndPointWithOffset - playerPosAtGrapStart) * retract(t) + playerPosAtGrapStart;
@@ -193,15 +159,14 @@ public class Grapple
                 EndGrapple();
             }
 
-            //if (Vector2.Distance(owner.position2D,grappleEndPointWithOffset) < grapEndMargin) {
-                
-            //}
-
         } else {
+
+            // shoot the grapple animation out
+
             float t = (Time.time - timestamp) / shootTime;
 
             if (t > 1) {
-                grappleLanded = true;
+                grappleAnimationLanded = true;
                 grapplePos = grappleEndPoint;
                 timestamp = Time.time;
             }
@@ -215,7 +180,4 @@ public class Grapple
         Vector3[] points = { start,end };
         lr.SetPositions(points);
     }
-
-
-
 }

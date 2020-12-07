@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 2D axis aligned bounding box
+// used for trimming collision detection
+// if two AABB's aren't overlapping, then there's no chance their more complicated object inside are colliding, either
 public struct AABB_2D
 {
     public float X { get { return x; } }
@@ -30,7 +33,7 @@ public struct AABB_2D
         height = width;
     }
 
-    public AABB_2D(NewCircleCollider c) {
+    public AABB_2D(OurCircleCollider c) {
         x = c.Position2D.x - c.Radius;
         y = c.Position2D.y - c.Radius;
         width = c.Radius * 2;

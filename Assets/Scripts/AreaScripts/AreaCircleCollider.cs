@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class AreaCircleCollider : AreaCollider
 {
-    public NewCircleCollider CircleCollider { get { return circleCollider; } }
-    NewCircleCollider circleCollider;
+    public OurCircleCollider CircleCollider { get { return circleCollider; } }
+    OurCircleCollider circleCollider;
     [SerializeField] private float radius;
 
-    public override bool DetectCircleCollision(NewCircleCollider c) {
+    public override bool DetectCircleCollision(OurCircleCollider c) {
         return circleCollider.DetectCircleCollision(c);
     }
 
     private void Awake() {
-        circleCollider = new NewCircleCollider(radius,transform);
+        circleCollider = new OurCircleCollider(radius,transform);
     }
 
     private void OnDrawGizmos() {

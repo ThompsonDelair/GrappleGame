@@ -12,16 +12,16 @@ EditorBuildSettings:
     path: Assets/Scenes/Menus/MainMenu.unity
     guid: 63fdfa31f2df21647be4c3f4efe11beb
   - enabled: 1
-    path: Assets/_Modules/KurtisTestStuff/01_DropZone_new.unity
+    path: Assets/Scenes/01_DropZone.unity
     guid: 00029737a2e80e845aae6111627a6e47
   - enabled: 1
-    path: Assets/_Modules/KurtisTestStuff/02_EnigmaticVault.unity
-    guid: 9d6c0bceb62ef604b9d5eb63cfe72ca1
+    path: Assets/Scenes/02_EnigmaticVault.unity
+    guid: 451c896272f23604f90a79ae995fee22
   - enabled: 1
-    path: Assets/_Modules/KurtisTestStuff/03_CoreApproach.unity
+    path: Assets/Scenes/03_CoreApproach.unity
     guid: eb764ac258a781344b1a2e88a5942c21
   - enabled: 1
-    path: Assets/_Modules/KurtisTestStuff/04_CorruptedCore.unity
+    path: Assets/Scenes/04_CorruptedCore.unity
     guid: e5dc16c93b25854488678c7bb7f058cd
   - enabled: 1
     path: Assets/Scenes/Menus/EndScene.unity

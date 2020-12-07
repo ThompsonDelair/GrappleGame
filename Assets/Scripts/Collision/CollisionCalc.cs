@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// A variety of collision calculation functions
 public static class CollisionCalc 
 {
     //  0 means point is ON the polygon's line
@@ -43,26 +44,6 @@ public static class CollisionCalc
         return newPos;
     }
 
-    //public static Vector2 ResolveCirclePChainCollision(Vector2 point,float radius,Vector2[] pchain,out CollisionInfo info) {
-    //    info = new CollisionInfo();
-    //    Vector2 newPos = point;
-    //    for (int i = 0; i < pchain.Length - 1; i++) {
-    //        Vector2 lineA = pchain[i];
-    //        Vector2 lineB = pchain[i + 1];
-    //        float dist = Calc.DistancePointToLine(newPos,lineA,lineB);
-    //        if (dist < radius) {
-    //            Vector2 closestPoint = Calc.ClosestPointToLine(newPos,lineA,lineB);
-    //            info.points.Add(closestPoint);
-    //            float dist2 = Vector2.Distance(newPos,closestPoint);
-    //            if (dist2 < radius) {
-    //                Vector2 away = (newPos - closestPoint).normalized * (radius - dist2);
-    //                newPos += away;
-    //            }
-    //        }
-    //    }
-    //    return newPos;
-    //}
-
     public static bool DetectCirclePChainCollision(Vector2 point,float radius,Vector2[] pchain) {
         for (int i = 0; i < pchain.Length - 1; i++) {
             Vector2 lineA = pchain[i];
@@ -87,7 +68,7 @@ public static class CollisionCalc
         return false;
     }
 
-    public static bool DetectCirclePolygonCollision(NewCircleCollider circ, PolygonCollider poly) {
+    public static bool DetectCirclePolygonCollision(OurCircleCollider circ, PolygonCollider poly) {
         Vector2[] verts = poly.Verts;
 
         for (int i = 0; i < verts.Length; i++) {
@@ -98,13 +79,9 @@ public static class CollisionCalc
                 return true;
             }
         }
-
         return (CollisionCalc.PointInsidePolygon(circ.Position2D,poly.Verts) != 2);
-
     }
-
     
-
     public static Vector2 FindCirclePolygonCollision(Vector2 point,float radius,Vector2[] polygon,out CollisionInfo info) {
         info = new CollisionInfo();
         Vector2 newPos = point;
@@ -125,7 +102,7 @@ public static class CollisionCalc
         return newPos;
     }
 
-    public static Vector2 FindCircleLineCollision(NewCircleCollider c,Vector2 la,Vector2 lb) {
+    public static Vector2 FindCircleLineCollision(OurCircleCollider c,Vector2 la,Vector2 lb) {
         float dist = Calc.DistancePointToLine(c.Position2D,la,lb);
         if (dist < c.Radius) {
             Vector2 closestPoint = Calc.ClosestPointToLine(c.Position2D,la,lb);
@@ -137,7 +114,7 @@ public static class CollisionCalc
         return Vector2.negativeInfinity;
     }
 
-    public static bool DetectCircleLineCollision(NewCircleCollider c,Vector2 la,Vector2 lb) {
+    public static bool DetectCircleLineCollision(OurCircleCollider c,Vector2 la,Vector2 lb) {
         float dist = Calc.DistancePointToLine(c.Position2D,la,lb);
         if (dist < c.Radius) {
             Vector2 closestPoint = Calc.ClosestPointToLine(c.Position2D,la,lb);
@@ -149,20 +126,7 @@ public static class CollisionCalc
         return false;
     }
 
-    //public static bool LinePolygonCollision(Vector2 lineStart,Vector2 lineEnd,Vector2[] polygon,out Vector2 intersect) {
-    //    //Vector2 closest = Vector2.negativeInfinity;
-    //    for (int i = 0; i < polygon.Length; i++) {
-    //        Vector2 polyLineA = polygon[i];
-    //        Vector2 polyLineB = polygon[(i + 1) % polygon.Length];
-    //        if (Calc.LineIntersect(lineStart,lineEnd,polyLineA,polyLineB,out intersect)) {
-    //            return true;
-    //        }
-    //    }
-    //    intersect = Vector2.negativeInfinity;
-    //    return false;
-    //}
-
-    public static bool DetectCircleCircleCollision(NewCircleCollider a, NewCircleCollider b) {
+    public static bool DetectCircleCircleCollision(OurCircleCollider a, OurCircleCollider b) {
         Vector2 diff = b.Position2D - a.Position2D;
         return diff.sqrMagnitude < (a.Radius + b.Radius) * (a.Radius + b.Radius);
     }
@@ -200,8 +164,6 @@ public static class CollisionCalc
         }
     }
 
-
-
     // Returns true if the radius of an enemy actor and the radius of bullet are overlapping 
     public static bool CompareRadiusBulletActor(Bullet b,Actor e) {
         if (Vector2.Distance(b.position2D,e.position2D) < b.collider.Radius + e.collider.Radius) {
@@ -222,32 +184,17 @@ public static class CollisionCalc
         return false;
     }
 
-    //public static Vector2 LineCirclesCollision(Vector2 lineA, Vector2 lineB, Actor[] actors) {
-    //    Vector2 best = Vector2.negativeInfinity;
-    //    for(int i = 0; i < actors.Length; i++) {
-    //        Vector2 distance = Vector2.Distance(Utils.Vector3ToVector2XZ());
-    //    }
-    //    return best;
-    //}
-
     public static List<CollisionPoint> CollisionPointsOnLine(Vector2 lineOrigin, Vector2 lineEnd, List<TerrainEdge> edges) {
         List<CollisionPoint> points = new List<CollisionPoint>();
         for(int i = 0; i < edges.Count; i++) {
             TerrainEdge e = edges[i];
             Vector2 intersect;
-            //if (!CollisionSystem.LayerExact(e.layer,filter)) {
-            //    continue;
-            //}
 
             if (Calc.LineIntersect(lineOrigin,lineEnd,e.vertA_pos2D,e.vertB_pos2D,out intersect)) {
                 points.Add(new CollisionPoint(intersect,e.layer,Vector2.Distance(lineOrigin,intersect)));
             }            
         }
         return points;
-    }
-
-    public static void SortPointListByDist(List<CollisionPoint> list) {
-
     }
 }
 

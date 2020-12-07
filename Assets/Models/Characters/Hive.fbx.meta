@@ -16,7 +16,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Hive
-    second: {fileID: 2100000, guid: 4f75a694a935c7a46b1d71d69019f571, type: 2}
+    second: {fileID: 2100000, guid: c50dcefd81867ed41bc8275f92d3d851, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

@@ -17,6 +17,7 @@ MonoBehaviour:
   speed: 6
   movement: 16
   invulnerable: 0
+  burnImmune: 1
   abilityStats:
   - {fileID: 11400000, guid: e1626101bcf059943861502fa5a988b9, type: 2}
   behaviorStats:

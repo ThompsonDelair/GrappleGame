@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// When the actor's health reaches a percentage threshold, destroy the actor and spawn a new one
 public class MutateOnHealthThreshold : Behavior
 {
     MutateOnHealthThresholdStats stats;

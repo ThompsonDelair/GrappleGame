@@ -19,7 +19,7 @@ public class NavGridPathfindTest : MonoBehaviour
     {
         pointA = transform.GetChild(0);
         pointB = transform.GetChild(1);
-        navGrid = GameManager.main.gameData.navGrid;
+        navGrid = GameManager.main.GameData.navGrid;
         GetPath();
     }
 

@@ -4,6 +4,6 @@ using UnityEngine;
 
 public abstract class GenericCollider 
 {
-    public abstract bool DetectCircleCollision(NewCircleCollider c);
-    public abstract Vector2 FindCircleCollisionPoint(NewCircleCollider c);
+    public abstract bool DetectCircleCollision(OurCircleCollider c);
+    public abstract Vector2 FindCircleCollisionPoint(OurCircleCollider c);
 }

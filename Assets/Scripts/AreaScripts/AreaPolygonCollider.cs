@@ -8,7 +8,7 @@ public class AreaPolygonCollider : AreaCollider
     public PolygonCollider PolygonCollider { get { return polygonCollider; } }
     PolygonCollider polygonCollider;
 
-    public override bool DetectCircleCollision(NewCircleCollider c) {
+    public override bool DetectCircleCollision(OurCircleCollider c) {
         return polygonCollider.DetectCircleCollision(c);
     }
 

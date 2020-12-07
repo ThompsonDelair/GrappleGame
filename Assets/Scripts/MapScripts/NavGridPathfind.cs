@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+// Pathfinding for navgrid
+//      Uses A* pathfinding
 public static class NavGridPathfind
 {
     public static List<Vector2> Pathfind(Vector2 start, Vector2 goal, Movement m, NavGrid grid, int rangeFind = -1) {
@@ -144,9 +146,7 @@ public static class NavGridPathfind
 
                 if (grid.CellFromCellPos(n.x,n.y).canSeePlayer && distSqr <= rangeSqr && neighborsCanSee) {
                     pathfound = true;
-                    lastNode = n;
-                    //Debug.Log("found node in sight");
-                    
+                    lastNode = n;                    
                 }
             }
 
@@ -157,6 +157,7 @@ public static class NavGridPathfind
         }
     }
 
+    // removes redundant nodes from a path
     static void CleanPath(List<Vector2Int> path) {
         
         if(path.Count == 2) {
@@ -181,6 +182,8 @@ public static class NavGridPathfind
         }
     }
 
+    // path starts as nav grid cell coordinates
+    // this converts it to real world 2D space coordinates
     static List<Vector2> ConvertCellPathToRealPath(List<Vector2Int> cellPath, NavGrid grid) {
         List<Vector2> path = new List<Vector2>(cellPath.Count);
         for(int i = 0; i < cellPath.Count; i++) {
@@ -188,20 +191,4 @@ public static class NavGridPathfind
         }
         return path;
     }
-
-    //class A_ScoreObj
-    //{
-    //    public Vector2Int pos;
-    //    public float score;
-
-    //    public A_ScoreObj() {
-    //        pos = new Vector2Int();
-    //        score = Mathf.Infinity;
-    //    }
-
-    //    public A_ScoreObj(Vector2Int _pos,float _score) {
-    //        pos = _pos;
-    //        score = _score;
-    //    }
-    //}
 }

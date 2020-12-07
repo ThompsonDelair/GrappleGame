@@ -6,9 +6,12 @@ using UnityEngine;
 public class LobBulletStats : BulletStats
 {
     public float lobHeight;
-    public float travelTime;
+    public float travelTimeMin;
+    public float travelTimeMax;
+    public float travelTimeMaxDist;
     public GameObject burnArea;
     public GameObject warningPrefab;
+
 
     public override BulletBehavior GetBehavior() {
         return new LobBulletBehavior(this);

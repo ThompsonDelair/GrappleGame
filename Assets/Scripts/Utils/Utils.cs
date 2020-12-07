@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// variety of useful utility functions
+// most of these come from previous projects
 public static class Utils 
 {
     const int loopLimit = 500000;
@@ -22,8 +25,6 @@ public static class Utils
         }
         i++;
         return false;
-
-
     }
 
     public static Vector3[] crossOnPoint(Vector3 v,float f) {

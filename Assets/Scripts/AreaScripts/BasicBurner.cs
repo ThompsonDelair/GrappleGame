@@ -13,6 +13,10 @@ public class BasicBurner : Area
     [SerializeField] float burnParticleFrequency = 0.1f;
 
     public override void OnActorCollision(Actor a) {
+
+        if (a.stats.burnImmune)
+            return;
+
         if (actorMemory.ContainsKey(a)) {
             if (actorMemory[a] < Time.time) {
                 DamageSystem.DealDamage(a,damage);

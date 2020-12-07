@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// An instance of a push force active on an actor
+// An actor has a list of push forces currently active on it
+// PushInstances will be destroyed once their force decays to <= 0
 public class PushInstance
 {
     public Vector2 dir;

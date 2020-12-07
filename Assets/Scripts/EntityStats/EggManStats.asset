@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d64d6ef426e7d49b26f55dc4d23e3e, type: 3}
   m_Name: EggManStats
   m_EditorClassIdentifier: 
-  maxHP: 30
+  maxHP: 50
   radius: 2
   speed: 4
   movement: 16
   invulnerable: 0
+  burnImmune: 0
   abilityStats:
   - {fileID: 11400000, guid: 8276aafc733e3d343815fdaa8fedaa0e, type: 2}
   behaviorStats:

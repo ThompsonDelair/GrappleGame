@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// This is essentially a square grid of cells that are on either a pit zone or floor zone
+// It's divided up into "paritions" where each partition contains cells
+//      this is so we can skip whole partitions that contain no valid cells for performance
 public class NavGrid
 {
     public int cellSize = 1;
@@ -52,7 +55,6 @@ public class NavGrid
                     if (aabb.OverlapCheck(map.zones[z].aabb)) {
                         if (zonesPerParitions[px,py] == null) {
                             zonesPerParitions[px,py] = new List<Zone>();
-
                         }
                         zonesPerParitions[px,py].Add(map.zones[z]);
                         coversZone = true;
@@ -65,6 +67,7 @@ public class NavGrid
             }
         }
     }
+
     void CellScan(Map map) {
         for (int px = 0; px < partitions.GetLength(0); px++) {
             for (int py = 0; py < partitions.GetLength(1); py++) {
@@ -81,7 +84,6 @@ public class NavGrid
         for (int cx = 0; cx < partition.GetLength(0); cx++) {
             for (int cy = 0; cy < partition.GetLength(1); cy++) {
                 Vector2 point = PosFromPartition(px,py,cx,cy);
-                //point += Vector2.one * cellSize / 2;
 
                 for (int z = 0; z < zonesPerParitions[px,py].Count; z++) {
                     Zone zone = zonesPerParitions[px,py][z];
@@ -235,11 +237,6 @@ public class NavGrid
 
     public Vector2Int CellPosFromPos2D(Vector2 pos) {
         pos -= offset;
-        //float x = pos.x;
-        //float y = pos.y;
-        //int cx = (int)(x / cellSize);
-        //int cy = (int)(y / cellSize);
-
         return new Vector2Int((int)(pos.x / cellSize),(int)(pos.y / cellSize));
     }
 
@@ -337,11 +334,8 @@ public class NavGrid
                     }
                     partitions[p.px,p.py][p.cx,p.cy].canSeePlayer = true;
                 }
-                //Utils.debugStarPoint(Utils.Vector2XZToVector3(pos),0.5f,Color.green);
             }
         }
-        ;
-        //Debug.Break();
     }
 
     public void TrimGrid() {

@@ -84,7 +84,7 @@ public class SurfaceFinder : MonoBehaviour
     }
 
     public Vector2 Scan(int yLevel,int xLevel,Vector2 dir,int steps) {
-        Map m = GameManager.main.gameData.map;
+        Map m = GameManager.main.GameData.map;
         int i = 0;
         //endPos = Vector2.zero;
         for (; i < steps; i++) {
@@ -112,7 +112,7 @@ public class SurfaceFinder : MonoBehaviour
             Dictionary<EdgePair,HalfEdge> dict;
             tris = Triangulation.BowyerWatson(points,out dict);
 
-            Map m = GameManager.main.gameData.map;
+            Map m = GameManager.main.GameData.map;
             for (int i = tris.Count - 1; i >= 0; i--) {
                 Vector2 centroid = tris[i].centroid();
                 if (!m.IsPointWalkable(centroid)) {

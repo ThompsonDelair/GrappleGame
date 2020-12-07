@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Behaviors update every frame, similar to Update() in monobehaviors
+// Actors can have multiple behaviors
 public abstract class Behavior
 {
     public const float pathfindMaxRange = 45f;

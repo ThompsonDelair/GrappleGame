@@ -2,21 +2,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum GrappleHit { NONE, TERRAIN, ACTOR_SMALLER, ACTOR_LARGER }
 
-public delegate float EaseDelegate(float t);
-
-[RequireComponent(typeof(DebugControl))]
 public class GameManager : MonoBehaviour
 {
-    //private CSharpCodeProvider codeProvider;
-    //private CompilerParameters cp;
+    public static GameManager main;
 
-    public bool drawTerrain;
-    public bool drawNavMesh;
-    public bool drawGrappleRange;
-
-    public static GameManager main; 
     private Camera mainCamera;
 
     [Header("Player Config Fields")]
@@ -24,47 +14,36 @@ public class GameManager : MonoBehaviour
     public Actor player;
     public StatManager playerStats;
     public Animator playerAnimator;
-    public float playerBulletDamage = 1f;
 
     public GameObject playerBulletHit;
 
-    Grapple grapple;
+    private Grapple grapple;
     public Grapple Grappler { get { return grapple; } }
-    Transform cursor;
+    private Transform cursor;
 
     // ! -- Input Buffer Component.
     InputBuffer inputBuffer;
 
-    [Header("Enemy Spawn Prefabs")]
-    [SerializeField] private GameObject smallEnemy = null;
-    [SerializeField] private GameObject bigJoe = null;
-
-
-    public GameData gameData;
-
-    public bool drawNavGrid;
-    public bool drawZones;
-    public bool drawPlayerSight;
+    private GameData gameData;
+    public GameData GameData { get { return gameData; } }
 
     private void Awake() {
-               
-        AudioListener.volume = 0.3f;
-
-        Time.timeScale = 1f;
 
         main = this;
+
+        AudioListener.volume = 0.3f;
+        Time.timeScale = 1f;
+        
         cursor = GameObject.Find("Cursor").transform;
         mainCamera = Camera.main;
 
         inputBuffer = GetComponent<InputBuffer>();
         
-        Init();
-        //lineRenderer = GetComponent<LineRenderer>();
+        InitializeGame();
 
         playerStats = player.transform.GetComponent<StatManager>();
 
-        gameData.navGrid = new NavGrid();
-        gameData.navGrid.Init(gameData.map);
+
     }
 
     // Start is called before the first frame update
@@ -77,7 +56,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (player.currMovement == Movement.FLYING) {
+            grapple.GrappleUpdate(gameData.map);
+        }
 
         InputUpdate();
 
@@ -85,19 +66,10 @@ public class GameManager : MonoBehaviour
         CollisionSystem.CollisionUpdate(gameData);
         DamageSystem.HealthUpdate(gameData.allActors);
         MapSystem.Update(gameData);
-        BehaviorSystem.Update(gameData);
-
-        //DamageSystem.HealthUpdate(map.objects);
-
+        BehaviorAbilitySystem.Update(gameData);
     }
 
-    private void FixedUpdate() {
-        if (player.currMovement == Movement.FLYING) {
-            grapple.GrappleUpdate(gameData.map);
-        }
-    }
-
-    void Init() {
+    void InitializeGame() {
         gameData = new GameData();
 
         gameData.map.InitNavMesh(GameObject.Find("MapRoot").transform);
@@ -106,117 +78,54 @@ public class GameManager : MonoBehaviour
         gameData.map.SetDoorHalfEdges();
         FindActors();
         FindObjects();
-    }
 
-    //void HazardCheck() {
-    //    if (hazardColliding) {
-    //        playerStats.AddModifier(StatManager.StatType.Speed, -0.9f);
-    //        player.velocity = player.velocity.normalized * playerStats.GetStat(StatManager.StatType.Speed);
-    //        playerHazardTimer--;
-    //        if (playerHazardTimer <= 0) {
-    //            hazardColliding = false;
-    //            playerHazardTimer = 40;
-    //        }
-
-    //        if (player.currMovement == Movement.FLYING) {
-    //            grapple.EndGrapple();
-    //        }
-
-    //        //Debug.Log("Collision...");
-    //    } else {
-    //       playerStats.RemoveModifier(StatManager.StatType.Speed, -0.9f);
-    //    }
-    //}
-
-    void DrawTerrain() {
-        for(int i = 0; i < gameData.map.terrainEdges.Count; i++) {
-            //Layer[] types = map.VertTypes[i];
-            TerrainEdge e = gameData.map.terrainEdges[i];
-            Color c;
-
-            if (e.layer == Layer.BLOCK_FLY) {
-                c = CustomColors.darkRed;
-            } else {
-                c = Color.black;
-            }
-            Debug.DrawLine(e.vertA_pos3D,e.vertB_pos3D,c);
-        }
+        gameData.navGrid = new NavGrid();
+        gameData.navGrid.Init(gameData.map);
     }
 
     // Assigns the player gameobject a corresponding Actor, does the same for all enemies in enemies GameObject
     void FindActors() {
         Transform dudes = GameObject.Find("Dudes").transform;        
 
+        // find player game object
         Transform p = dudes.Find("Player");
         ActorStats stats = p.GetComponent<ActorInfo>().stats;
         player = new Actor(p,stats,Team.PLAYER);
         grapple = new Grapple(player);
         gameData.allActors.Add(player);
         gameData.player = player;
+
+
         if(player == null) {
             Debug.LogError("cant find player");
         }        
-
-        //List<Actor> enemyList = new List<Actor>();
-        
+                
+        // find enemy game objects
         int count = 0;
 
         foreach (Transform child in dudes.Find("Enemies")) {
             AddActorFromGameobject(child.gameObject);
             count++;
         }
-        //enemies = enemyList;
     }
 
+    // the game used to have moving entities and stationary entities in separate lists
+    // stationary entities were called objects
+    // this is only used for old levels
     public void FindObjects() {
         Transform objectRoot = GameObject.Find("Objects").transform;
         Transform[] children = Utils.GetChildren(objectRoot);
         for (int i = 0; i < children.Length; i++) {
-            //ActorNameComponent name = children[i].GetComponent<ActorNameComponent>();
             ActorStats stats = children[i].GetComponent<ActorInfo>().stats;
-
             AddActorFromGameobject(children[i].gameObject);
-
-            //if (stats.mainAttack == "TargetedShot") // Hacky way to segregate other objects from enemy sentry for now
-            //{
-            //    Actor a = new Actor(children[i],stats,Team.ENEMIES);
-            //    //Debug.Log("THIS GUY: " + i + enemyActor.transform.gameObject.name);
-            //    enemyObjects.Add(enemyActor);
-            //    objects.Add(enemyActor);
-            //} else {
-            //    Actor a = new Actor(children[i],stats,Layer.ENEMIES);
-            //    objects.Add(a);
-            //}
-
         }
     }
-
-    // 
-    //public Ability AbilityStringToClass(string abilityName)
-    //{
-    //    Debug.Log("BUILDING " + abilityName + " ABILITY CLASS FOR ");
-    //    if(abilityName == "Lunge")
-    //    {
-    //        Ability ability = new Lunge();
-    //        return ability;
-    //    }
-    //    else if (abilityName == "TargetedShot")
-    //    {
-            
-    //        Ability ability = new TargetedShot();
-    //        return ability;
-    //    }
-
-    //    return null;
-    //}
-
 
     public void PlayerMovementInput() {
         if (player.currMovement != Movement.WALKING)
         {
             return;
         }
-
 
         // Movement Update
         Vector2 moveDir = inputBuffer.GetMovementVector();
@@ -289,21 +198,12 @@ public class GameManager : MonoBehaviour
         if (RaycastWorldMousePos(out worldMousePos))
         {
             cursor.position = worldMousePos;
-            //DrawNavTriAdjacent(Utils.Vector3ToVector2XZ(worldMousePos));
         }
 
+        // draw player facing direction for debug
         Vector2 dir = Calc.Vector2FromTheta(player.transform.rotation.eulerAngles.y + 90,ANGLE_TYPE.DEGREES);
         dir.x *= -1;
         Debug.DrawLine(player.position3D,player.position3D + Utils.Vector2XZToVector3(dir.normalized * 2),Color.green);
-
-
-        // Check for Grapple Input
-        // if (inputBuffer.ActionTriggered(InputName.Grapple, true) && player.movement == Movement.WALKING)
-        // {
-        //     Debug.Log("Grapple");
-        //     //dir.x *= -1;
-        //     ShootGrapple(dir);
-        // }
 
         // quit app
         if (inputBuffer.ActionTriggered(InputName.Quit,true)) {
@@ -311,13 +211,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
     public void ShootGrapple(Vector2 dir) {
         playerAnimator.SetBool("Running", false);
         grapple.StartGrapple(dir,gameData.map);
     }
 
+    // Get the mouse pos intersecting at y = 0
     public bool RaycastWorldMousePos(out Vector3 worldPos) {
 
         // We create an invisible plane at world pos 0,0,0
@@ -338,7 +237,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    
+    // spawns a prefab at the position and hooks up actor class
     public Actor SpawnActor(GameObject prefab, Vector2 pos2D) {
 
         if(prefab.GetComponent<ActorInfo>() == null) {
@@ -356,6 +255,7 @@ public class GameManager : MonoBehaviour
         return a;
     }
 
+    // hooks up actor class to an already instantiated game object 
     public Actor AddActorFromGameobject(GameObject go) {
         ActorInfo i = go.GetComponent<ActorInfo>();
         ActorStats s = i.stats;
@@ -375,6 +275,7 @@ public class GameManager : MonoBehaviour
         SoundManager.StartClipOnActor(AudioClips.singleton.gunShot,player,6f,false);
     }
 
+    // instaniates a bullet prefab and attaches it to a bullet class
     public Bullet SpawnBullet(GameObject prefab, Vector2 pos) {
         GameObject go = GameObject.Instantiate(prefab);
         Bullet bullet = new Bullet(go.transform,go.GetComponent<BulletInfo>().stats);
@@ -383,15 +284,8 @@ public class GameManager : MonoBehaviour
 
         return bullet;
     }
-
-    public Actor SpawnRandomEnemy(Vector2 pos) {
-        int rand = UnityEngine.Random.Range(0,12);
-        GameObject prefab = (rand == 0) ? bigJoe : smallEnemy;
-        GameObject go = Instantiate(prefab,Utils.Vector2XZToVector3(pos),Quaternion.identity);
-        Actor a = AddActorFromGameobject(go);
-        return a;
-    }
        
+    // destroys the actors gameobject and removes it from list of actors
     public void DestroyActor(Actor a) {
         if(a.team == Team.ENEMIES) {
             gameData.enemyActors.Remove(a);
@@ -415,11 +309,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // destroys bullet object and removes from list of bullets
     public void DestroyBullet(Bullet b) {
         gameData.bullets.Remove(b);
         Destroy(b.transform.gameObject);
     }
 
+    // instantiates a prefab at the position and adds to list of areas
     public void SpawnArea(GameObject prefab,Vector2 pos) {
         GameObject go = Instantiate(prefab);
         Area area = go.GetComponent<Area>();
@@ -427,6 +323,7 @@ public class GameManager : MonoBehaviour
         gameData.areas.Add(area);
     }
 
+    // destroys area object and removes from list of areas
     public void DestroyArea(Area a) {
         gameData.areas.Remove(a);
         Destroy(a.transform.gameObject);
@@ -436,75 +333,13 @@ public class GameManager : MonoBehaviour
         Destroy(go);
     }
 
-    public GameObject GetNewSentryBullet()
-    {
-        return (GameObject)Instantiate(Resources.Load("Prefabs/EvilBullet"));
-    }
-
-    public void OnDrawGizmos() {
-
-        if (gameData == null)
-            return;
-
-        if(gameData != null) {
-            gameData.map.DrawTerrainEdgesGizmos();
-        }
-
-        if (drawNavGrid) {
-            NavGrid navGrid = gameData.navGrid;
-
-            navGrid.Draw();
-
-            Vector4 cell = navGrid.PartitionPosFromPos2D(Utils.Vector3ToVector2XZ(cursor.position));
-            int cellValue = navGrid.CellValue((int)cell.x,(int)cell.y,(int)cell.z,(int)cell.w);
-            Color c = Color.white;
-            if (cellValue == (int)Movement.FLYING) {
-                c = Color.red;
-            } else if(cellValue == (int)Movement.WALKING) {
-                c = Color.cyan;
-            }
-            navGrid.DrawSquareWithCross(navGrid.PosFromPartition((int)cell.x,(int)cell.y,(int)cell.z,(int)cell.w),navGrid.cellSize,c);
-        }
-
-        if (drawPlayerSight) {
-            gameData.navGrid.DrawPlayerSight();
-        }
-
-        if (drawZones) {
-            for (int i = 0; i < gameData.map.zones.Count; i++) {
-                gameData.map.zones[i].aabb.DrawBox(Color.red);
-            }
-        }
-
-        if (drawTerrain)
-            DrawTerrain();
-
-        if (drawGrappleRange && GameObject.Find("Player") != null) {
-            Vector3 playerPos = GameObject.Find("Player").transform.position;
-            Vector2[] circles = Calc.CircularPointsAroundPosition(Utils.Vector3ToVector2XZ(playerPos),20,Grapple.grappleRange);
-            for (int i = 0; i < circles.Length; i++) {
-                Debug.DrawLine(Utils.Vector2XZToVector3(circles[i]),Utils.Vector2XZToVector3(circles[(i + 1) % circles.Length]),CustomColors.green);
-            }
-            Debug.DrawLine(playerPos,playerPos + Vector3.forward * Grapple.grappleRange,CustomColors.green);
-            Debug.DrawLine(playerPos,playerPos + Vector3.back * Grapple.grappleRange,CustomColors.green);
-            Debug.DrawLine(playerPos,playerPos + Vector3.left * Grapple.grappleRange,CustomColors.green);
-            Debug.DrawLine(playerPos,playerPos + Vector3.right * Grapple.grappleRange,CustomColors.green);
-        }
-    }
-
+    // destroys all enemies in the enemy actors list
     public void DestroyAllEnemies() {
-        for(int i = 0; i < gameData.enemyActors.Count; i++) {
+        for(int i = gameData.enemyActors.Count-1; i >= 0 ; i--) {
             DestroyActor(gameData.enemyActors[i]);
         }
+        
     }
-
-    //public void BulletMovementUpdate(List<Bullet> bullets) {
-    //    for (int i = 0; i < bullets.Count; i++) {
-    //        if (bullets[i].transform != null) {
-    //            bullets[i].transform.position += bullets[i].transform.rotation * transform.forward * Time.deltaTime * bullets[i].speed;
-    //        }
-    //    }
-    //}
 }
 
 

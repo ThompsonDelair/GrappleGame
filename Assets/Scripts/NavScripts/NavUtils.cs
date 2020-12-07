@@ -13,6 +13,18 @@ public static class NavUtils
         }
     }
 
+    public static void DrawTrisXZ(IEnumerable<NavTri> tris,Color colorZero, Color color) {
+        foreach (NavTri t in tris) {
+            foreach (HalfEdge h in t.Edges()) {
+                Color c = color;
+                if (h.moveBlock == 0) {
+                    c = colorZero;
+                }
+                Debug.DrawLine(Utils.Vector2XZToVector3(h.start),Utils.Vector2XZToVector3(h.next.start),c);
+            }
+        }
+    }
+
     public static void DrawLines(NavTri t,Color c) {
         foreach (HalfEdge h in t.Edges()) {
             Debug.DrawLine(h.start,h.next.start,c);
@@ -170,7 +182,7 @@ public static class NavUtils
         Stack<NavTri> frontier = new Stack<NavTri>();
 
         frontier.Push(start);
-        int counter;
+        int counter = 0;
 
         while (frontier.Count != 0) {
             NavTri curr = frontier.Pop();
@@ -183,13 +195,14 @@ public static class NavUtils
 
             visited.Add(curr);
             tris.Add(curr);
+
+            if(Utils.WhileCounterIncrementAndCheck(ref counter)) {
+                break;
+            }
         }
 
         return tris;
     }
-
-
-
 
     public static List<NavTri> FindConnectedTrisWithAABB(NavTri start, out AABB_2D aabb) {
         Vector2 bottomLeft = Vector2.positiveInfinity;

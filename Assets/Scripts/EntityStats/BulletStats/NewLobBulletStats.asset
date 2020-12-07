@@ -17,7 +17,9 @@ MonoBehaviour:
   targetTeam: 1
   impactSound: {fileID: 8300000, guid: 9db69da88efdec943b86c4552512245e, type: 3}
   lobHeight: 20
-  travelTime: 1
+  travelTimeMin: 1
+  travelTimeMax: 1.8
+  travelTimeMaxDist: 40
   burnArea: {fileID: 8802260525574283694, guid: 333c3a9442f37984d9a5de42acaa5a95,
     type: 3}
   warningPrefab: {fileID: 7786067258976618032, guid: c034695505b17ad45a0fe5115b403fcb,

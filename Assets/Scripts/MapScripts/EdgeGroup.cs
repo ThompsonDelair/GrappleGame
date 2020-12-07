@@ -7,30 +7,13 @@ using UnityEditor;
 
 using UnityEngine;
 
-
+// this class holds a list of edge connections
+// each vertex of an edge is a child game object of the edgeGroup game object and is given a unique ID
 [ExecuteInEditMode]
 public class EdgeGroup : MonoBehaviour
 {
-
-
-    //public List<string> edgeList;
-    [SerializeField]
-    public List<EdgeConnection> edgeList;
-    //HashSet<int> doorIDs;
+    [SerializeField] public List<EdgeConnection> edgeList;
     public bool drawEdges;
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnValidate() {
         HashSet<int> ID_Set;
@@ -82,8 +65,6 @@ public class EdgeGroup : MonoBehaviour
         }
     }
 
-
-
     void ValidateEdges(HashSet<int> IDs) {
         for(int i = edgeList.Count - 1; i >= 0; i--) {
             EdgeConnection e = edgeList[i];
@@ -119,19 +100,6 @@ public class EdgeGroup : MonoBehaviour
         return -1;
     }
 
-    //public int HighestChildID() {
-    //    int highest = 0;
-    //    Transform[] children = Utils.GetChildren(transform);
-    //    for (int i = 0; i < children.Length; i++) {
-    //        EdgeVertex ev = children[i].GetComponent<EdgeVertex>();
-            
-    //        if(ev.ID > highest) {
-    //            highest = ev.ID;
-    //        }
-    //    }
-    //    return highest;
-    //}
-
     public EdgeVertex AddNewVertex() {
         int newID = GetNewVertexID();
         GameObject go = new GameObject();
@@ -158,7 +126,6 @@ public class EdgeGroup : MonoBehaviour
 
         int first = (vertA_ID < vertB_ID) ? vertA_ID : vertB_ID;
         int second = (vertA_ID > vertB_ID) ? vertA_ID : vertB_ID;
-        //string connection = first + "," + second;
 
         EdgeConnection e = new EdgeConnection(first,second);
 
@@ -170,12 +137,10 @@ public class EdgeGroup : MonoBehaviour
         }
 
         edgeList.Add(e);
-        //DrawConnections();
     }
 
     public void RemoveConnection(int i) {
         edgeList.RemoveAt(i);
-        //DrawConnections();
     }
 
     private void OnDrawGizmos() {
@@ -205,47 +170,6 @@ public class EdgeGroup : MonoBehaviour
         return -1;
     }
 
-    public void SetEdgeType(int vertA_ID, int vertB_ID, EdgeType type) {
-
-        if (vertA_ID == vertB_ID) {
-            Debug.LogError("edge cant have 2 same verts");
-        }
-
-        int first = (vertA_ID < vertB_ID) ? vertA_ID : vertB_ID;
-        int second = (vertA_ID > vertB_ID) ? vertA_ID : vertB_ID;
-
-        bool foundEdge = false;
-
-        for (int i = 0; i < edgeList.Count; i++) {
-            EdgeConnection e = edgeList[i];
-            if(e.vertA_ID == first && e.vertB_ID == second) {
-
-                if (e.edgeType != EdgeType.DoorClosed && e.edgeType != EdgeType.DoorOpen) {
-                    if (type == EdgeType.DoorClosed || type == EdgeType.DoorOpen) {
-                        // wasn't a door and now is a door
-                        e.doorID = GetNewDoorID();
-                    }
-                } else {
-                    if (type != EdgeType.DoorClosed && type != EdgeType.DoorOpen) {
-                        // was a door, now isn't
-                        e.doorID = 0;
-                    }
-                }
-
-                e.edgeType = type;
-                foundEdge = true;
-
-                break;
-            }
-        }
-
-
-
-        if (!foundEdge) {
-            Debug.LogError("Couldn't find edge to change");
-        }        
-    }
-
     public void SetEdgeType(int edgeIndex, EdgeType type) {
         EdgeConnection e = edgeList[edgeIndex];
         if (e.edgeType != EdgeType.DoorClosed && e.edgeType != EdgeType.DoorOpen) {
@@ -262,57 +186,25 @@ public class EdgeGroup : MonoBehaviour
         e.edgeType = type;
     }
 
-    // found this online from a stack exchange
-    //static void DrawString(string text,Vector3 worldPos,Color? colour = null) {
-    //    UnityEditor.Handles.BeginGUI();
-    //    if (colour.HasValue)
-    //        GUI.color = colour.Value;
-    //    var view = UnityEditor.SceneView.currentDrawingSceneView;
-    //    Vector3 screenPos = view.camera.WorldToScreenPoint(worldPos);
-    //    Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
-    //    GUI.Label(new Rect(screenPos.x - (size.x / 2),-screenPos.y + view.position.height + 4,size.x,size.y),text);
-    //    UnityEditor.Handles.EndGUI();
-    //}
-
     void GizmosDrawEdges() {
 
-        //Debug.Log("drawing edges");
         GUI.color = Color.white;
 
         Transform[] children = Utils.GetChildren(transform);
-        //Dictionary<int,Transform> vertMap = GetVertMap();
         for (int i = 0; i < edgeList.Count; i++) {
             EdgeConnection e = edgeList[i];
             int a = FindIDInArray(e.vertA_ID,children);
             int b = FindIDInArray(e.vertB_ID,children);
             if (a != -1 && b != -1) {
                 Gizmos.color = ColorFromType(e.edgeType);
-
-                //Gizmos.color = Color.black;
                 Gizmos.DrawLine(children[a].position,children[b].position);
-                //Debug.DrawLine(children[a].position,children[b].position,Color.black);
-
 
                 if (e.doorID != 0) {
-                    //Debug.Log("Doing door stuff");
                     Vector3 halfway = children[a].position - (children[a].position - children[b].position) / 2 + Vector3.up;
 
                     #if UNITY_EDITOR
-
-                    //UnityEditor.Handles.BeginGUI();
-
-                    //var view = UnityEditor.SceneView.currentDrawingSceneView;
-                    //Vector3 screenPos = view.camera.WorldToScreenPoint(worldPos);
-                    //Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
-                    //GUI.Label(new Rect(screenPos.x - (size.x / 2),-screenPos.y + view.position.height + 4,size.x,size.y),text);
                     Handles.Label(halfway,e.doorID.ToString());
-
-                    //UnityEditor.Handles.EndGUI();
-
                     #endif
-                    //DrawString(e.doorID.ToString(),halfway,Color.white);
-                } else {
-
                 }
             }
         }

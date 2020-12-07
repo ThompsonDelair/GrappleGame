@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// this bullet behavior makes the bullet travel to a set location over period of time
+//     defined by the min/max travel speed of its stats
+// it will spawn a burning hazard on impact
 public class LobBulletBehavior : BulletBehavior
 {
     public LobBulletStats stats;
@@ -9,41 +12,40 @@ public class LobBulletBehavior : BulletBehavior
     public Vector2 start;
     public Vector2 end;
     float timestamp;
+    float traveltime;
+
+    // the warning visual before bullet impact
     GameObject warning;
        
     public LobBulletBehavior(LobBulletStats s) {
         stats = s;
         timestamp = Time.time;
-
     }
 
     public override void BulletBehaviorUpdate(Bullet b,GameData data) {
+
+        if(traveltime == 0) {
+            float diff = stats.travelTimeMax - stats.travelTimeMin;
+            float percent = Vector2.Distance(start,end) / stats.travelTimeMaxDist;
+            if (percent > 1f) {
+                percent = 1f;
+            }
+            traveltime = stats.travelTimeMin + diff * percent;
+        }
+
         if(warning == null) {
             warning = GameObject.Instantiate(stats.warningPrefab);
             warning.transform.position = Utils.Vector2XZToVector3(end);
         }
-        //float lerpVal = Vector2.Distance(b.position2D,start) / Vector2.Distance(start,end);
 
-        float lerpVal = (Time.time - timestamp) / stats.travelTime;
-
-        //if (lerpVal < 0.5f) {
-        //    lerpVal = Ease.OutSine(lerpVal / 0.5f);
-        //    lerpVal *= 0.5f;
-        //} else {
-        //    lerpVal = Ease.InSine((lerpVal - 0.5f) / 0.5f);
-        //    lerpVal *= 0.5f;
-        //    lerpVal += 0.5f;
-        //}
-
-
+        float lerpVal = (Time.time - timestamp) / traveltime;
 
         if(lerpVal > 1f) {
             OnExpire(b,data);
             return;
         }
 
-        //Debug.Log("lob bullet update");
-
+        // this block of code makes the visual for the bullet travel in an arc to its destinatino
         Transform bulletGraphics = b.transform.Find("BulletGraphics");
         Vector2 midpoint2D = end + (start - end) / 2;
         Utils.debugStarPoint(Utils.Vector2XZToVector3(midpoint2D),1f,CustomColors.orange);

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// an area is essentially an area collider with an OnCollision behavior
 [RequireComponent(typeof(AreaCollider))]
 public abstract class Area : MonoBehaviour
 {
     public bool active = true;
     AreaCollider areaCollider;
-    //public ColliderType type;
 
     private void Awake() {
         areaCollider = GetComponent<AreaCollider>();
@@ -17,7 +16,7 @@ public abstract class Area : MonoBehaviour
         }
     }
 
-    public bool DetectCircleCollision(NewCircleCollider c) {
+    public bool DetectCircleCollision(OurCircleCollider c) {
         return areaCollider.DetectCircleCollision(c);
     }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// holds the primary game data
 public class GameData 
 {
     public static GameData main;

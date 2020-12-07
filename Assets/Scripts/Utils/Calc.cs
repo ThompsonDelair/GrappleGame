@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// A variety of usful calculation functions
+// many come from previous projects
 public static class Calc
 {
     public static Vector2 CartesianToIso(Vector2 cartPos, float scale = 1f, float shift = 2) {

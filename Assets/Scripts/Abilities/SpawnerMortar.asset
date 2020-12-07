@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2d6ff360cfdf784680e44d619772717, type: 3}
   m_Name: SpawnerMortar
   m_EditorClassIdentifier: 
-  totalSpawnedLimit: 6
+  totalSpawnedLimit: 4
   spawnedPerWave: 4
   timeBetweenSpawns: 9
   waitForFirstSpawn: 4
@@ -22,8 +22,8 @@ MonoBehaviour:
   eggRadius: 1
   egg: {fileID: 4410226063173504890, guid: fc8a359945069594cabdf512398c68c7, type: 3}
   instaSpawnAmount: 1
-  eggSpawn:
-  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
-  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  entitySpawnList:
   - {fileID: 2067371835699031399, guid: 8e7147aab7e955f4f99a62d754987396, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}

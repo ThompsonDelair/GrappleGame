@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BossSpawner
   m_EditorClassIdentifier: 
   maxHP: 50
-  radius: 3
+  radius: 3.5
   speed: 0
   movement: 0
   invulnerable: 0

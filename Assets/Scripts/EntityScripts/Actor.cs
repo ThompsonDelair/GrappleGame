@@ -10,15 +10,34 @@ public enum Team
     ALL = PLAYER | ENEMIES,
 }
 
+// this class is used for enemies and the player
+// it acts as a wrapper between our code and unity game objects
+// it can be used by both 2D and 3D systems
 public class Actor
 {
     public ActorStats stats;
-    public NewCircleCollider collider;
+    public OurCircleCollider collider;
     public AABB_2D aabb;
+    public bool collision;
+
     public Transform transform;
     public Vector2 velocity;
-    public List<PushInstance> pushForces = new List<PushInstance>();
+
+    public Zone currZone;
+
     public Vector3 position3D { get { return transform.position; } set { transform.position = value; } }
+    public Vector2 position2D {
+        get {
+            return new Vector2(transform.position.x,transform.position.z);
+        }
+        set {
+            transform.position = new Vector3(value.x,0,value.y);
+        }
+    }
+    public Vector2 posAtFrameStart;
+
+    public List<PushInstance> pushForces = new List<PushInstance>();
+
     public Movement currMovement;
 
     public bool followingPath = false;
@@ -27,20 +46,9 @@ public class Actor
     public Vector2 pathfindWander;
     public float wanderTimer;
 
-    public Zone currZone;
-
     public float health;
-
     public Team team;
-
-    public Vector2 posAtFrameStart;
-    public bool collision;
-
-    // Added for ability system.
-    //public bool isCasting;
     public bool invulnerable;
-
-    //public Ability ability;
 
     public Animator animator;
 
@@ -51,36 +59,25 @@ public class Actor
     public List<AbilityStats> abilityStats;
     public List<BehaviorStats> behaviorStats;
 
-    public Vector2 position2D {
-        get {
-            return new Vector2(transform.position.x,transform.position.z);
-        }
-        set {   
-            transform.position = new Vector3(value.x,0,value.y);
-        }
-    }
-
     private Actor() { }
 
-    public Actor(Transform t,ActorStats s,Team l) {
-        stats = s;
-        collider = new NewCircleCollider(s.radius,t);
-        transform = t;
-        team = l;
-        health = s.maxHP;
+    public Actor(Transform transform,ActorStats stats,Team team) {
+        this.stats = stats;
+        collider = new OurCircleCollider(stats.radius,transform);
+        this.transform = transform;
+        this.team = team;
+        health = stats.maxHP;
         aabb = new AABB_2D(this);
 
-        animator = t.GetComponent<Animator>();
-        currMovement = s.movement;
-        invulnerable = s.invulnerable;
+        animator = transform.GetComponent<Animator>();
+        currMovement = stats.movement;
+        invulnerable = stats.invulnerable;
 
-        behaviors = stats.GetBehaviorInstances();
-        abilities = stats.GetAbilityInstances();        
+        behaviors = this.stats.GetBehaviorInstances();
+        abilities = this.stats.GetAbilityInstances();        
     }
 
     public PushInstance StartNewPush(Vector2 direction,float force, float friction = 100f) {
-        //momentumDir = direction;
-        //momentumForce = force;
         pushForces.Clear();
         PushInstance p = new PushInstance(direction,force,friction);
         pushForces.Add(p);
@@ -88,29 +85,7 @@ public class Actor
     }
 
     public void AddPushForce(Vector2 direction, float force, float friction = 100f) {
-        //Vector2 combined = momentumDir.normalized * momentumForce + direction.normalized * force;
-        //momentumDir = combined;
-        //momentumForce = combined.magnitude;
         pushForces.Add(new PushInstance(direction,force,friction));
 
     }
-
-    // Using SoundManager now
-    /*public void PlayAudioClip(AudioClip clip,bool loop = false) {
-        AudioSource source = transform.GetComponent<AudioSource>();
-        if (source == null) {
-            source = transform.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
-        }
-        source.clip = clip;
-        source.loop = loop;
-        source.Play();
-    }
-
-    public void StopAudioClip() {
-        AudioSource source = transform.GetComponent<AudioSource>();
-        if (source == null) {
-            source = transform.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
-        }
-        source.Stop();
-    }*/
 }

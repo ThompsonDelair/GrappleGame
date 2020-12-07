@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using Unity.Collections;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum CollisionType { PUSH_A, PUSH_B, EQUAL }
@@ -21,7 +15,7 @@ public enum Layer {
     BLOCK_ALL = BLOCK_WALK | BLOCK_FLY
 }
 
-
+// Detects and resolves collisions between actors, bullets and terrain
 public static class CollisionSystem 
 {
 
@@ -29,34 +23,27 @@ public static class CollisionSystem
         return (a & b) != 0;
     }
 
-    //public static bool LayerExact(Layer a, Layer b) {
-    //    return (a ^ b) == 0;
-    //}
-
-
     public static void CollisionUpdate(GameData data) {
         ResetCollisionBool(data.allActors);
         ActorActorCollisionUpdate(data.allActors);
-        //CheckPlayerEnemyCollisions(enemies);
         ActorTerrainCollision(data.allActors,data.map);
         AreaActorCollisionUpdate(data.areas,data.allActors);
         CheckBulletCollisions(data.allActors,data.bullets,data);
-        //CheckBulletCollisions(map.objects,bullets);
         CheckBulletTerrainCollision(data.bullets,data.map);
-
-        OutOfBoundsCheck(data.allActors,data.map);
-        
+        OutOfBoundsCheck(data.allActors,data.map);        
     }
 
+    // sets the "has collided" bool for each actor to false
     static void ResetCollisionBool(List<Actor> actors) {
         for (int i = 0; i < actors.Count; i++) {
             actors[i].collision = false;
         }
     }
 
+    // detects and resolves actor-actor collisions
     static void ActorActorCollisionUpdate(List<Actor> actors) {
         for (int i = 0; i < actors.Count; i++) {
-            for (int j = 0; j < actors.Count; j++) {
+            for (int j = i + 1; j < actors.Count; j++) {
                 if (i == j)
                     continue;
 
@@ -68,13 +55,12 @@ public static class CollisionSystem
         }
     }
          
+    // detects and resolves actor-terrain collisions
     static void ActorTerrainCollision(List<Actor> actors,Map map) {
 
         for (int i = 0; i < actors.Count; i++) {
             Actor a = actors[i];
-            bool momentumChange = false;
             if (a.currMovement == Movement.WALKING) {
-                // player - terrain collision
                 Vector2 newPos = a.position2D;
                 CollisionInfo info = new CollisionInfo();
                 a.aabb.UpdateActorPos(a);
@@ -91,39 +77,14 @@ public static class CollisionSystem
                         float dist2 = Vector2.Distance(newPos,closestPoint);
                         if (dist2 < a.collider.Radius) {
 
-
-                            //a.aabb.DrawBox(Color.blue);
-                            //e.aabb.DrawBox(CustomColors.darkRed);
-
                             info.points.Add(closestPoint);
                             Vector2 away = (newPos - closestPoint).normalized * (a.collider.Radius - dist2);
-                            newPos += away;
-
-                            //if (!momentumChange) {
-                            //    int c = Calc.ClockWiseCheck(closestPoint,a.position2D,a.position2D + a.momentumDir);
-
-                            //    if (c > 0) {
-
-                            //    } else if (c < 0) {
-
-                            //    } else {
-
-                            //    }
-                            //    a.momentumForce /= 2;
-                            //}
                         }
                     }
-
-
-                    //if (newPos != Vector2.zero) {
-                    //    a.position2D = newPos;
-                    //}
                 }
 
                 a.position2D = newPos;
-                //if (info.points.Count > 0) {
-                //    actors[i].momentumForce = 0;
-                //}
+
                 for (int k = 0; k < info.points.Count; k++) {
                     Debug.DrawLine(a.position3D,new Vector3(info.points[k].x,0,info.points[k].y));
                 }
@@ -136,36 +97,21 @@ public static class CollisionSystem
 
         for (int i = bullets.Count - 1; i >= 0; --i) {
             Bullet b = bullets[i];
-            //bool destroyedBullet = false;
             for (int j = actors.Count - 1; j >= 0; --j) {
                 Actor a = actors[j];
 
                 // If they are overlapping
                 if (Utils.BitwiseOverlapCheck((int)a.team,(int)b.team) && a.collider.DetectCircleCollision(b.collider)) {
-                    // USE POSITION 2D FOR SOUND
-                    //Debug.Log("HIT DETECTED");
 
-                    // Need to destroy in a better way so that references are deleted as well.
-
-                    //GameManager.main.DestroyGameobject(b.transform.gameObject);
-                    //ParticleEmitter.current.SpawnParticleEffect(GameManager.main.playerBulletHit, b.transform.position, Quaternion.identity);
                     bullets[i].behavior.OnActorCollision(bullets[i],a,data);
-                    //bullets.RemoveAt(i);
 
-                    // Now instead of destroying actors here we call dealDamage() in DamageSystem instead and all actors health is managed from there.
-                    //DamageSystem.DealDamageToPlayerWithoutCoolDown(a, b.damage, false);
-                    //DamageSystem.DealDamage(a, b.s);
-                    //destroyedBullet = true;
                     break;
                 }
             }
-
-
-            //end_of_loop:
-            //;
         }
     }
 
+    // detects and resovles bullet-terrain collision
     static void CheckBulletTerrainCollision(List<Bullet> bullets,Map map) {
         for(int i = bullets.Count -1; i >=0; i--) {
             Bullet b = bullets[i];
@@ -188,23 +134,7 @@ public static class CollisionSystem
         }
     }
 
-    // Added to track whether enemies are in the player's collision area specifically 
-    //static void CheckPlayerEnemyCollisions(List<EnemyActor> enemies)
-    //{
-    //    for (int i = 0; i < enemies.Count; i++)
-    //    {
-    //        //Debug.Log("is attacking?: " + enemies[i].ability.attacking);
-    //        if (CollisionCalc.CompareRadiusPlayerEnemy(enemies[i]))
-    //        {
-                
-    //            if (enemies[i].ability.attacking()) // So that player doesnt get hurt by walking into non-attacking enemies.
-    //            {
-    //                DamageSystem.DealDamage(GameManager.main.player, 1f);
-    //            }
-    //        }
-    //    }
-    //}
-
+    // detects and resolves actor-area collisions
     static void AreaActorCollisionUpdate(List<Area> areas,List<Actor> actors) {
         for(int i = 0; i < areas.Count; i++) {
             Area area = areas[i];
@@ -219,6 +149,8 @@ public static class CollisionSystem
         }
     }
 
+    // checks if any actors managed to erroneously clip through a terrain edge they're not supposed to
+    // if so, it resets their position to the position they had at the beginning of the frame
     static void OutOfBoundsCheck(List<Actor> actors, Map map) {
         for(int i = 0; i < actors.Count; i++) {
             for(int j = 0; j < map.terrainEdges.Count; j++) {
@@ -234,7 +166,5 @@ public static class CollisionSystem
             }
         }
     }
-
-
 }
 

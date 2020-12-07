@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Doors have refernces to nav edges and terrain edges
+// doors must change both in order to disable door collision and allow pathfinding through open doors
 public class Door 
 {
     public HalfEdge halfEdge;
@@ -35,6 +37,5 @@ public class Door
         } else {
             CloseDoor();
         }
-    }
-    
+    }    
 }

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5518377812017363756}
   - component: {fileID: 1876556927220249663}
   - component: {fileID: 1876556927220249661}
-  - component: {fileID: 1876556927220249648}
+  - component: {fileID: 2722053588941581702}
   - component: {fileID: 1973459274954758743}
   - component: {fileID: 3471752471943966979}
   m_Layer: 0
@@ -86,6 +86,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInvulnerable: 0
   breakOnGrappleUpdate: 0
+  drawTerrain: 0
+  drawNavMesh: 0
+  drawGrappleRange: 0
+  drawNavGrid: 0
+  drawZones: 0
+  drawPlayerSight: 0
 --- !u!114 &1876556927220249650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,21 +157,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4212f7a1c0a404746a4876b2efa148d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawTerrain: 0
-  drawNavMesh: 0
-  drawGrappleRange: 0
   playerTurnSpeed: 0.1
   playerStats: {fileID: 0}
   playerAnimator: {fileID: 0}
-  playerBulletDamage: 1
   playerBulletHit: {fileID: 312754889654253545, guid: c761e92e06efb964db60d55a62233c0d,
     type: 3}
-  smallEnemy: {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24,
-    type: 3}
-  bigJoe: {fileID: 2067371835699031399, guid: 048b3b219ff678d4ea9436058ad38f88, type: 3}
-  drawNavGrid: 0
-  drawZones: 0
-  drawPlayerSight: 0
 --- !u!114 &1876556927220249661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,10 +194,11 @@ MonoBehaviour:
   playerHurt: {fileID: 8300000, guid: 1395208650b6eae458dbfa4918f32817, type: 3}
   fireCast: {fileID: 8300000, guid: 39ec7314065d0d24388d6a4f96f0746d, type: 3}
   fireLand: {fileID: 8300000, guid: 9db69da88efdec943b86c4552512245e, type: 3}
-  enemyShot: {fileID: 8300000, guid: 1b6cebe1712b64049b449fa1b025790a, type: 3}
+  enemyShot: {fileID: 8300000, guid: 9c681e4d517d4ec448f6b14e4cbd30f2, type: 3}
   playerDmg: {fileID: 8300000, guid: 3fe109d294c42af42a4c56ccb25a2efc, type: 3}
   doorToggle: {fileID: 8300000, guid: 17dd22ed9bd703349b42546d8e80e5ab, type: 3}
---- !u!114 &1876556927220249648
+  turretShot: {fileID: 8300000, guid: 9c681e4d517d4ec448f6b14e4cbd30f2, type: 3}
+--- !u!114 &2722053588941581702
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -210,9 +207,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1876556927220249657}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 766aa14b8c62b214c8e69b32f28539d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cc8e291649124442aac84283a7cafc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyDeathEffect: {fileID: 2684406686654633990, guid: e472d17cf42fedf4f9c28ae4f125782c,
+    type: 3}
 --- !u!114 &1973459274954758743
 MonoBehaviour:
   m_ObjectHideFlags: 0

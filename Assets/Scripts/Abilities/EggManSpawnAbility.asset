@@ -12,18 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2d6ff360cfdf784680e44d619772717, type: 3}
   m_Name: EggManSpawnAbility
   m_EditorClassIdentifier: 
-  totalSpawnedLimit: 9
+  totalSpawnedLimit: 6
   spawnedPerWave: 3
   timeBetweenSpawns: 4
   waitForFirstSpawn: 4
-  eggGrowTime: 3
+  eggGrowTime: 1.75
   spawnAllTogether: 0
-  spawnRange: 8
-  eggRadius: 1
+  spawnRange: 10
+  eggRadius: 1.5
   egg: {fileID: 4410226063173504890, guid: fc8a359945069594cabdf512398c68c7, type: 3}
-  instaSpawnAmount: 0
-  eggSpawn:
+  instaSpawnAmount: 1
+  entitySpawnList:
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 2067371835699031399, guid: 8e7147aab7e955f4f99a62d754987396, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  - {fileID: 2067371835699031399, guid: 048b3b219ff678d4ea9436058ad38f88, type: 3}
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}

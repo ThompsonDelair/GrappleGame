@@ -6,7 +6,6 @@ public class MortarShootAbility : Ability
 {
     MortarShootStats stats;
     float timestamp;
-    Vector2 dir;
     bool shot;
     bool lockedon;
     Vector2 lockedPos;
@@ -17,8 +16,8 @@ public class MortarShootAbility : Ability
         stats = s;
     }
 
+
     public override bool RunAbilityUpdate(Actor a,GameData data) {
-        //Debug.Log("LUNGE: " + actor.transform.gameObject.name + " attack status through actor: " + actor.ability.attacking + " attack status through local attacking: " + attacking);
 
         if (Time.time > timestamp && shot) {
             timestamp = Time.time + stats.coolDown;
@@ -27,22 +26,21 @@ public class MortarShootAbility : Ability
                 a.currMovement = Movement.WALKING;
             }
 
-            return false;
+            return false; // ability finished
         }
 
         if (timestamp - Time.time <= stats.targetLockTime && !shot && !lockedon) {
-            dir = (data.player.position2D - a.position2D);
+            // set the position we're going to shoot the mortar at
             lockedon = true;
-            lockedPos = GameManager.main.gameData.player.position2D;
+            lockedPos = GameManager.main.GameData.player.position2D;
         }
 
         if (!lockedon) {
-
+            // face our target if we're animating this ability
             if (stats.animate) {
                 a.transform.LookAt(data.player.position3D);
             }
         }
-
 
         if (Time.time > timestamp) // shoot after finished charging time
         {
@@ -56,13 +54,14 @@ public class MortarShootAbility : Ability
             ((LobBulletBehavior)b.behavior).start = a.position2D;
             timestamp = Time.time + stats.windDown;
             shot = true;
-            Debug.Log("CALLING FIRE CAST");
+            //Debug.Log("CALLING FIRE CAST");
             SoundManager.PlayOneClipAtLocation(AudioClips.singleton.fireCast, a.position2D, 6f);
         }
 
         return true; // Ability still casting
     }
 
+    // check if target is in range, the ability is not on cooldown, and there is clear line of sight to target
     public override bool StartAbilityCheck(Actor a,GameData data) {
         if (timestamp < Time.time) // Charge setup
 {
@@ -81,9 +80,7 @@ public class MortarShootAbility : Ability
             }
 
             timestamp = Time.time + stats.chargeTime;
-            // Disable movement
             a.currMovement = Movement.NONE;
-            //a.transform.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
 
             if (stats.animate) {
                 a.transform.GetComponent<Animator>().SetTrigger("StartAttack");

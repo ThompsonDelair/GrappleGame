@@ -22,8 +22,6 @@ MonoBehaviour:
   eggRadius: 1
   egg: {fileID: 4410226063173504890, guid: fc8a359945069594cabdf512398c68c7, type: 3}
   instaSpawnAmount: 0
-  eggSpawn:
-  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
-  - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}
+  entitySpawnList:
   - {fileID: 2067371835699031399, guid: 048b3b219ff678d4ea9436058ad38f88, type: 3}
   - {fileID: 3005360444942448389, guid: 1e0f352c6b3cd8b4fa40d78cb0f89b24, type: 3}

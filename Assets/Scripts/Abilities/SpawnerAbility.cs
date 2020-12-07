@@ -2,35 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
+// spawns waves of enemies around actor
 public class SpawnerAbility : Ability
 {
     SpawnerStats stats;
-    int spawnTracker;
+    int spawnTracker;   // used to step through stats list of spawnable entities in sequence
 
-    //[SerializeField] private int spawnLimit = 1;
     List<Transform> spawned = new List<Transform>();
     float timestamp;
 
-    bool activated = false;
+    // spawners do not activate until the player gets close enough
+    bool activated = false;     
     float activateCheckDelay = 1f;
-    const float activateRange = 45f;
+    const float activateRange = 50f;
 
     public SpawnerAbility(SpawnerStats s) {
         stats = s;
     }
 
     public override bool RunAbilityUpdate(Actor a,GameData data) {
-        //List<GameObject> spawnGuards;
-        List<GameObject> eggSpawn;
+
+        List<GameObject> eggSpawn;  // the actor we're going to spawn
+
         SpawnList spawnlist = a.transform.GetComponent<SpawnList>();
         if (spawnlist != null) {
-            //spawnGuards = spawnlist.spawnGuards;
-            eggSpawn = spawnlist.eggSpawn;
+            eggSpawn = spawnlist.spawnableEntities;
         } else {
-            //spawnGuards = stats.spawnGuards;
-            eggSpawn = stats.eggSpawn;
+            eggSpawn = stats.entitySpawnList;
         }
 
         int numToSpawn = 0;
@@ -43,11 +41,13 @@ public class SpawnerAbility : Ability
 
         int spawnedThisWave = 0;
 
+        // stats let us instantly spawn a certain number of enemies
         for(int i = 0; i < numToSpawn && i < stats.instaSpawnAmount; i++, spawnedThisWave++) {
             SpawnEgg(eggSpawn[spawnTracker],a,data);
             spawnTracker = (spawnTracker + 1) % eggSpawn.Count;
         }
 
+        // spawn the rest for this wave using eggs
         for(; spawnedThisWave < numToSpawn; spawnedThisWave++) {
             SpawnEgg(eggSpawn[spawnTracker],a,data);
             spawnTracker = (spawnTracker + 1) % eggSpawn.Count;
@@ -57,6 +57,7 @@ public class SpawnerAbility : Ability
         return false;
     }
 
+    // checks if our ability is on cooldown, or if we've already spawned the max number of entities 
     public override bool StartAbilityCheck(Actor a,GameData data) {
 
         if (!activated && timestamp < Time.time && Vector2.Distance(a.position2D,data.player.position2D) < activateRange) {
@@ -72,10 +73,11 @@ public class SpawnerAbility : Ability
         }
 
         if (!activated) {
+            // spawner is only activated if player gets close enough
             return false;
         }
 
-
+        // removes any destroyed entities from our spawn list
         for (int i = spawned.Count - 1; i >= 0; i--) {
             if (spawned[i] == null)
                 spawned.RemoveAt(i);
@@ -86,21 +88,16 @@ public class SpawnerAbility : Ability
             (spawned.Count < stats.totalSpawnedLimit));
     }
 
+    // finds a location for an egg, instantiates an egg there
     void SpawnEgg(GameObject spawn,Actor a,GameData data) {
         Vector2 eggLocation = FindEggLocation(a,data);
         Actor egg = GameManager.main.SpawnActor(stats.egg.transform.gameObject,eggLocation);
         spawned.Add(egg.transform);
-        //egg.transform.localScale = Vector3.one * spawn.GetComponent<ActorInfo>().stats.radius * 2;
         egg.transform.localScale = Vector3.one * stats.eggRadius;
         egg.abilities.Add(new EggAbility(stats.eggGrowTime,spawn,spawned));
     }
 
-    void SpawnGuard(GameObject spawn,Actor a, GameData data) {
-        Vector2 eggLocation = FindEggLocation(a,data);
-        Actor actor = GameManager.main.SpawnActor(spawn,eggLocation);
-        spawned.Add(actor.transform);
-    }
-
+    // searches for a walkable location within a stats-defined distance
     Vector2 FindEggLocation(Actor a,GameData data) {
         int counter = 0;
         bool foundSpawnLocation = false;;

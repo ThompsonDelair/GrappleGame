@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// A zone is an isolated area created by terrain edges
+//      it can be a floor or pit or ceiling
 public class Zone
 {
     public Movement type;
