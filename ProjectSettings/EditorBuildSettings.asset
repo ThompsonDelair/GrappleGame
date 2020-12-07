@@ -14,8 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/01_DropZone.unity
     guid: 00029737a2e80e845aae6111627a6e47
-  - enabled: 1
-    path: Assets/Scenes/02_EnigmaticVault.unity
+  - enabled: 0
+    path: Assets/_Modules/KurtisTestStuff/02_EnigmaticVault_Redo.unity
     guid: 451c896272f23604f90a79ae995fee22
   - enabled: 1
     path: Assets/Scenes/03_CoreApproach.unity
